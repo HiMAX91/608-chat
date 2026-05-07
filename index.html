@@ -3,113 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>608 Memories | 純淨輸入版</title>
-    
-    <!-- 使用 Tailwind -->
+    <title>608 Memories | Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
-        /* 1. 全局設定：使用系統原生字體，保證輸入最順暢 */
-        body {
-            background-color: #0f172a;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        /* 2. 主容器：保留深夜藍質感 */
-        .glass-container {
-            background-color: #1e293b; /* 移除 backdrop-filter 避免任何渲染衝突 */
-            width: 100%;
-            max-width: 450px;
-            height: 85vh;
-            border-radius: 2rem;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* 3. 氣泡樣式 */
-        .msg-pop { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .bubble-me {
-            background: #6366f1;
-            border-radius: 18px 18px 4px 18px;
-        }
-        .bubble-other {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 18px 18px 18px 4px;
-        }
-
-        /* 4. 最乾淨的輸入框區域設定 */
-        .input-area {
-            background-color: #334155;
-            border-radius: 1.5rem;
-            padding: 0.5rem;
-            margin: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        /* 絕對乾淨的 Input 標籤 */
-        input#msgInput {
-            background: transparent;
-            color: white;
-            border: none;
-            outline: none;
-            box-shadow: none;
-            width: 100%;
-            font-size: 16px; /* 必備：防止 iOS 亂縮放 */
-            padding: 0.5rem 0;
-        }
-        
-        /* 修改游標顏色 */
-        input#msgInput::placeholder { color: rgba(255, 255, 255, 0.3); }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        body { background: #020617; font-family: sans-serif; color: white; height: 100vh; overflow: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .bubble-me { background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 20px 20px 5px 20px; }
+        .bubble-other { background: rgba(255, 255, 255, 0.1); border-radius: 20px 20px 20px 5px; }
+        /* 側欄小動畫 */
+        #sidebar { transition: transform 0.3s ease; }
     </style>
 </head>
-<body>
+<body class="flex justify-center items-center">
 
-    <div class="glass-container">
+    <div class="glass w-full max-w-lg h-[90vh] md:rounded-[40px] flex flex-col relative overflow-hidden shadow-2xl">
         
-        <div class="p-8 pb-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-white text-xl font-bold">608 memories</h1>
-                <p class="text-white/40 text-xs mt-1">畢業倒數 30 天</p>
+        <div class="p-6 flex justify-between items-center border-b border-white/5">
+            <button onclick="toggleSidebar()" class="text-white/50 hover:text-white">☰</button>
+            <h1 id="roomTitle" class="font-bold text-lg">全班廣場</h1>
+            <div class="w-8"></div>
+        </div>
+
+        <div id="sidebar" class="absolute inset-y-0 left-0 w-64 glass z-50 transform -translate-x-full p-6">
+            <h3 class="text-xs font-bold text-white/30 uppercase tracking-widest mb-4">聊天房間</h3>
+            <button onclick="switchRoom('608_public', '全班廣場')" class="block w-full text-left py-2 hover:text-indigo-400"># 全班廣場</button>
+            <button onclick="switchRoom('608_homework', '作業討論')" class="block w-full text-left py-2 hover:text-indigo-400"># 作業討論</button>
+            <h3 class="text-xs font-bold text-white/30 uppercase tracking-widest mt-8 mb-4">私訊測試</h3>
+            <button onclick="switchRoom('祥祐_秘密', '我的私訊')" class="block w-full text-left py-2 hover:text-indigo-400">👤 我的空間</button>
+            <button onclick="toggleSidebar()" class="mt-10 text-xs text-white/20 underline">關閉選單</button>
+        </div>
+
+        <div id="chatBox" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"></div>
+
+        <div class="p-6 bg-gradient-to-t from-black/20 to-transparent">
+            <div class="bg-white/5 rounded-2xl p-2 flex items-center gap-2 border border-white/10">
+                <input type="text" id="msgInput" placeholder="Aa" class="flex-1 bg-transparent border-none outline-none px-3 text-white">
+                <button id="sendBtn" class="bg-indigo-600 px-6 py-2 rounded-xl font-bold active:scale-95 transition">發送</button>
             </div>
-            <button class="w-10 h-10 rounded-full flex items-center justify-center text-pink-500 text-xl bg-slate-800 hover:bg-slate-700">📞</button>
-        </div>
-
-        <div id="chatBox" class="flex-1 overflow-y-auto px-8 py-2 space-y-6 no-scrollbar">
-            <!-- 訊息區域 -->
-        </div>
-
-        <div class="input-area">
-            <input type="file" id="fileIn" class="hidden" accept="image/*">
-            <button onclick="document.getElementById('fileIn').click()" class="text-white/50 text-3xl px-3 pb-1 hover:text-white">+</button>
-            
-            <!-- 最純淨的輸入框，移除了 autocomplete="off" -->
-            <input type="text" id="msgInput" placeholder="Aa">
-            
-            <button id="sendBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-sm">
-                發送
-            </button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        import { getFirestore, collection, addDoc, query, orderBy, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDJSuqXYepa9yhr3kePaS64hrZn_3rnDHY",
@@ -122,57 +58,58 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
-        const chats = collection(db, "chats");
+        const col = collection(db, "chats");
 
-        onSnapshot(query(chats, orderBy("time", "asc")), (snap) => {
-            const box = document.getElementById('chatBox');
-            box.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data();
-                const isMe = d.sender === "祥祐";
-                const content = d.type === 'image' 
-                    ? `<img src="${d.content}" class="rounded-xl max-h-60 mt-1">`
-                    : `<p class="text-sm font-medium leading-relaxed">${d.content}</p>`;
+        let currentRoom = "608_public";
+        let unsubscribe = null;
 
-                box.innerHTML += `
-                    <div class="flex ${isMe ? 'justify-end' : 'justify-start'} msg-pop">
-                        <div class="max-w-[85%]">
-                            <div class="text-[10px] text-white/30 mb-1 ${isMe ? 'text-right' : 'text-left'}">${d.sender}</div>
-                            <div class="${isMe ? 'bubble-me' : 'bubble-other'} px-4 py-3 text-white shadow-sm">
-                                ${content}
+        // 切換房間功能
+        window.switchRoom = (id, title) => {
+            currentRoom = id;
+            document.getElementById('roomTitle').innerText = title;
+            toggleSidebar();
+            listenMessages();
+        };
+
+        window.toggleSidebar = () => {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('-translate-x-full');
+        };
+
+        // 核心監聽邏輯：因為變模組化了，所以看起來程式碼變少
+        function listenMessages() {
+            if (unsubscribe) unsubscribe(); // 清除舊的監聽
+            const q = query(col, where("roomId", "==", currentRoom), orderBy("time", "asc"));
+            
+            unsubscribe = onSnapshot(q, (snap) => {
+                const box = document.getElementById('chatBox');
+                box.innerHTML = "";
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const isMe = d.sender === "祥祐";
+                    box.innerHTML += `
+                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                            <span class="text-[10px] text-white/20 mb-1 px-2">${d.sender}</span>
+                            <div class="${isMe ? 'bubble-me' : 'bubble-other'} px-4 py-2 text-sm font-medium shadow-lg">
+                                ${d.content}
                             </div>
-                        </div>
-                    </div>
-                `;
+                        </div>`;
+                });
+                box.scrollTop = box.scrollHeight;
             });
-            box.scrollTop = box.scrollHeight;
-        });
+        }
 
-        // 簡化發送邏輯，避免按鍵衝突
         async function send() {
             const el = document.getElementById('msgInput');
-            const text = el.value.trim();
-            if(!text) return;
-            el.value = ""; // 先清空，讓打字體驗更順暢
-            await addDoc(chats, { content: text, sender: "祥祐", time: serverTimestamp(), type: 'text' });
+            if(!el.value.trim()) return;
+            await addDoc(col, { content: el.value, sender: "祥祐", roomId: currentRoom, time: serverTimestamp() });
+            el.value = "";
         }
-        
-        document.getElementById('sendBtn').onclick = send;
-        
-        // 使用 keyup 而不是 keypress，對輸入法更友善
-        document.getElementById('msgInput').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') send();
-        });
 
-        document.getElementById('fileIn').onchange = async (e) => {
-            const file = e.target.files[0];
-            if(!file) return;
-            const r = ref(storage, `pics/${Date.now()}`);
-            await uploadBytes(r, file);
-            const url = await getDownloadURL(r);
-            await addDoc(chats, { content: url, sender: "祥祐", time: serverTimestamp(), type: 'image' });
-        };
+        document.getElementById('sendBtn').onclick = send;
+        document.getElementById('msgInput').onkeypress = (e) => e.key === 'Enter' && send();
+
+        listenMessages();
     </script>
 </body>
 </html>
