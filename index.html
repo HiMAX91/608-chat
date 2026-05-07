@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>608 Memories | 純淨輸入版</title>
+    
+    <!-- 使用 Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* 1. 全局設定：使用系統原生字體，保證輸入最順暢 */
+        body {
+            background-color: #0f172a;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* 2. 主容器：保留深夜藍質感 */
+        .glass-container {
+            background-color: #1e293b; /* 移除 backdrop-filter 避免任何渲染衝突 */
+            width: 100%;
+            max-width: 450px;
+            height: 85vh;
+            border-radius: 2rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 3. 氣泡樣式 */
+        .msg-pop { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bubble-me {
+            background: #6366f1;
+            border-radius: 18px 18px 4px 18px;
+        }
+        .bubble-other {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px 18px 18px 4px;
+        }
+
+        /* 4. 最乾淨的輸入框區域設定 */
+        .input-area {
+            background-color: #334155;
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            margin: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* 絕對乾淨的 Input 標籤 */
+        input#msgInput {
+            background: transparent;
+            color: white;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            width: 100%;
+            font-size: 16px; /* 必備：防止 iOS 亂縮放 */
+            padding: 0.5rem 0;
+        }
+        
+        /* 修改游標顏色 */
+        input#msgInput::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        
+        <div class="p-8 pb-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-white text-xl font-bold">608 memories</h1>
+                <p class="text-white/40 text-xs mt-1">畢業倒數 30 天</p>
+            </div>
+            <button class="w-10 h-10 rounded-full flex items-center justify-center text-pink-500 text-xl bg-slate-800 hover:bg-slate-700">📞</button>
+        </div>
+
+        <div id="chatBox" class="flex-1 overflow-y-auto px-8 py-2 space-y-6 no-scrollbar">
+            <!-- 訊息區域 -->
+        </div>
+
+        <div class="input-area">
+            <input type="file" id="fileIn" class="hidden" accept="image/*">
+            <button onclick="document.getElementById('fileIn').click()" class="text-white/50 text-3xl px-3 pb-1 hover:text-white">+</button>
+            
+            <!-- 最純淨的輸入框，移除了 autocomplete="off" -->
+            <input type="text" id="msgInput" placeholder="Aa">
+            
+            <button id="sendBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-sm">
+                發送
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJSuqXYepa9yhr3kePaS64hrZn_3rnDHY",
+            authDomain: "memories-608.firebaseapp.com",
+            projectId: "memories-608",
+            storageBucket: "memories-608.firebasestorage.app",
+            messagingSenderId: "741842865476",
+            appId: "1:741842865476:web:decefe44da036f978d5b11"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const chats = collection(db, "chats");
+
+        onSnapshot(query(chats, orderBy("time", "asc")), (snap) => {
+            const box = document.getElementById('chatBox');
+            box.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                const isMe = d.sender === "祥祐";
+                const content = d.type === 'image' 
+                    ? `<img src="${d.content}" class="rounded-xl max-h-60 mt-1">`
+                    : `<p class="text-sm font-medium leading-relaxed">${d.content}</p>`;
+
+                box.innerHTML += `
+                    <div class="flex ${isMe ? 'justify-end' : 'justify-start'} msg-pop">
+                        <div class="max-w-[85%]">
+                            <div class="text-[10px] text-white/30 mb-1 ${isMe ? 'text-right' : 'text-left'}">${d.sender}</div>
+                            <div class="${isMe ? 'bubble-me' : 'bubble-other'} px-4 py-3 text-white shadow-sm">
+                                ${content}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            box.scrollTop = box.scrollHeight;
+        });
+
+        // 簡化發送邏輯，避免按鍵衝突
+        async function send() {
+            const el = document.getElementById('msgInput');
+            const text = el.value.trim();
+            if(!text) return;
+            el.value = ""; // 先清空，讓打字體驗更順暢
+            await addDoc(chats, { content: text, sender: "祥祐", time: serverTimestamp(), type: 'text' });
+        }
+        
+        document.getElementById('sendBtn').onclick = send;
+        
+        // 使用 keyup 而不是 keypress，對輸入法更友善
+        document.getElementById('msgInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') send();
+        });
+
+        document.getElementById('fileIn').onchange = async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const r = ref(storage, `pics/${Date.now()}`);
+            await uploadBytes(r, file);
+            const url = await getDownloadURL(r);
+            await addDoc(chats, { content: url, sender: "祥祐", time: serverTimestamp(), type: 'image' });
+        };
+    </script>
+</body>
+</html>
