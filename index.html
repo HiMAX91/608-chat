@@ -671,7 +671,7 @@
      STEP 2: 班級密碼 — 改成你想要的密碼！
      告訴同學這個密碼就可以一起進來了。
   ───────────────────────────────────────────── */
-  const CLASS_CODE = "608";
+  const CLASS_CODE = "蒲公英2025";
 
   // ──── 以下不用改 ────────────────────────────
 
@@ -781,13 +781,8 @@
       return;
     }
 
-    // 檢查 Firebase 是否設定
-    if (!window._isFirebaseReady) {
-      document.getElementById("setup-notice").style.display = "flex";
-      return;
-    }
-
-    if (code !== window._CLASS_CODE) {
+    const classCode = window._CLASS_CODE || "蒲公英2025";
+    if (code !== classCode) {
       errEl.style.display = "block";
       setTimeout(() => errEl.style.display = "none", 3000);
       return;
@@ -797,6 +792,13 @@
     document.getElementById("display-name").textContent = name;
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("chat-screen").style.display = "flex";
+
+    if (!window._isFirebaseReady) {
+      const warn = document.createElement("div");
+      warn.style.cssText = "background:#FFF8DC;color:#7A5C3A;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid rgba(212,160,23,0.2);";
+      warn.textContent = "⚠️ 目前是離線模式，訊息只有你自己看得到。上傳到 GitHub 後就可以和同學一起聊了！";
+      document.getElementById("chat-screen").insertBefore(warn, document.querySelector(".messages-area"));
+    }
 
     listenForMessages();
     sendSystemMessage(name + " 來了 🌼");
