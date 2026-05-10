@@ -671,7 +671,7 @@
      STEP 2: 班級密碼 — 改成你想要的密碼！
      告訴同學這個密碼就可以一起進來了。
   ───────────────────────────────────────────── */
-  const CLASS_CODE = "608";
+  const CLASS_CODE = "蒲公英2025";
 
   // ──── 以下不用改 ────────────────────────────
 
@@ -701,17 +701,22 @@
   // 暴露給全域
   window._CLASS_CODE = CLASS_CODE;
   window._isFirebaseReady = isFirebaseReady;
+  window._shownKeys = new Set();
+
   window._sendToFirebase = async (name, text) => {
-    if (!messagesRef) return;
-    await push(messagesRef, {
+    if (!messagesRef) return null;
+    const result = await push(messagesRef, {
       name,
       text,
       timestamp: serverTimestamp()
     });
+    return result.key;
   };
   window._listenMessages = (callback) => {
     if (!messagesRef) return;
     onChildAdded(messagesRef, snapshot => {
+      if (window._shownKeys.has(snapshot.key)) return;
+      window._shownKeys.add(snapshot.key);
       const data = snapshot.val();
       if (data) callback(data);
     });
@@ -800,7 +805,7 @@
   // ── 監聽訊息 ──
   function listenForMessages() {
     window._listenMessages((data) => {
-      if (data.type === "system") {
+      if (data.name === "__system__") {
         addSystemMessage(data.text);
       } else {
         addMessage(data);
@@ -853,8 +858,13 @@
     input.value = "";
     input.style.height = "auto";
 
+    // 立刻顯示泡泡，不等 Firebase
+    addMessage({ name: currentUser, text: text, timestamp: Date.now() });
+
     try {
-      await window._sendToFirebase(currentUser, text);
+      const key = await window._sendToFirebase(currentUser, text);
+      // 把這個 key 標記為已顯示，避免 onChildAdded 再顯示一次
+      if (key) window._shownKeys.add(key);
     } catch (e) {
       console.error("送出失敗：", e);
     }
@@ -863,7 +873,8 @@
   // ── 送出系統訊息 ──
   async function sendSystemMessage(text) {
     try {
-      await window._sendToFirebase("__system__", text);
+      const key = await window._sendToFirebase("__system__", text);
+      if (key) window._shownKeys.add(key);
     } catch (e) {
       console.error(e);
     }
