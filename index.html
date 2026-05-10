@@ -1,71 +1,29 @@
+cat > /mnt/user-data/outputs/蒲公英/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>蒲公英 · 我們的故事隨風飄揚</title>
-
-  <!-- ══════════════════════════════════════════════════════════════
-       🌼 設定說明 — 請在使用前完成這個步驟！
-       
-       1. 前往 https://console.firebase.google.com
-       2. 點「新增專案」，取一個名字（例如：dandelion-chat）
-       3. 進入專案後，點「Realtime Database」→「建立資料庫」
-          → 選「以測試模式啟動」→ 完成
-       4. 點右上角齒輪 → 「專案設定」→ 往下找「您的應用程式」
-          → 點「</> 網頁」→ 複製 firebaseConfig 裡的內容
-       5. 把下方 firebaseConfig 的每個 "請填入..." 換成你複製的值
-       6. 把 CLASS_CODE 改成你想設定的班級密碼
-       
-       完成後，把整個資料夾上傳到 GitHub，
-       再到 Settings → Pages → 選 main branch 就完成了！
-  ══════════════════════════════════════════════════════════════ -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --cream: #FDFAF2;
       --gold: #D4A017;
-      --gold-light: #F5E6A3;
       --gold-pale: #FBF5DC;
       --green: #5C8A3C;
       --green-light: #E8F0E0;
       --brown: #3D2C1A;
       --brown-mid: #7A5C3A;
       --brown-light: #C8A882;
-      --bubble-self: #FFF8DC;
-      --bubble-other: #FFFFFF;
-      --shadow: rgba(61, 44, 26, 0.08);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans TC', sans-serif; background: var(--cream); min-height: 100vh; overflow: hidden; }
 
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: var(--cream);
-      min-height: 100vh;
-      overflow: hidden;
-    }
-
-    /* ── 飄浮蒲公英種子 ── */
-    .seeds-container {
-      position: fixed; inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .seed {
-      position: absolute;
-      bottom: -20px;
-      opacity: 0;
-      animation: floatUp linear infinite;
-    }
-
-    .seed svg { display: block; }
-
+    /* 飄浮種子 */
+    .seeds-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .seed { position: absolute; bottom: -20px; opacity: 0; animation: floatUp linear infinite; }
     @keyframes floatUp {
       0%   { transform: translateX(0) rotate(0deg); opacity: 0; bottom: -20px; }
       10%  { opacity: 0.7; }
@@ -73,421 +31,102 @@
       100% { transform: translateX(var(--drift)) rotate(360deg); opacity: 0; bottom: 110vh; }
     }
 
-    /* ── 登入畫面 ── */
-    #login-screen {
-      position: fixed; inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      padding: 24px;
-    }
-
+    /* 登入畫面 */
+    #login-screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 10; padding: 24px; }
     .login-card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 160, 23, 0.25);
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(212,160,23,0.25);
       border-radius: 32px;
       padding: 48px 40px;
-      width: 100%;
-      max-width: 400px;
+      width: 100%; max-width: 400px;
       text-align: center;
-      box-shadow: 0 8px 48px rgba(61, 44, 26, 0.1), 0 1px 0 rgba(255,255,255,0.8) inset;
-      animation: cardIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      box-shadow: 0 8px 48px rgba(61,44,26,0.1);
+      animation: cardIn 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
+    @keyframes cardIn { from { opacity:0; transform: translateY(30px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
 
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    .dandelion-logo { margin-bottom: 20px; animation: sway 4s ease-in-out infinite; transform-origin: center bottom; }
+    @keyframes sway { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
 
-    .dandelion-logo {
-      margin-bottom: 20px;
-      animation: sway 4s ease-in-out infinite;
-      transform-origin: center bottom;
-    }
+    .login-title { font-family: 'Noto Serif TC', serif; font-size: 42px; font-weight: 700; color: var(--brown); letter-spacing: 8px; margin-bottom: 6px; }
+    .login-subtitle { font-size: 13px; color: var(--brown-light); letter-spacing: 2px; margin-bottom: 36px; }
 
-    @keyframes sway {
-      0%, 100% { transform: rotate(-3deg); }
-      50%       { transform: rotate(3deg); }
-    }
-
-    .login-title {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 42px;
-      font-weight: 700;
-      color: var(--brown);
-      letter-spacing: 8px;
-      margin-bottom: 6px;
-    }
-
-    .login-subtitle {
-      font-size: 13px;
-      color: var(--brown-light);
-      letter-spacing: 2px;
-      margin-bottom: 36px;
-    }
-
-    .input-group {
-      margin-bottom: 14px;
-      text-align: left;
-    }
-
-    .input-group label {
-      display: block;
-      font-size: 12px;
-      color: var(--brown-mid);
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
+    .input-group { margin-bottom: 14px; text-align: left; }
+    .input-group label { display: block; font-size: 12px; color: var(--brown-mid); letter-spacing: 1px; margin-bottom: 6px; font-weight: 500; }
     .input-group input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid rgba(212, 160, 23, 0.3);
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid rgba(212,160,23,0.3);
       border-radius: 14px;
       font-family: 'Noto Sans TC', sans-serif;
-      font-size: 15px;
-      color: var(--brown);
-      background: rgba(255, 248, 220, 0.4);
-      outline: none;
-      transition: all 0.2s;
+      font-size: 15px; color: var(--brown);
+      background: rgba(255,248,220,0.4);
+      outline: none; transition: all 0.2s;
     }
-
-    .input-group input:focus {
-      border-color: var(--gold);
-      background: rgba(255, 248, 220, 0.8);
-      box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12);
-    }
-
+    .input-group input:focus { border-color: var(--gold); background: rgba(255,248,220,0.8); box-shadow: 0 0 0 3px rgba(212,160,23,0.12); }
     .input-group input::placeholder { color: var(--brown-light); }
 
     .login-btn {
-      width: 100%;
-      padding: 14px;
-      margin-top: 8px;
+      width: 100%; padding: 14px; margin-top: 8px;
       background: linear-gradient(135deg, #D4A017, #E8B84B);
-      border: none;
-      border-radius: 14px;
+      border: none; border-radius: 14px;
       font-family: 'Noto Sans TC', sans-serif;
-      font-size: 16px;
-      font-weight: 500;
-      color: white;
-      letter-spacing: 3px;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 16px rgba(212, 160, 23, 0.35);
+      font-size: 16px; font-weight: 500; color: white;
+      letter-spacing: 3px; cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(212,160,23,0.35);
     }
-
-    .login-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(212, 160, 23, 0.45);
-    }
-
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,160,23,0.45); }
     .login-btn:active { transform: translateY(0); }
+    .login-error { color: #C0392B; font-size: 13px; margin-top: 10px; display: none; }
+    .login-footer { font-size: 11px; color: var(--brown-light); margin-top: 24px; line-height: 1.8; }
 
-    .login-error {
-      color: #C0392B;
-      font-size: 13px;
-      margin-top: 10px;
-      display: none;
-    }
+    /* 聊天畫面 */
+    #chat-screen { display: none; flex-direction: column; height: 100vh; position: relative; z-index: 10; }
 
-    .login-footer {
-      font-size: 11px;
-      color: var(--brown-light);
-      margin-top: 24px;
-      line-height: 1.8;
-    }
-
-    /* ── 聊天畫面 ── */
-    #chat-screen {
-      display: none;
-      flex-direction: column;
-      height: 100vh;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* 頂部標題列 */
     .chat-header {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(212, 160, 23, 0.15);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(212,160,23,0.15);
+      padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
     }
-
-    .chat-header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .chat-header-left { display: flex; align-items: center; gap: 10px; }
     .chat-header-icon { font-size: 24px; }
+    .chat-header-title { font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700; color: var(--brown); letter-spacing: 4px; }
+    .user-chip { font-size: 13px; color: var(--brown-mid); background: var(--gold-pale); border: 1px solid rgba(212,160,23,0.25); padding: 5px 14px; border-radius: 20px; }
 
-    .chat-header-title {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--brown);
-      letter-spacing: 4px;
-    }
-
-    .online-badge {
-      font-size: 11px;
-      color: var(--green);
-      background: var(--green-light);
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-weight: 500;
-    }
-
-    .user-chip {
-      font-size: 13px;
-      color: var(--brown-mid);
-      background: var(--gold-pale);
-      border: 1px solid rgba(212, 160, 23, 0.25);
-      padding: 5px 14px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    /* 訊息區域 */
     .messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      scroll-behavior: smooth;
+      flex: 1; overflow-y: auto; padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
     }
-
     .messages-area::-webkit-scrollbar { width: 4px; }
-    .messages-area::-webkit-scrollbar-track { background: transparent; }
-    .messages-area::-webkit-scrollbar-thumb { background: rgba(212, 160, 23, 0.3); border-radius: 2px; }
+    .messages-area::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.3); border-radius: 2px; }
 
-    /* 歡迎訊息 */
-    .welcome-msg {
-      text-align: center;
-      padding: 20px;
-      color: var(--brown-light);
-      font-size: 13px;
-      line-height: 2;
-    }
-
+    .welcome-msg { text-align: center; padding: 20px; color: var(--brown-light); font-size: 13px; line-height: 2; }
     .welcome-msg .big { font-size: 28px; display: block; margin-bottom: 8px; }
 
-    /* 訊息泡泡 */
-    .message-wrapper {
-      display: flex;
-      flex-direction: column;
-      max-width: 70%;
-      animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(8px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
+    .message-wrapper { display: flex; flex-direction: column; max-width: 70%; animation: msgIn 0.25s ease; }
+    @keyframes msgIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
     .message-wrapper.self { align-self: flex-end; align-items: flex-end; }
     .message-wrapper.other { align-self: flex-start; align-items: flex-start; }
 
-    .msg-name {
-      font-size: 11px;
-      color: var(--brown-light);
-      margin-bottom: 3px;
-      padding: 0 4px;
-      font-weight: 500;
-    }
+    .msg-name { font-size: 11px; color: var(--brown-light); margin-bottom: 3px; padding: 0 4px; font-weight: 500; }
+    .msg-bubble { padding: 10px 16px; border-radius: 20px; font-size: 15px; line-height: 1.6; color: var(--brown); word-break: break-word; }
+    .message-wrapper.self .msg-bubble { background: #FFF8DC; border: 1px solid rgba(212,160,23,0.25); border-bottom-right-radius: 6px; }
+    .message-wrapper.other .msg-bubble { background: #FFFFFF; border: 1px solid rgba(61,44,26,0.08); border-bottom-left-radius: 6px; box-shadow: 0 2px 8px rgba(61,44,26,0.08); }
+    .msg-time { font-size: 10px; color: var(--brown-light); margin-top: 3px; padding: 0 4px; }
 
-    .msg-bubble {
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--brown);
-      word-break: break-word;
-      position: relative;
-    }
+    .system-msg { text-align: center; font-size: 12px; color: var(--brown-light); padding: 4px 16px; }
+    .system-msg span { background: rgba(245,230,163,0.4); padding: 3px 12px; border-radius: 20px; }
 
-    .message-wrapper.self .msg-bubble {
-      background: var(--bubble-self);
-      border: 1px solid rgba(212, 160, 23, 0.25);
-      border-bottom-right-radius: 6px;
-    }
+    .offline-bar { background: #FFF8DC; color: #7A5C3A; font-size: 12px; padding: 8px 16px; text-align: center; border-bottom: 1px solid rgba(212,160,23,0.2); flex-shrink: 0; }
 
-    .message-wrapper.other .msg-bubble {
-      background: var(--bubble-other);
-      border: 1px solid rgba(61, 44, 26, 0.08);
-      border-bottom-left-radius: 6px;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-
-    .msg-time {
-      font-size: 10px;
-      color: var(--brown-light);
-      margin-top: 3px;
-      padding: 0 4px;
-    }
-
-    /* 系統訊息 */
-    .system-msg {
-      text-align: center;
-      font-size: 12px;
-      color: var(--brown-light);
-      padding: 4px 16px;
-      animation: msgIn 0.3s ease;
-    }
-
-    .system-msg span {
-      background: rgba(245, 230, 163, 0.4);
-      padding: 3px 12px;
-      border-radius: 20px;
-    }
-
-    /* 輸入區 */
-    .input-area {
-      flex-shrink: 0;
-      padding: 12px 16px 20px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(212, 160, 23, 0.12);
-    }
-
-    .input-row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-      background: white;
-      border: 1.5px solid rgba(212, 160, 23, 0.3);
-      border-radius: 24px;
-      padding: 8px 8px 8px 18px;
-      box-shadow: 0 2px 12px var(--shadow);
-      transition: border-color 0.2s;
-    }
-
-    .input-row:focus-within {
-      border-color: var(--gold);
-      box-shadow: 0 2px 12px rgba(212, 160, 23, 0.15);
-    }
-
-    .msg-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-family: 'Noto Sans TC', sans-serif;
-      font-size: 15px;
-      color: var(--brown);
-      background: transparent;
-      resize: none;
-      max-height: 100px;
-      line-height: 1.5;
-      padding: 4px 0;
-    }
-
+    .input-area { flex-shrink: 0; padding: 12px 16px 20px; background: rgba(255,255,255,0.85); border-top: 1px solid rgba(212,160,23,0.12); }
+    .input-row { display: flex; gap: 10px; align-items: flex-end; background: white; border: 1.5px solid rgba(212,160,23,0.3); border-radius: 24px; padding: 8px 8px 8px 18px; box-shadow: 0 2px 12px rgba(61,44,26,0.08); transition: border-color 0.2s; }
+    .input-row:focus-within { border-color: var(--gold); }
+    .msg-input { flex: 1; border: none; outline: none; font-family: 'Noto Sans TC', sans-serif; font-size: 15px; color: var(--brown); background: transparent; resize: none; max-height: 100px; line-height: 1.5; padding: 4px 0; }
     .msg-input::placeholder { color: var(--brown-light); }
-
-    .send-btn {
-      width: 42px;
-      height: 42px;
-      flex-shrink: 0;
-      background: linear-gradient(135deg, #D4A017, #E8B84B);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(212, 160, 23, 0.35);
-    }
-
+    .send-btn { width: 42px; height: 42px; flex-shrink: 0; background: linear-gradient(135deg, #D4A017, #E8B84B); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 8px rgba(212,160,23,0.35); }
     .send-btn:hover { transform: scale(1.08); }
     .send-btn:active { transform: scale(0.95); }
-
     .send-btn svg { width: 18px; height: 18px; fill: white; }
-
-    /* 設定提示 */
-    #setup-notice {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(61, 44, 26, 0.7);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .setup-card {
-      background: white;
-      border-radius: 24px;
-      padding: 32px;
-      max-width: 460px;
-      width: 100%;
-    }
-
-    .setup-card h2 {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 22px;
-      color: var(--brown);
-      margin-bottom: 16px;
-    }
-
-    .setup-step {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 14px;
-      align-items: flex-start;
-    }
-
-    .step-num {
-      width: 28px;
-      height: 28px;
-      background: var(--gold-pale);
-      border: 1.5px solid var(--gold);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .step-text { font-size: 14px; color: var(--brown-mid); line-height: 1.7; }
-    .step-text a { color: var(--gold); }
-    .step-text code {
-      background: var(--gold-pale);
-      padding: 1px 6px;
-      border-radius: 6px;
-      font-size: 12px;
-      color: var(--brown);
-    }
-
-    .setup-close {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: var(--gold-pale);
-      border: 1.5px solid var(--gold);
-      border-radius: 12px;
-      cursor: pointer;
-      font-family: 'Noto Sans TC', sans-serif;
-      font-size: 15px;
-      color: var(--brown);
-    }
 
     @media (max-width: 480px) {
       .login-card { padding: 36px 24px; }
@@ -498,90 +137,53 @@
 </head>
 <body>
 
-<!-- 飄浮種子背景 -->
 <div class="seeds-container" id="seeds"></div>
-
-<!-- 設定提示彈窗 -->
-<div id="setup-notice">
-  <div class="setup-card">
-    <h2>🌼 設定 Firebase 教學</h2>
-    <div class="setup-step">
-      <div class="step-num">1</div>
-      <div class="step-text">前往 <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a>，用 Google 帳號登入，點「新增專案」。</div>
-    </div>
-    <div class="setup-step">
-      <div class="step-num">2</div>
-      <div class="step-text">進入專案後，左側選「建構」→「Realtime Database」→「建立資料庫」→ 選「以測試模式啟動」。</div>
-    </div>
-    <div class="setup-step">
-      <div class="step-num">3</div>
-      <div class="step-text">回到專案首頁，點右上角齒輪 ⚙️ →「專案設定」→ 往下捲到「您的應用程式」→ 點 <code>&lt;/&gt;</code> 網頁圖示，複製 <code>firebaseConfig</code> 的內容。</div>
-    </div>
-    <div class="setup-step">
-      <div class="step-num">4</div>
-      <div class="step-text">用記事本打開這個 <code>index.html</code>，找到 <code>STEP 1: Firebase 設定</code>，把裡面的「請填入...」全部換成你複製的資料。</div>
-    </div>
-    <div class="setup-step">
-      <div class="step-num">5</div>
-      <div class="step-text">找到 <code>CLASS_CODE</code>，改成你想設定的班級密碼（例如：<code>六年二班2025</code>）。把密碼告訴同學就可以了！</div>
-    </div>
-    <button class="setup-close" onclick="document.getElementById('setup-notice').style.display='none'">好的，我知道了！</button>
-  </div>
-</div>
 
 <!-- 登入畫面 -->
 <div id="login-screen">
   <div class="login-card">
-    <!-- 蒲公英插畫 -->
     <div class="dandelion-logo">
-      <svg width="90" height="100" viewBox="0 0 90 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- 莖 -->
+      <svg width="90" height="100" viewBox="0 0 90 100" fill="none">
         <path d="M45 98 Q43 70 45 50" stroke="#5C8A3C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
         <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-        <path d="M28 62 Q26 58 30 55" stroke="#5C8A3C" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <!-- 花朵光芒 -->
         <g transform="translate(45,34)">
-          <!-- 種子 — 細絲 + 小圓圈 -->
-          <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="0" cy="-22" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="16" cy="-16" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="22" cy="0" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="16" cy="16" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="0" cy="22" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="-16" cy="16" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="-22" cy="0" r="3" fill="#E8B84B" opacity="0.9"/>
-          <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" stroke-opacity="0.8"/>
-          <circle cx="-16" cy="-16" r="3" fill="#E8B84B" opacity="0.9"/>
-          <!-- 斜角 -->
-          <line x1="0" y1="0" x2="11" y2="-20" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="11" cy="-20" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="20" y2="-11" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="20" cy="-11" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="20" y2="11" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="20" cy="11" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="11" y2="20" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="11" cy="20" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="-11" y2="20" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="-11" cy="20" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="-20" y2="11" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="-20" cy="11" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="-20" y2="-11" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="-20" cy="-11" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <line x1="0" y1="0" x2="-11" y2="-20" stroke="#D4A017" stroke-width="1" stroke-opacity="0.6"/>
-          <circle cx="-11" cy="-20" r="2.5" fill="#E8B84B" opacity="0.7"/>
-          <!-- 中心 -->
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="22" cy="0" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="16" cy="16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="0" cy="22" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="-16" cy="16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="-22" cy="0" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity="0.8"/>
+          <circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="11" y2="-20" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="11" cy="-20" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="20" y2="-11" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="20" cy="-11" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="20" y2="11" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="20" cy="11" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="11" y2="20" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="11" cy="20" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-11" y2="20" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="-11" cy="20" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-20" y2="11" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="-20" cy="11" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-20" y2="-11" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="-20" cy="-11" r="2.5" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-11" y2="-20" stroke="#D4A017" stroke-width="1" opacity="0.6"/>
+          <circle cx="-11" cy="-20" r="2.5" fill="#E8B84B"/>
           <circle cx="0" cy="0" r="6" fill="#D4A017"/>
           <circle cx="0" cy="0" r="3.5" fill="#E8B84B"/>
         </g>
       </svg>
     </div>
-
     <div class="login-title">蒲公英</div>
     <div class="login-subtitle">我們的故事，隨風飄揚</div>
 
@@ -589,20 +191,13 @@
       <label>你的名字</label>
       <input type="text" id="name-input" placeholder="輸入你的名字" maxlength="12" autocomplete="off">
     </div>
-
     <div class="input-group">
       <label>班級密碼</label>
       <input type="password" id="code-input" placeholder="輸入班級密碼" autocomplete="off">
     </div>
-
     <div class="login-error" id="login-error">❌ 密碼不對，再試試看！</div>
-
-    <button class="login-btn" onclick="handleLogin()">進入我們的空間 ✦</button>
-
-    <div class="login-footer">
-      這裡是我們班的專屬空間 🌼<br>
-      畢業了，我們還是朋友
-    </div>
+    <button class="login-btn" id="login-btn">進入我們的空間 ✦</button>
+    <div class="login-footer">這裡是我們班的專屬空間 🌼<br>畢業了，我們還是朋友</div>
   </div>
 </div>
 
@@ -612,310 +207,241 @@
     <div class="chat-header-left">
       <span class="chat-header-icon">🌼</span>
       <span class="chat-header-title">蒲公英</span>
-      <span class="online-badge" id="online-count">聊天室</span>
     </div>
-    <div class="user-chip">
-      <span>👤</span>
-      <span id="display-name"></span>
-    </div>
+    <div class="user-chip" id="display-name"></div>
   </div>
-
   <div class="messages-area" id="messages">
     <div class="welcome-msg">
       <span class="big">🌼</span>
       歡迎來到蒲公英聊天室<br>
-      <span style="color: #C8A882;">在這裡，你可以和同學說說心裡話</span>
+      <span style="color:#C8A882;">在這裡，你可以和同學說說心裡話</span>
     </div>
   </div>
-
   <div class="input-area">
     <div class="input-row">
-      <textarea
-        class="msg-input"
-        id="msg-input"
-        placeholder="說點什麼吧..."
-        rows="1"
-        maxlength="500"
-        oninput="autoResize(this)"
-        onkeydown="handleKey(event)"
-      ></textarea>
-      <button class="send-btn" onclick="sendMessage()" title="送出">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
-        </svg>
+      <textarea class="msg-input" id="msg-input" placeholder="說點什麼吧..." rows="1" maxlength="500"></textarea>
+      <button class="send-btn" id="send-btn" title="送出">
+        <svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-
-  /* ─────────────────────────────────────────────
-     Firebase 設定（已填入）
-  ───────────────────────────────────────────── */
-  const firebaseConfig = {
-    apiKey:            "AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",
-    authDomain:        "dandelion-chat-fd524.firebaseapp.com",
-    databaseURL:       "https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId:         "dandelion-chat-fd524",
-    storageBucket:     "dandelion-chat-fd524.firebasestorage.app",
-    messagingSenderId: "825170651326",
-    appId:             "1:825170651326:web:03e3e5b995028e27d7d6ef"
-  };
-
-  /* ─────────────────────────────────────────────
-     STEP 2: 班級密碼 — 改成你想要的密碼！
-     告訴同學這個密碼就可以一起進來了。
-  ───────────────────────────────────────────── */
-  const CLASS_CODE = "蒲公英2025";
-
-  // ──── 以下不用改 ────────────────────────────
-
-  let db = null;
-  let messagesRef = null;
-  let currentUser = null;
-  let lastDate = null;
-  let isFirebaseReady = false;
-
-  // 檢查 Firebase 是否已設定
-  function checkFirebaseConfig() {
-    return !Object.values(firebaseConfig).some(v => v.includes("請填入"));
-  }
-
-  // 初始化 Firebase
-  try {
-    if (checkFirebaseConfig()) {
-      const app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-      messagesRef = ref(db, "messages");
-      isFirebaseReady = true;
-    }
-  } catch (e) {
-    console.warn("Firebase 初始化失敗：", e);
-  }
-
-  // 暴露給全域
-  window._CLASS_CODE = CLASS_CODE;
-  window._isFirebaseReady = isFirebaseReady;
-  window._shownKeys = new Set();
-
-  window._sendToFirebase = async (name, text) => {
-    if (!messagesRef) return null;
-    const result = await push(messagesRef, {
-      name,
-      text,
-      timestamp: serverTimestamp()
-    });
-    return result.key;
-  };
-  window._listenMessages = (callback) => {
-    if (!messagesRef) return;
-    onChildAdded(messagesRef, snapshot => {
-      if (window._shownKeys.has(snapshot.key)) return;
-      window._shownKeys.add(snapshot.key);
-      const data = snapshot.val();
-      if (data) callback(data);
-    });
-  };
-</script>
+<!-- Firebase compat (載入方式更穩定) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // ── 飄浮種子動畫 ──
-  (function createSeeds() {
-    const container = document.getElementById("seeds");
-    const count = 18;
-    for (let i = 0; i < count; i++) {
-      const seed = document.createElement("div");
-      seed.className = "seed";
-      const size = Math.random() * 14 + 8;
-      const left = Math.random() * 100;
-      const duration = Math.random() * 12 + 10;
-      const delay = Math.random() * 15;
-      const drift = (Math.random() - 0.5) * 120;
-      seed.style.cssText = `
-        left: ${left}%;
-        --drift: ${drift}px;
-        animation-duration: ${duration}s;
-        animation-delay: ${delay}s;
-      `;
-      seed.innerHTML = `
-        <svg width="${size}" height="${size * 2}" viewBox="0 0 14 28" fill="none">
-          <line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width="0.8" opacity="0.7"/>
-          <line x1="7" y1="12" x2="1" y2="4" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>
-          <line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>
-          <line x1="7" y1="12" x2="4" y2="1" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>
-          <line x1="7" y1="12" x2="10" y2="1" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>
-          <circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity="0.8"/>
-        </svg>
-      `;
-      container.appendChild(seed);
+// ════════════════════════════════════════════
+//  設定區 — 只有這裡需要改
+// ════════════════════════════════════════════
+var FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",
+  authDomain:        "dandelion-chat-fd524.firebaseapp.com",
+  databaseURL:       "https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "dandelion-chat-fd524",
+  storageBucket:     "dandelion-chat-fd524.firebasestorage.app",
+  messagingSenderId: "825170651326",
+  appId:             "1:825170651326:web:03e3e5b995028e27d7d6ef"
+};
+var CLASS_CODE = "蒲公英2025"; // ← 改成你要的密碼
+// ════════════════════════════════════════════
+
+// 全域狀態
+var currentUser = null;
+var db = null;
+var shownKeys = {};
+var lastDate = null;
+
+// 初始化 Firebase
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+} catch(e) {
+  console.warn("Firebase 初始化失敗:", e);
+}
+
+// ── 登入 ──
+function handleLogin() {
+  var name = document.getElementById("name-input").value.trim();
+  var code = document.getElementById("code-input").value.trim();
+
+  if (!name) {
+    document.getElementById("name-input").focus();
+    return;
+  }
+  if (code !== CLASS_CODE) {
+    var err = document.getElementById("login-error");
+    err.style.display = "block";
+    setTimeout(function(){ err.style.display = "none"; }, 3000);
+    return;
+  }
+
+  currentUser = name;
+  document.getElementById("display-name").textContent = "👤 " + name;
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("chat-screen").style.display = "flex";
+
+  if (!db) {
+    var bar = document.createElement("div");
+    bar.className = "offline-bar";
+    bar.textContent = "⚠️ 離線模式：訊息只有你自己看得到，上傳到 GitHub 後才能和同學一起聊";
+    var chatScreen = document.getElementById("chat-screen");
+    chatScreen.insertBefore(bar, document.getElementById("messages"));
+  }
+
+  startListening();
+  sendSystemMsg(name + " 來了 🌼");
+}
+
+// ── 監聽 Firebase 新訊息 ──
+function startListening() {
+  if (!db) return;
+  var ref = db.ref("messages");
+  ref.on("child_added", function(snapshot) {
+    var key = snapshot.key;
+    if (shownKeys[key]) return;
+    shownKeys[key] = true;
+    var data = snapshot.val();
+    if (!data) return;
+    if (data.name === "__system__") {
+      addSystemMsg(data.text);
+    } else {
+      addBubble(data.name, data.text, data.timestamp || Date.now());
     }
-  })();
-
-  // ── 輸入框自動調整高度 ──
-  function autoResize(el) {
-    el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 100) + "px";
-  }
-
-  // ── Enter 送出（Shift+Enter 換行）──
-  function handleKey(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
-
-  // ── 登入 ──
-  function handleLogin() {
-    const name = document.getElementById("name-input").value.trim();
-    const code = document.getElementById("code-input").value.trim();
-    const errEl = document.getElementById("login-error");
-
-    if (!name) {
-      document.getElementById("name-input").focus();
-      return;
-    }
-
-    const classCode = window._CLASS_CODE || "蒲公英2025";
-    if (code !== classCode) {
-      errEl.style.display = "block";
-      setTimeout(() => errEl.style.display = "none", 3000);
-      return;
-    }
-
-    currentUser = name;
-    document.getElementById("display-name").textContent = name;
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("chat-screen").style.display = "flex";
-
-    if (!window._isFirebaseReady) {
-      const warn = document.createElement("div");
-      warn.style.cssText = "background:#FFF8DC;color:#7A5C3A;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid rgba(212,160,23,0.2);";
-      warn.textContent = "⚠️ 目前是離線模式，訊息只有你自己看得到。上傳到 GitHub 後就可以和同學一起聊了！";
-      document.getElementById("chat-screen").insertBefore(warn, document.querySelector(".messages-area"));
-    }
-
-    listenForMessages();
-    sendSystemMessage(name + " 來了 🌼");
-  }
-
-  // ── 監聽訊息 ──
-  function listenForMessages() {
-    window._listenMessages((data) => {
-      if (data.name === "__system__") {
-        addSystemMessage(data.text);
-      } else {
-        addMessage(data);
-      }
-    });
-  }
-
-  // ── 新增一般訊息 ──
-  function addMessage(data) {
-    const isSelf = data.name === currentUser;
-    const time = data.timestamp ? formatTime(data.timestamp) : "剛剛";
-
-    // 日期分隔
-    const date = data.timestamp ? formatDate(data.timestamp) : null;
-    if (date && date !== lastDate) {
-      const sep = document.createElement("div");
-      sep.className = "system-msg";
-      sep.innerHTML = `<span>── ${date} ──</span>`;
-      document.getElementById("messages").appendChild(sep);
-      lastDate = date;
-    }
-
-    const wrapper = document.createElement("div");
-    wrapper.className = `message-wrapper ${isSelf ? "self" : "other"}`;
-    wrapper.innerHTML = `
-      ${!isSelf ? `<div class="msg-name">${escapeHtml(data.name)}</div>` : ""}
-      <div class="msg-bubble">${escapeHtml(data.text)}</div>
-      <div class="msg-time">${time}</div>
-    `;
-
-    document.getElementById("messages").appendChild(wrapper);
-    scrollToBottom();
-  }
-
-  // ── 新增系統訊息 ──
-  function addSystemMessage(text) {
-    const el = document.createElement("div");
-    el.className = "system-msg";
-    el.innerHTML = `<span>${escapeHtml(text)}</span>`;
-    document.getElementById("messages").appendChild(el);
-    scrollToBottom();
-  }
-
-  // ── 送出訊息 ──
-  async function sendMessage() {
-    const input = document.getElementById("msg-input");
-    const text = input.value.trim();
-    if (!text || !currentUser) return;
-
-    input.value = "";
-    input.style.height = "auto";
-
-    // 立刻顯示泡泡，不等 Firebase
-    addMessage({ name: currentUser, text: text, timestamp: Date.now() });
-
-    try {
-      const key = await window._sendToFirebase(currentUser, text);
-      // 把這個 key 標記為已顯示，避免 onChildAdded 再顯示一次
-      if (key) window._shownKeys.add(key);
-    } catch (e) {
-      console.error("送出失敗：", e);
-    }
-  }
-
-  // ── 送出系統訊息 ──
-  async function sendSystemMessage(text) {
-    try {
-      const key = await window._sendToFirebase("__system__", text);
-      if (key) window._shownKeys.add(key);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  // ── 工具函式 ──
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/\n/g, "<br>");
-  }
-
-  function scrollToBottom() {
-    const el = document.getElementById("messages");
-    requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
-  }
-
-  function formatTime(ts) {
-    const d = new Date(ts);
-    const h = String(d.getHours()).padStart(2, "0");
-    const m = String(d.getMinutes()).padStart(2, "0");
-    return `${h}:${m}`;
-  }
-
-  function formatDate(ts) {
-    const d = new Date(ts);
-    return `${d.getMonth() + 1} 月 ${d.getDate()} 日`;
-  }
-
-  // Enter 登入
-  document.getElementById("code-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") handleLogin();
   });
-  document.getElementById("name-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") document.getElementById("code-input").focus();
-  });
+}
+
+// ── 送出訊息 ──
+function sendMessage() {
+  var input = document.getElementById("msg-input");
+  var text = input.value.trim();
+  if (!text || !currentUser) return;
+
+  input.value = "";
+  input.style.height = "auto";
+
+  // 馬上顯示泡泡
+  addBubble(currentUser, text, Date.now());
+
+  // 同步到 Firebase
+  if (db) {
+    var ref = db.ref("messages");
+    var newRef = ref.push();
+    shownKeys[newRef.key] = true; // 標記，避免重複顯示
+    newRef.set({ name: currentUser, text: text, timestamp: firebase.database.ServerValue.TIMESTAMP });
+  }
+}
+
+// ── 系統訊息 ──
+function sendSystemMsg(text) {
+  if (!db) return;
+  var ref = db.ref("messages");
+  var newRef = ref.push();
+  shownKeys[newRef.key] = true;
+  newRef.set({ name: "__system__", text: text, timestamp: firebase.database.ServerValue.TIMESTAMP });
+}
+
+// ── 顯示對話泡泡 ──
+function addBubble(name, text, ts) {
+  var isSelf = (name === currentUser);
+  var time = formatTime(ts);
+  var date = formatDate(ts);
+
+  if (date !== lastDate) {
+    lastDate = date;
+    var sep = document.createElement("div");
+    sep.className = "system-msg";
+    sep.innerHTML = "<span>── " + date + " ──</span>";
+    document.getElementById("messages").appendChild(sep);
+  }
+
+  var wrapper = document.createElement("div");
+  wrapper.className = "message-wrapper " + (isSelf ? "self" : "other");
+  wrapper.innerHTML =
+    (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
+    '<div class="msg-bubble">' + esc(text) + '</div>' +
+    '<div class="msg-time">' + time + '</div>';
+  document.getElementById("messages").appendChild(wrapper);
+  scrollDown();
+}
+
+// ── 顯示系統訊息 ──
+function addSystemMsg(text) {
+  var el = document.createElement("div");
+  el.className = "system-msg";
+  el.innerHTML = "<span>" + esc(text) + "</span>";
+  document.getElementById("messages").appendChild(el);
+  scrollDown();
+}
+
+// ── 工具 ──
+function esc(str) {
+  return String(str)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;")
+    .replace(/\n/g,"<br>");
+}
+function scrollDown() {
+  var el = document.getElementById("messages");
+  requestAnimationFrame(function(){ el.scrollTop = el.scrollHeight; });
+}
+function formatTime(ts) {
+  var d = new Date(ts);
+  return ("0"+d.getHours()).slice(-2) + ":" + ("0"+d.getMinutes()).slice(-2);
+}
+function formatDate(ts) {
+  var d = new Date(ts);
+  return (d.getMonth()+1) + " 月 " + d.getDate() + " 日";
+}
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 100) + "px";
+}
+
+// ── 事件綁定 ──
+document.getElementById("login-btn").addEventListener("click", handleLogin);
+
+document.getElementById("name-input").addEventListener("keydown", function(e){
+  if (e.key === "Enter") document.getElementById("code-input").focus();
+});
+document.getElementById("code-input").addEventListener("keydown", function(e){
+  if (e.key === "Enter") handleLogin();
+});
+
+document.getElementById("send-btn").addEventListener("click", sendMessage);
+
+document.getElementById("msg-input").addEventListener("keydown", function(e){
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+document.getElementById("msg-input").addEventListener("input", function(){
+  autoResize(this);
+});
+
+// ── 飄浮種子動畫 ──
+(function() {
+  var container = document.getElementById("seeds");
+  for (var i = 0; i < 18; i++) {
+    var seed = document.createElement("div");
+    seed.className = "seed";
+    var size = Math.random() * 14 + 8;
+    seed.style.left = (Math.random() * 100) + "%";
+    seed.style.setProperty("--drift", ((Math.random()-0.5)*120) + "px");
+    seed.style.animationDuration = (Math.random()*12+10) + "s";
+    seed.style.animationDelay = (Math.random()*15) + "s";
+    seed.innerHTML = '<svg width="'+size+'" height="'+(size*2)+'" viewBox="0 0 14 28" fill="none">'
+      + '<line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width="0.8" opacity="0.7"/>'
+      + '<line x1="7" y1="12" x2="1" y2="4" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>'
+      + '<line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width="0.5" opacity="0.5"/>'
+      + '<circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity="0.8"/></svg>';
+    container.appendChild(seed);
+  }
+})();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "完成"
