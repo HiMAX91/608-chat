@@ -128,6 +128,26 @@
     .send-btn:active { transform: scale(0.95); }
     .send-btn svg { width: 18px; height: 18px; fill: white; }
 
+    /* 收回功能 */
+    .bubble-row { display: flex; align-items: flex-end; gap: 6px; }
+    .recall-btn {
+      opacity: 0; transition: opacity 0.15s;
+      background: white; border: 1px solid rgba(212,160,23,0.35);
+      border-radius: 10px; padding: 3px 9px;
+      font-size: 11px; color: var(--brown-mid);
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .message-wrapper.self:hover .recall-btn,
+    .message-wrapper.self.show-recall .recall-btn { opacity: 1; }
+    .recall-btn:hover { background: #FFF3CD; color: var(--brown); }
+    .msg-bubble.recalled {
+      background: rgba(200,168,130,0.08) !important;
+      border: 1px dashed rgba(200,168,130,0.4) !important;
+      color: var(--brown-light) !important;
+      font-style: italic; box-shadow: none !important;
+    }
+
     @media (max-width: 480px) {
       .login-card { padding: 36px 24px; }
       .login-title { font-size: 36px; }
@@ -307,7 +327,16 @@ function startListening() {
     if (data.name === "__system__") {
       addSystemMsg(data.text);
     } else {
-      addBubble(data.name, data.text, data.timestamp || Date.now());
+      addBubble(data.name, data.recalled ? null : data.text, data.timestamp || Date.now(), key);
+    }
+  });
+  // 監聽訊息被收回
+  ref.on("child_changed", function(snapshot) {
+    var key = snapshot.key;
+    var data = snapshot.val();
+    if (data && data.recalled) {
+      var wrapper = document.querySelector('[data-key="' + key + '"]');
+      if (wrapper) markRecalled(wrapper);
     }
   });
 }
@@ -322,13 +351,14 @@ function sendMessage() {
   input.style.height = "auto";
 
   // 馬上顯示泡泡
-  addBubble(currentUser, text, Date.now());
+  var wrapper = addBubble(currentUser, text, Date.now(), null);
 
-  // 同步到 Firebase
+  // 同步到 Firebase，取得 key 後更新 wrapper
   if (db) {
     var ref = db.ref("messages");
     var newRef = ref.push();
-    shownKeys[newRef.key] = true; // 標記，避免重複顯示
+    shownKeys[newRef.key] = true;
+    if (wrapper) wrapper.setAttribute("data-key", newRef.key);
     newRef.set({ name: currentUser, text: text, timestamp: firebase.database.ServerValue.TIMESTAMP });
   }
 }
@@ -343,8 +373,9 @@ function sendSystemMsg(text) {
 }
 
 // ── 顯示對話泡泡 ──
-function addBubble(name, text, ts) {
+function addBubble(name, text, ts, key) {
   var isSelf = (name === currentUser);
+  var isRecalled = (text === null);
   var time = formatTime(ts);
   var date = formatDate(ts);
 
@@ -358,12 +389,61 @@ function addBubble(name, text, ts) {
 
   var wrapper = document.createElement("div");
   wrapper.className = "message-wrapper " + (isSelf ? "self" : "other");
-  wrapper.innerHTML =
-    (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
-    '<div class="msg-bubble">' + esc(text) + '</div>' +
-    '<div class="msg-time">' + time + '</div>';
+  if (key) wrapper.setAttribute("data-key", key);
+
+  var bubbleContent = isRecalled
+    ? '<div class="msg-bubble recalled">🌬️ 此訊息已收回</div>'
+    : '<div class="msg-bubble">' + esc(text) + '</div>';
+
+  if (isSelf && !isRecalled) {
+    wrapper.innerHTML =
+      (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
+      '<div class="bubble-row"><button class="recall-btn" onclick="recallMessage(this)">收回</button>' + bubbleContent + '</div>' +
+      '<div class="msg-time">' + time + '</div>';
+  } else {
+    wrapper.innerHTML =
+      (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
+      bubbleContent +
+      '<div class="msg-time">' + time + '</div>';
+  }
+
+  // 手機長按顯示收回按鈕
+  if (isSelf && !isRecalled) {
+    var timer;
+    wrapper.addEventListener("touchstart", function(){ timer = setTimeout(function(){ wrapper.classList.add("show-recall"); }, 500); });
+    wrapper.addEventListener("touchend", function(){ clearTimeout(timer); setTimeout(function(){ wrapper.classList.remove("show-recall"); }, 2000); });
+  }
+
   document.getElementById("messages").appendChild(wrapper);
   scrollDown();
+  return wrapper;
+}
+
+// ── 標記已收回 ──
+function markRecalled(wrapper) {
+  var bubble = wrapper.querySelector(".msg-bubble");
+  if (!bubble || bubble.classList.contains("recalled")) return;
+  bubble.innerHTML = "🌬️ 此訊息已收回";
+  bubble.classList.add("recalled");
+  var btn = wrapper.querySelector(".recall-btn");
+  if (btn) btn.parentNode.replaceChild(bubble.cloneNode(true), btn.parentNode.children[0]) || btn.remove();
+  var row = wrapper.querySelector(".bubble-row");
+  if (row) { row.outerHTML = bubble.outerHTML; }
+  // 找到原本的 bubble-row，替換成單獨的 bubble
+  var bRow = wrapper.querySelector(".bubble-row");
+  if (bRow) bRow.outerHTML = '<div class="msg-bubble recalled">🌬️ 此訊息已收回</div>';
+}
+
+// ── 收回訊息 ──
+function recallMessage(btn) {
+  var wrapper = btn.closest(".message-wrapper");
+  if (!wrapper) return;
+  if (!confirm("確定要收回這則訊息嗎？")) return;
+  markRecalled(wrapper);
+  var key = wrapper.getAttribute("data-key");
+  if (key && db) {
+    db.ref("messages/" + key).update({ recalled: true });
+  }
 }
 
 // ── 顯示系統訊息 ──
