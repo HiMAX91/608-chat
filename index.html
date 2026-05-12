@@ -215,6 +215,10 @@
       <label>班級密碼</label>
       <input type="password" id="code-input" placeholder="輸入班級密碼" autocomplete="off">
     </div>
+    <div class="input-group">
+      <label>個人密碼 <span style="color:var(--brown-light);font-weight:400;">（第一次輸入會自動建立帳號）</span></label>
+      <input type="password" id="personal-input" placeholder="設定你自己的密碼" autocomplete="off">
+    </div>
     <div class="login-error" id="login-error">❌ 密碼不對，再試試看！</div>
     <button class="login-btn" id="login-btn">進入我們的空間 ✦</button>
     <div class="login-footer">這裡是我們班的專屬空間 🌼<br>畢業了，我們還是朋友</div>
@@ -269,9 +273,21 @@ var CLASS_CODE = "608"; // ← 改成你要的密碼
 
 // 全域狀態
 var currentUser = null;
+var myDeviceId = null;
 var db = null;
 var shownKeys = {};
 var lastDate = null;
+
+// 用名字 + 個人密碼產生一致的身份 ID（不同裝置相同密碼 = 同一身份）
+function makeIdentity(name, password) {
+  var str = name + "|" + password;
+  var h = 5381;
+  for (var i = 0; i < str.length; i++) {
+    h = ((h << 5) + h) ^ str.charCodeAt(i);
+    h = h >>> 0;
+  }
+  return "id_" + h.toString(36);
+}
 
 // 初始化 Firebase
 try {
@@ -285,33 +301,62 @@ try {
 function handleLogin() {
   var name = document.getElementById("name-input").value.trim();
   var code = document.getElementById("code-input").value.trim();
+  var personal = document.getElementById("personal-input").value.trim();
+  var errEl = document.getElementById("login-error");
 
-  if (!name) {
-    document.getElementById("name-input").focus();
-    return;
-  }
+  if (!name) { document.getElementById("name-input").focus(); return; }
+  if (!personal) { document.getElementById("personal-input").focus(); return; }
+
   if (code !== CLASS_CODE) {
-    var err = document.getElementById("login-error");
-    err.style.display = "block";
-    setTimeout(function(){ err.style.display = "none"; }, 3000);
+    errEl.textContent = "❌ 班級密碼不對，再試試看！";
+    errEl.style.display = "block";
+    setTimeout(function(){ errEl.style.display = "none"; }, 3000);
     return;
   }
 
-  currentUser = name;
-  document.getElementById("display-name").textContent = "👤 " + name;
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("chat-screen").style.display = "flex";
+  var identity = makeIdentity(name, personal);
+  var btn = document.getElementById("login-btn");
+  btn.textContent = "驗證中…";
+  btn.disabled = true;
 
-  if (!db) {
-    var bar = document.createElement("div");
-    bar.className = "offline-bar";
-    bar.textContent = "⚠️ 離線模式：訊息只有你自己看得到，上傳到 GitHub 後才能和同學一起聊";
-    var chatScreen = document.getElementById("chat-screen");
-    chatScreen.insertBefore(bar, document.getElementById("messages"));
+  function doLogin() {
+    currentUser = name;
+    myDeviceId = identity;
+    document.getElementById("display-name").textContent = "👤 " + name;
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("chat-screen").style.display = "flex";
+    if (!db) {
+      var bar = document.createElement("div");
+      bar.className = "offline-bar";
+      bar.textContent = "⚠️ 離線模式：訊息只有你自己看得到，上傳到 GitHub 後才能和同學一起聊";
+      document.getElementById("chat-screen").insertBefore(bar, document.getElementById("messages"));
+    }
+    startListening();
+    sendSystemMsg(name + " 來了 🌼");
   }
 
-  startListening();
-  sendSystemMsg(name + " 來了 🌼");
+  // 如果沒有 Firebase，直接進入（離線模式）
+  if (!db) { doLogin(); return; }
+
+  // 檢查 Firebase 有沒有這個帳號
+  db.ref("users/" + name).once("value", function(snap) {
+    btn.textContent = "進入我們的空間 ✦";
+    btn.disabled = false;
+    var data = snap.val();
+    if (!data) {
+      // 新帳號，自動註冊
+      db.ref("users/" + name).set({ identity: identity });
+      doLogin();
+    } else if (data.identity === identity) {
+      // 密碼正確
+      doLogin();
+    } else {
+      // 密碼錯誤
+      errEl.textContent = "❌ 個人密碼錯誤！";
+      errEl.style.display = "block";
+      setTimeout(function(){ errEl.style.display = "none"; }, 3000);
+    }
+  });
 }
 
 // ── 監聽 Firebase 新訊息 ──
@@ -327,7 +372,7 @@ function startListening() {
     if (data.name === "__system__") {
       addSystemMsg(data.text);
     } else {
-      addBubble(data.name, data.recalled ? null : data.text, data.timestamp || Date.now(), key);
+      addBubble(data.name, data.recalled ? null : data.text, data.timestamp || Date.now(), key, data.deviceId);
     }
   });
   // 監聽訊息被收回
@@ -359,7 +404,7 @@ function sendMessage() {
     var newRef = ref.push();
     shownKeys[newRef.key] = true;
     if (wrapper) wrapper.setAttribute("data-key", newRef.key);
-    newRef.set({ name: currentUser, text: text, timestamp: firebase.database.ServerValue.TIMESTAMP });
+    newRef.set({ name: currentUser, text: text, deviceId: myDeviceId, timestamp: firebase.database.ServerValue.TIMESTAMP });
   }
 }
 
@@ -373,8 +418,9 @@ function sendSystemMsg(text) {
 }
 
 // ── 顯示對話泡泡 ──
-function addBubble(name, text, ts, key) {
-  var isSelf = (name === currentUser);
+function addBubble(name, text, ts, key, deviceId) {
+  // 只有同一台裝置（同一個 deviceId）才能收回，防止冒名
+  var isSelf = (name === currentUser) && (deviceId === myDeviceId || deviceId === null);
   var isRecalled = (text === null);
   var time = formatTime(ts);
   var date = formatDate(ts);
@@ -486,6 +532,9 @@ document.getElementById("name-input").addEventListener("keydown", function(e){
   if (e.key === "Enter") document.getElementById("code-input").focus();
 });
 document.getElementById("code-input").addEventListener("keydown", function(e){
+  if (e.key === "Enter") document.getElementById("personal-input").focus();
+});
+document.getElementById("personal-input").addEventListener("keydown", function(e){
   if (e.key === "Enter") handleLogin();
 });
 
