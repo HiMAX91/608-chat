@@ -128,6 +128,37 @@
     .send-btn:active { transform: scale(0.95); }
     .send-btn svg { width: 18px; height: 18px; fill: white; }
 
+    /* 大頭貼 */
+    .avatar-pick-wrap { display:flex; justify-content:center; margin-bottom:24px; }
+    .avatar-circle {
+      width:80px; height:80px; border-radius:50%;
+      background:var(--gold-pale); border:2.5px dashed rgba(212,160,23,0.5);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+    }
+    .avatar-circle:hover { border-color:var(--gold); transform:scale(1.05); }
+    .avatar-circle .camera-icon { font-size:28px; color:var(--brown-light); pointer-events:none; }
+    .avatar-circle img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:none; }
+    .avatar-circle .edit-hint {
+      position:absolute; bottom:-20px; left:50%; transform:translateX(-50%);
+      font-size:10px; color:var(--brown-light); white-space:nowrap;
+    }
+
+    /* 訊息大頭貼 */
+    .msg-row { display:flex; align-items:flex-end; gap:8px; }
+    .msg-av {
+      width:34px; height:34px; border-radius:50%;
+      background:var(--gold-pale); overflow:hidden; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:16px;
+    }
+    .msg-av img { width:100%; height:100%; object-fit:cover; }
+    .message-wrapper.self .msg-row { flex-direction:row-reverse; }
+
+    /* 手機收回按鈕永遠顯示（因為手機沒有hover） */
+    @media (hover: none) {
+      .message-wrapper.self .recall-btn { opacity: 0.55; }
+    }
+
     /* 收回功能 */
     .bubble-row { display: flex; align-items: flex-end; gap: 6px; }
     .recall-btn {
@@ -207,9 +238,18 @@
     <div class="login-title">蒲公英</div>
     <div class="login-subtitle">我們的故事，隨風飄揚</div>
 
+    <div class="avatar-pick-wrap">
+      <div class="avatar-circle" id="avatar-circle" onclick="document.getElementById('avatar-file').click()">
+        <span class="camera-icon">📷</span>
+        <img id="avatar-img" alt="大頭貼">
+        <span class="edit-hint">點我選照片</span>
+      </div>
+      <input type="file" id="avatar-file" accept="image/*" style="display:none">
+    </div>
+
     <div class="input-group">
-      <label>你的名字</label>
-      <input type="text" id="name-input" placeholder="輸入你的名字" maxlength="12" autocomplete="off">
+      <label>你的名字 <span style="color:var(--brown-light);font-weight:400;">（請填真實姓名）</span></label>
+      <input type="text" id="name-input" placeholder="輸入你的真實姓名" maxlength="12" autocomplete="off">
     </div>
     <div class="input-group">
       <label>班級密碼</label>
@@ -218,6 +258,10 @@
     <div class="input-group">
       <label>個人密碼 <span style="color:var(--brown-light);font-weight:400;">（第一次輸入會自動建立帳號）</span></label>
       <input type="password" id="personal-input" placeholder="設定你自己的密碼" autocomplete="off">
+    </div>
+    <div class="input-group">
+      <label>Gmail <span style="color:#C0392B;font-weight:400;">（請勿使用學校帳號）</span></label>
+      <input type="email" id="gmail-input" placeholder="yourname@gmail.com" autocomplete="off">
     </div>
     <div class="login-error" id="login-error">❌ 密碼不對，再試試看！</div>
     <button class="login-btn" id="login-btn">進入我們的空間 ✦</button>
@@ -274,6 +318,8 @@ var CLASS_CODE = "608"; // ← 改成你要的密碼
 // 全域狀態
 var currentUser = null;
 var myDeviceId = null;
+var myAvatar = '';
+var myGmail = '';
 var db = null;
 var shownKeys = {};
 var lastDate = null;
@@ -302,10 +348,18 @@ function handleLogin() {
   var name = document.getElementById("name-input").value.trim();
   var code = document.getElementById("code-input").value.trim();
   var personal = document.getElementById("personal-input").value.trim();
+  var gmail = document.getElementById("gmail-input").value.trim();
   var errEl = document.getElementById("login-error");
 
   if (!name) { document.getElementById("name-input").focus(); return; }
   if (!personal) { document.getElementById("personal-input").focus(); return; }
+  if (gmail && (gmail.endsWith("@gapps.fju.edu.tw") || gmail.includes("edu.tw") || !gmail.includes("@gmail.com"))) {
+    var errEl2 = document.getElementById("login-error");
+    errEl2.textContent = "❌ 請使用 Gmail，不可以用學校帳號！";
+    errEl2.style.display = "block";
+    setTimeout(function(){ errEl2.style.display = "none"; }, 3500);
+    return;
+  }
 
   if (code !== CLASS_CODE) {
     errEl.textContent = "❌ 班級密碼不對，再試試看！";
@@ -322,6 +376,8 @@ function handleLogin() {
   function doLogin() {
     currentUser = name;
     myDeviceId = identity;
+    myGmail = gmail || "";
+    // myAvatar is already set by photo picker (or stays empty)
     document.getElementById("display-name").textContent = "👤 " + name;
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("chat-screen").style.display = "flex";
@@ -345,10 +401,16 @@ function handleLogin() {
     var data = snap.val();
     if (!data) {
       // 新帳號，自動註冊
-      db.ref("users/" + name).set({ identity: identity });
+      db.ref("users/" + name).set({ identity: identity, avatar: myAvatar, gmail: myGmail });
       doLogin();
     } else if (data.identity === identity) {
-      // 密碼正確
+      // 密碼正確，載入大頭貼
+      if (data.avatar) {
+        myAvatar = data.avatar;
+        var img = document.getElementById("avatar-img");
+        img.src = data.avatar; img.style.display = "block";
+        document.querySelector("#avatar-circle .camera-icon").style.display = "none";
+      }
       doLogin();
     } else {
       // 密碼錯誤
@@ -372,7 +434,7 @@ function startListening() {
     if (data.name === "__system__") {
       addSystemMsg(data.text);
     } else {
-      addBubble(data.name, data.recalled ? null : data.text, data.timestamp || Date.now(), key, data.deviceId);
+      addBubble(data.name, data.recalled ? null : data.text, data.timestamp || Date.now(), key, data.deviceId, data.avatar || "🌼");
     }
   });
   // 監聽訊息被收回
@@ -404,7 +466,7 @@ function sendMessage() {
     var newRef = ref.push();
     shownKeys[newRef.key] = true;
     if (wrapper) wrapper.setAttribute("data-key", newRef.key);
-    newRef.set({ name: currentUser, text: text, deviceId: myDeviceId, timestamp: firebase.database.ServerValue.TIMESTAMP });
+    newRef.set({ name: currentUser, text: text, deviceId: myDeviceId, avatar: myAvatar, timestamp: firebase.database.ServerValue.TIMESTAMP });
   }
 }
 
@@ -418,12 +480,12 @@ function sendSystemMsg(text) {
 }
 
 // ── 顯示對話泡泡 ──
-function addBubble(name, text, ts, key, deviceId) {
-  // 只有同一台裝置（同一個 deviceId）才能收回，防止冒名
-  var isSelf = (name === currentUser) && (deviceId === myDeviceId || deviceId === null);
+function addBubble(name, text, ts, key, deviceId, avatar) {
+  var isSelf = (name === currentUser) && (!deviceId || deviceId === myDeviceId);
   var isRecalled = (text === null);
   var time = formatTime(ts);
   var date = formatDate(ts);
+  var av = avatar || "🌼";
 
   if (date !== lastDate) {
     lastDate = date;
@@ -441,23 +503,35 @@ function addBubble(name, text, ts, key, deviceId) {
     ? '<div class="msg-bubble recalled">🌬️ 此訊息已收回</div>'
     : '<div class="msg-bubble">' + esc(text) + '</div>';
 
+  var nameTag = !isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '';
+  var avatarTag = av && av.startsWith("data:")
+    ? '<div class="msg-av"><img src="' + av + '" alt="頭像"></div>'
+    : '<div class="msg-av">' + (av ? esc(av) : "🌼") + '</div>';
+
   if (isSelf && !isRecalled) {
     wrapper.innerHTML =
-      (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
-      '<div class="bubble-row"><button class="recall-btn" onclick="recallMessage(this)">收回</button>' + bubbleContent + '</div>' +
+      '<div class="msg-row">' +
+        '<div class="bubble-row"><button class="recall-btn" onclick="recallMessage(this)">收回</button>' + bubbleContent + '</div>' +
+        avatarTag +
+      '</div>' +
       '<div class="msg-time">' + time + '</div>';
   } else {
     wrapper.innerHTML =
-      (!isSelf ? '<div class="msg-name">' + esc(name) + '</div>' : '') +
-      bubbleContent +
+      nameTag +
+      '<div class="msg-row">' +
+        avatarTag +
+        bubbleContent +
+      '</div>' +
       '<div class="msg-time">' + time + '</div>';
   }
 
-  // 手機長按顯示收回按鈕
+  // 手機：點一下訊息泡泡切換收回按鈕顯示
   if (isSelf && !isRecalled) {
-    var timer;
-    wrapper.addEventListener("touchstart", function(){ timer = setTimeout(function(){ wrapper.classList.add("show-recall"); }, 500); });
-    wrapper.addEventListener("touchend", function(){ clearTimeout(timer); setTimeout(function(){ wrapper.classList.remove("show-recall"); }, 2000); });
+    wrapper.addEventListener("click", function(e) {
+      if (e.target.classList.contains("recall-btn")) return;
+      wrapper.classList.toggle("show-recall");
+      setTimeout(function(){ wrapper.classList.remove("show-recall"); }, 3000);
+    });
   }
 
   document.getElementById("messages").appendChild(wrapper);
@@ -535,6 +609,9 @@ document.getElementById("code-input").addEventListener("keydown", function(e){
   if (e.key === "Enter") document.getElementById("personal-input").focus();
 });
 document.getElementById("personal-input").addEventListener("keydown", function(e){
+  if (e.key === "Enter") document.getElementById("gmail-input").focus();
+});
+document.getElementById("gmail-input").addEventListener("keydown", function(e){
   if (e.key === "Enter") handleLogin();
 });
 
@@ -548,6 +625,33 @@ document.getElementById("msg-input").addEventListener("keydown", function(e){
 });
 document.getElementById("msg-input").addEventListener("input", function(){
   autoResize(this);
+});
+
+// ── 照片大頭貼選擇器 ──
+document.getElementById("avatar-file").addEventListener("change", function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var image = new Image();
+    image.onload = function() {
+      var canvas = document.createElement("canvas");
+      canvas.width = 80; canvas.height = 80;
+      var ctx = canvas.getContext("2d");
+      // 裁成正方形再縮小
+      var size = Math.min(image.width, image.height);
+      var sx = (image.width - size) / 2;
+      var sy = (image.height - size) / 2;
+      ctx.drawImage(image, sx, sy, size, size, 0, 0, 80, 80);
+      var dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+      myAvatar = dataUrl;
+      var img = document.getElementById("avatar-img");
+      img.src = dataUrl; img.style.display = "block";
+      document.querySelector("#avatar-circle .camera-icon").style.display = "none";
+    };
+    image.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
 });
 
 // ── 飄浮種子動畫 ──
