@@ -140,6 +140,27 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 @media(max-width:480px){.big-title{font-size:42px}.card{padding:28px 20px 24px}}
+
+/* ══ 加入主畫面引導 ══ */
+#install-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:#fff;border-top:1px solid rgba(212,160,23,.25);
+  box-shadow:0 -4px 24px rgba(61,44,26,.12);
+  padding:16px 20px 20px;
+  animation:slideUp .4s cubic-bezier(.34,1.3,.64,1);
+  display:none;
+}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.ib-inner{max-width:480px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;}
+.ib-icon{font-size:36px;flex-shrink:0;margin-top:2px}
+.ib-text{flex:1}
+.ib-title{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--brown);margin-bottom:4px;font-weight:700}
+.ib-desc{font-size:13px;color:var(--bm);line-height:1.8}
+.ib-desc b{color:var(--brown)}
+.ib-share{display:inline-block;width:18px;height:18px;vertical-align:middle;margin:0 2px}
+.ib-close{background:none;border:none;font-size:20px;color:var(--bl);cursor:pointer;padding:4px;flex-shrink:0;line-height:1}
+.ib-arrow{display:block;text-align:center;font-size:22px;margin-top:6px;animation:bounce .8s ease-in-out infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(6px)}}
 </style>
 </head>
 <body>
@@ -223,6 +244,18 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 </div>
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
+
+<!-- 加入主畫面引導 -->
+<div id="install-banner">
+  <div class="ib-inner">
+    <div class="ib-icon">🌼</div>
+    <div class="ib-text">
+      <div class="ib-title" id="ib-title">把蒲公英加到主畫面</div>
+      <div class="ib-desc" id="ib-desc"></div>
+    </div>
+    <button class="ib-close" onclick="dismissBanner()" title="關閉">×</button>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -437,6 +470,41 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
 function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').style.display='flex';}
+
+// ══ 加入主畫面引導 ══
+(function(){
+  // 已是 standalone App 就不顯示
+  if(window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches) return;
+  // 已關閉過就不顯示
+  if(localStorage.getItem('ib_dismissed')) return;
+
+  var ua=navigator.userAgent;
+  var isIOS=/iphone|ipad|ipod/i.test(ua);
+  var isAndroid=/android/i.test(ua);
+  var isMobile=isIOS||isAndroid;
+  if(!isMobile) return; // 電腦/平板不顯示
+
+  var banner=document.getElementById('install-banner');
+  var desc=document.getElementById('ib-desc');
+
+  if(isIOS){
+    desc.innerHTML='用 <b>Safari</b> 開啟網站，點下方'
+      +'<svg class="ib-share" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10L12 6m0 0l4 4m-4-4v12"/><path d="M20 16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg>'
+      +'<b>分享</b>，再選 <b>「加入主畫面」</b>，就能像 App 一樣使用！'
+      +'<span class="ib-arrow">👇</span>';
+  } else if(isAndroid){
+    desc.innerHTML='用 <b>Chrome</b> 開啟網站，點右上角 <b>⋮</b>，選 <b>「新增至主畫面」</b>，就能像 App 一樣使用！'
+      +'<span class="ib-arrow">👆</span>';
+  }
+
+  // 延遲 2 秒再出現
+  setTimeout(function(){ banner.style.display='block'; }, 2000);
+})();
+
+function dismissBanner(){
+  document.getElementById('install-banner').style.display='none';
+  localStorage.setItem('ib_dismissed','1');
+}
 
 // ── 更換大頭貼 ──
 document.getElementById('chg-av').addEventListener('change', function(e) {
