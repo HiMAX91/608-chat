@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>蒲公英</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#FDFAF2;--gold:#D4A017;--gold-l:#E8B84B;--gold-p:#FBF5DC;--brown:#3D2C1A;--bm:#7A5C3A;--bl:#C8A882;--sh:rgba(61,44,26,.10)}
+html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown)}
+
+/* 種子 */
+#seeds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
+
+/* 畫面 */
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .35s,transform .35s}
+.scr.off{opacity:0;pointer-events:none;transform:translateY(14px)}
+
+/* ══ 首頁 ══ */
+#s-home{gap:28px;padding:24px}
+.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px}
+.big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
+.home-btns{display:flex;gap:14px;margin-top:4px}
+.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;transition:all .2s}
+.pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 4px 18px rgba(212,160,23,.4)}
+.pill.pri:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(212,160,23,.5)}
+.pill.sec{background:#fff;color:var(--bm);border:1.5px solid rgba(212,160,23,.4)}
+.pill.sec:hover{background:var(--gold-p)}
+
+/* ══ 步驟頁 ══ */
+#s-steps{justify-content:flex-start;padding:0}
+.stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
+.bk-btn{width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);transition:all .2s}
+.bk-btn:hover{background:var(--gold-p)}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(212,160,23,.25);transition:all .3s}
+.dot.on{background:var(--gold);width:20px}
+
+.stp-body{flex:1;width:100%;max-width:480px;padding:14px 22px 22px;overflow:hidden}
+.card{background:rgba(255,255,255,.9);border:1px solid rgba(212,160,23,.2);border-radius:28px;padding:36px 30px 28px;box-shadow:0 6px 36px var(--sh);animation:cIn .32s cubic-bezier(.34,1.3,.64,1)}
+.card.rev{animation:cInR .32s cubic-bezier(.34,1.3,.64,1)}
+@keyframes cIn {from{opacity:0;transform:translateX( 40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes cInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+
+.c-lbl{font-size:11px;font-weight:500;letter-spacing:2px;color:var(--bl);margin-bottom:8px}
+.c-ttl{font-family:'Noto Serif TC',serif;font-size:22px;margin-bottom:6px}
+.c-hint{font-size:12px;color:var(--bl);line-height:1.8;margin-bottom:22px}
+
+/* 大頭貼 */
+.av-zone{display:flex;justify-content:center;margin:4px 0 18px}
+.av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
+.av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
+.av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
+.av-cam{font-size:28px}.av-lbl{font-size:11px;color:var(--bl)}
+#av-file{display:none}
+
+/* 輸入 */
+.fi{width:100%;padding:14px 18px;border:1.5px solid rgba(212,160,23,.3);border-radius:16px;font-family:inherit;font-size:16px;color:var(--brown);background:rgba(255,248,220,.3);outline:none;transition:all .2s}
+.fi:focus{border-color:var(--gold);background:rgba(255,248,220,.7);box-shadow:0 0 0 3px rgba(212,160,23,.12)}
+.fi::placeholder{color:var(--bl)}
+.ferr{font-size:12px;color:#C0392B;margin-top:10px;min-height:16px}
+
+.nr{display:flex;justify-content:flex-end;margin-top:22px}
+.nb{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(212,160,23,.4);transition:all .2s}
+.nb:hover{transform:scale(1.1)}
+.nb svg{width:22px;height:22px;fill:#fff}
+.nb:disabled{opacity:.5;cursor:default}
+
+/* ══ 聊天 ══ */
+#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch}
+.c-hdr{width:100%;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.c-hdr-l{display:flex;align-items:center;gap:10px}
+.c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
+.my-chip{display:flex;align-items:center;gap:8px}
+.hav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.hav img{width:100%;height:100%;object-fit:cover}
+.hname{font-size:13px;color:var(--bm);font-weight:500}
+
+.msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:10px}
+@media(max-width:600px){.msgs{padding:14px 14px}}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:rgba(212,160,23,.3);border-radius:2px}
+.wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
+.wlc span{font-size:30px;display:block;margin-bottom:8px}
+
+.mw{display:flex;flex-direction:column;max-width:60%;animation:mIn .22s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mw.self{align-self:flex-end;align-items:flex-end}
+.mw.other{align-self:flex-start;align-items:flex-start}
+@media(max-width:600px){.mw{max-width:82%}}
+.mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
+.mw-row{display:flex;align-items:flex-end;gap:7px}
+.mw.self .mw-row{flex-direction:row-reverse}
+.mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.mav img{width:100%;height:100%;object-fit:cover}
+.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word}
+.mw.self .bbl{background:#FFF8DC;border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
+.mw.other .bbl{background:#fff;border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
+.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important}
+.bbl img{max-width:100%;max-height:220px;border-radius:12px;display:block;cursor:zoom-in}
+.flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
+.mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
+
+.rcl-wrap{display:flex;align-items:center;gap:6px}
+.rcl-btn{opacity:0;transition:opacity .15s;background:#fff;border:1px solid rgba(212,160,23,.35);border-radius:10px;padding:3px 9px;font-size:11px;color:var(--bm);cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit}
+.mw.self:hover .rcl-btn,.mw.self.sr .rcl-btn{opacity:1}
+.rcl-btn:hover{background:var(--gold-p)}
+@media(hover:none){.mw.self .rcl-btn{opacity:.5}}
+
+.sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
+.sysmsg span{background:rgba(245,230,163,.4);padding:3px 12px;border-radius:20px}
+
+.inp-area{flex-shrink:0;padding:12px 28px 20px;background:rgba(255,255,255,.88);border-top:1px solid rgba(212,160,23,.12)}
+@media(max-width:600px){.inp-area{padding:10px 14px 16px}}
+.inp-row{display:flex;gap:8px;align-items:flex-end;background:#fff;border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:border-color .2s}
+.inp-row:focus-within{border-color:var(--gold)}
+.att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0}
+.att-btn:hover{background:var(--gold-p)}
+.att-btn svg{width:20px;height:20px;stroke:var(--bl);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#fi2{display:none}
+.msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--brown);background:transparent;resize:none;max-height:100px;line-height:1.5;padding:5px 0}
+.msg-ta::placeholder{color:var(--bl)}
+.snd-btn{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-l));cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(212,160,23,.4);transition:all .2s}
+.snd-btn:hover{transform:scale(1.08)}
+.snd-btn svg{width:17px;height:17px;fill:#fff}
+
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
+#lb img{max-width:92vw;max-height:92vh;border-radius:12px}
+@media(max-width:480px){.big-title{font-size:42px}.card{padding:28px 20px 24px}}
+</style>
+</head>
+<body>
+<div id="seeds"></div>
+
+<!-- 首頁 -->
+<div class="scr" id="s-home">
+  <div class="logo-wrap">
+    <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
+      <path d="M45 98 Q43 70 45 50" stroke="#5C8A3C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <g transform="translate(45,34)">
+        <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-22" cy="0" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="11" y2="-20" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="11" cy="-20" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="20" y2="-11" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="20" cy="-11" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="20" y2="11" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="20" cy="11" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="11" y2="20" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="11" cy="20" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-11" y2="20" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-11" cy="20" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-20" y2="11" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-20" cy="11" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-20" y2="-11" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-20" cy="-11" r="2.5" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-11" y2="-20" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-11" cy="-20" r="2.5" fill="#E8B84B"/>
+        <circle cx="0" cy="0" r="6" fill="#D4A017"/><circle cx="0" cy="0" r="3.5" fill="#E8B84B"/>
+      </g>
+    </svg>
+  </div>
+  <div class="big-title">蒲公英</div>
+  <div class="big-sub">我們的故事，隨風飄揚</div>
+  <div class="home-btns">
+    <button class="pill pri" onclick="startFlow('register')">註 冊</button>
+    <button class="pill sec" onclick="startFlow('login')">登 入</button>
+  </div>
+</div>
+
+<!-- 步驟頁 -->
+<div class="scr off" id="s-steps">
+  <div class="stp-bar">
+    <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div class="stp-body" id="stp-body"></div>
+</div>
+
+<!-- 聊天 -->
+<div class="scr off" id="s-chat">
+  <div class="c-hdr">
+    <div class="c-hdr-l">
+      <span style="font-size:22px">🌼</span>
+      <span class="c-hdr-t">蒲公英</span>
+    </div>
+    <div class="my-chip">
+      <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
+      <span class="hname" id="hname"></span>
+    </div>
+  </div>
+  <div class="msgs" id="msgs">
+    <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
+  </div>
+  <div class="inp-area">
+    <div class="inp-row">
+      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案／圖片">
+        <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
+      <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
+      <button class="snd-btn" id="snd-btn">
+        <svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+// ══ 設定 ══
+var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
+var CLASS_CODE="608";
+// ══════════
+
+var db=null,me=null,myId=null,myAv='',shownKeys={},lastDate=null;
+var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
+
+try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
+
+// 種子
+(function(){var c=document.getElementById('seeds');for(var i=0;i<16;i++){var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;s.style.cssText='left:'+(Math.random()*100)+'%;--dx:'+((Math.random()-.5)*120)+'px;animation-duration:'+(Math.random()*12+10)+'s;animation-delay:'+(Math.random()*18)+'s;';s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width=".8" opacity=".7"/><line x1="7" y1="12" x2="1" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';c.appendChild(s);}})();
+
+function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
+
+// ══ 步驟定義 ══
+var REG=[
+  {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'讓同學認識你，不選也可以直接下一步 📷',type:'avatar'},
+  {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名，讓同學找到你',type:'text',id:'rn',ph:'輸入你的真實姓名',it:'text'},
+  {lbl:'3 / 5',ttl:'Gmail 信箱',hint:'用來找回帳號用。請勿使用學校帳號。',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},
+  {lbl:'4 / 5',ttl:'設定個人密碼',hint:'換裝置登入也要用這組密碼，請記好！',type:'text',id:'rp',ph:'設定你的個人密碼',it:'password'},
+  {lbl:'5 / 5',ttl:'班級密碼',hint:'輸入正確就能進去了 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}
+];
+var LOG=[
+  {lbl:'1 / 3',ttl:'你的名字',hint:'輸入你當初註冊時填的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},
+  {lbl:'2 / 3',ttl:'個人密碼',hint:'輸入你當時設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},
+  {lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}
+];
+function steps(){return flow==='register'?REG:LOG;}
+
+function startFlow(f){
+  flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';
+  show('s-steps');renderStep(0,false);
+}
+
+function renderStep(idx,back){
+  stepIdx=idx;
+  var ss=steps(),s=ss[idx];
+  // dots
+  var d=document.getElementById('dots');d.innerHTML='';
+  ss.forEach(function(_,i){var el=document.createElement('div');el.className='dot'+(i===idx?' on':'');d.appendChild(el);});
+  document.getElementById('bk-btn').style.visibility=idx===0?'hidden':'visible';
+
+  var body='';
+  if(s.type==='avatar'){
+    body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>';
+  } else {
+    var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||'';
+    body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">';
+  }
+  body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
+
+  document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
+
+  if(s.type==='avatar'){
+    if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
+    document.getElementById('av-file').addEventListener('change',function(e){
+      var f=e.target.files[0];if(!f)return;
+      var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var cv=document.createElement('canvas');cv.width=80;cv.height=80;var ctx=cv.getContext('2d');var sz=Math.min(img.width,img.height);ctx.drawImage(img,(img.width-sz)/2,(img.height-sz)/2,sz,sz,0,0,80,80);rAv=cv.toDataURL('image/jpeg',.78);var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';};img.src=ev.target.result;};r.readAsDataURL(f);
+    });
+  } else {
+    setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80);
+  }
+}
+
+function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
+
+function goBack(){
+  if(stepIdx===0){show('s-home');return;}
+  renderStep(stepIdx-1,true);
+}
+
+function nextStep(){
+  var ss=steps(),s=ss[stepIdx];setErr('');
+  if(s.type==='avatar'){
+    stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;
+  }
+  var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
+  if(!v){setErr('⚠️ 這個欄位不能空白');return;}
+  if(s.id==='rn')rName=v;
+  else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用個人 Gmail（結尾 @gmail.com）');return;}rGmail=v;}
+  else if(s.id==='rp')rPwd=v;
+  else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 班級密碼不對！');return;}}
+  else if(s.id==='ln')lName=v;
+  else if(s.id==='lp')lPwd=v;
+  else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 班級密碼不對！');return;}}
+  stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
+}
+
+function mkId(n,p){var s=n+'|'+p,h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);h=h>>>0;}return'id_'+h.toString(36);}
+
+function doAuth(){
+  var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
+  if(!db){enterChat(flow==='register'?rName:lName,'',rAv);return;}
+  if(flow==='register'){
+    var id=mkId(rName,rPwd);
+    db.ref('users/'+rName).once('value',function(snap){
+      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 這個名字已有人用了，請換一個！');},100);return;}
+      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail});
+      enterChat(rName,id,rAv);
+    });
+  } else {
+    var id2=mkId(lName,lPwd);
+    db.ref('users/'+lName).once('value',function(snap){
+      var d=snap.val();
+      if(!d){setErr('❌ 找不到這個帳號，請先去註冊！');if(nb){nb.disabled=false;nb.innerHTML='<svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';}return;}
+      if(d.identity!==id2){setErr('❌ 個人密碼錯誤！');if(nb){nb.disabled=false;nb.innerHTML='<svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';}return;}
+      if(d.avatar){rAv=d.avatar;}
+      enterChat(lName,id2,d.avatar||'');
+    });
+  }
+}
+
+function enterChat(name,id,av){
+  me=name;myId=id;myAv=av;
+  document.getElementById('hname').textContent=name;
+  if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
+  show('s-chat');startListen();sysMsg(name+' 來了 🌼');
+}
+
+function startListen(){
+  if(!db)return;
+  db.ref('messages').on('child_added',function(snap){
+    var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true;
+    var d=snap.val();if(!d)return;
+    d.name==='__system__'?addSys(d.text):addBubble(d,k);
+  });
+  db.ref('messages').on('child_changed',function(snap){
+    var d=snap.val();if(!d||!d.recalled)return;
+    var w=document.querySelector('[data-key="'+snap.key+'"]');if(w)markRcl(w);
+  });
+}
+
+function pushMsg(obj){
+  if(!db)return;var nr=db.ref('messages').push();
+  shownKeys[nr.key]=true;obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj);
+}
+function sysMsg(t){if(!db)return;var nr=db.ref('messages').push();shownKeys[nr.key]=true;nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});}
+
+document.getElementById('snd-btn').addEventListener('click',sendTxt);
+document.getElementById('msg-ta').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTxt();}});
+document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+
+function sendTxt(){
+  var ta=document.getElementById('msg-ta'),txt=ta.value.trim();
+  if(!txt||!me)return;ta.value='';ta.style.height='auto';
+  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId};
+  addBubble(m,null);pushMsg(m);
+}
+
+document.getElementById('fi2').addEventListener('change',function(e){
+  var file=e.target.files[0];if(!file||!me)return;this.value='';
+  var isImg=/^image\//i.test(file.type);
+  if(file.size>900*1024&&!isImg){alert('檔案太大！最大支援 900KB');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    if(isImg){
+      var img=new Image();img.onload=function(){
+        var cv=document.createElement('canvas');var MP=960;
+        var w=img.width,h=img.height;
+        if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
+        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+        var data=cv.toDataURL('image/jpeg',.78);
+        if(data.length>1100*1024){alert('圖片太大，請選一張較小的照片');return;}
+        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
+        addBubble(m,null);pushMsg(m);
+      };img.src=ev.target.result;
+    } else {
+      var data=ev.target.result;
+      if(data.length>1200*1024){alert('檔案太大！最大支援 900KB');return;}
+      var m={name:me,type:'file',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
+      addBubble(m,null);pushMsg(m);
+    }
+  };reader.readAsDataURL(file);
+});
+
+function addBubble(d,key){
+  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
+  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||'';
+  var date=fmtD(ts);
+  if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
+  var w=document.createElement('div');w.className='mw '+(self?'self':'other');
+  if(key)w.setAttribute('data-key',key);
+  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
+  var bb='';
+  if(rcld)bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
+  else if(d.type==='image')bb='<div class="bbl" style="padding:6px"><img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
+  else if(d.type==='file')bb='<div class="bbl"><a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
+  else bb='<div class="bbl">'+esc(d.text||'')+'</div>';
+  var row='';
+  if(self&&!rcld){row='<div class="mw-row"><div class="rcl-wrap"><button class="rcl-btn" onclick="rclMsg(this)">收回</button>'+bb+'</div>'+avH+'</div>';}
+  else if(self){row='<div class="mw-row">'+bb+avH+'</div>';}
+  else{row='<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+'</div>';}
+  w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
+  if(self&&!rcld){w.addEventListener('click',function(e){if(e.target.classList.contains('rcl-btn'))return;w.classList.toggle('sr');setTimeout(function(){w.classList.remove('sr');},3000);});}
+  document.getElementById('msgs').appendChild(w);
+  requestAnimationFrame(function(){var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;});
+  return w;
+}
+
+function addSys(t){var e=document.createElement('div');e.className='sysmsg';e.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(e);var m=document.getElementById('msgs');requestAnimationFrame(function(){m.scrollTop=m.scrollHeight;});}
+
+function markRcl(w){var rw=w.querySelector('.rcl-wrap');if(rw)rw.innerHTML='<div class="bbl recalled">🌬️ 此訊息已收回</div>';else{var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';}}}
+
+function rclMsg(btn){var w=btn.closest('.mw');if(!w)return;if(!confirm('確定要收回嗎？'))return;markRcl(w);var k=w.getAttribute('data-key');if(k&&db)db.ref('messages/'+k).update({recalled:true});}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
+function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').style.display='flex';}
+</script>
+</body>
+</html>
