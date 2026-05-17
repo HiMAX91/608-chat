@@ -143,24 +143,35 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 /* ══ 加入主畫面引導 ══ */
 #install-banner{
-  position:fixed;bottom:0;left:0;right:0;z-index:999;
-  background:#fff;border-top:1px solid rgba(212,160,23,.25);
-  box-shadow:0 -4px 24px rgba(61,44,26,.12);
-  padding:16px 20px 20px;
-  animation:slideUp .4s cubic-bezier(.34,1.3,.64,1);
-  display:none;
+  position:fixed;inset:0;z-index:999;pointer-events:none;display:none;
 }
-@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
-.ib-inner{max-width:480px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;}
-.ib-icon{font-size:36px;flex-shrink:0;margin-top:2px}
-.ib-text{flex:1}
-.ib-title{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--brown);margin-bottom:4px;font-weight:700}
-.ib-desc{font-size:13px;color:var(--bm);line-height:1.8}
-.ib-desc b{color:var(--brown)}
-.ib-share{display:inline-block;width:18px;height:18px;vertical-align:middle;margin:0 2px}
-.ib-close{background:none;border:none;font-size:20px;color:var(--bl);cursor:pointer;padding:4px;flex-shrink:0;line-height:1}
-.ib-arrow{display:block;text-align:center;font-size:22px;margin-top:6px;animation:bounce .8s ease-in-out infinite alternate}
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(6px)}}
+.ib-card{
+  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:20px;padding:20px 22px 18px;
+  box-shadow:0 8px 40px rgba(61,44,26,.2);
+  border:1px solid rgba(212,160,23,.3);
+  width:calc(100% - 40px);max-width:360px;
+  pointer-events:all;
+  animation:popIn .4s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes popIn{from{opacity:0;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+.ib-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ib-title{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--brown);font-weight:700;display:flex;align-items:center;gap:8px}
+.ib-close{background:none;border:none;width:28px;height:28px;border-radius:50%;background:rgba(200,168,130,.2);color:var(--bl);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;pointer-events:all}
+.ib-steps{display:flex;flex-direction:column;gap:10px}
+.ib-step{display:flex;align-items:center;gap:12px;background:var(--gold-p);border-radius:12px;padding:10px 14px}
+.ib-step-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ib-step-txt{font-size:13px;color:var(--brown);line-height:1.5}
+.ib-step-txt b{color:var(--gold)}
+/* 指向分享按鈕的箭頭 */
+.ib-pointer{
+  position:absolute;bottom:12px;right:28px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  pointer-events:none;
+}
+.ib-pointer-txt{font-size:11px;color:var(--bm);font-weight:500;background:#fff;padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
+.ib-pointer-arrow{font-size:28px;animation:arrowBounce .7s ease-in-out infinite alternate}
+@keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(8px)}}
 </style>
 </head>
 <body>
@@ -247,13 +258,16 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <!-- 加入主畫面引導 -->
 <div id="install-banner">
-  <div class="ib-inner">
-    <div class="ib-icon">🌼</div>
-    <div class="ib-text">
-      <div class="ib-title" id="ib-title">把蒲公英加到主畫面</div>
-      <div class="ib-desc" id="ib-desc"></div>
+  <div class="ib-card">
+    <div class="ib-top">
+      <div class="ib-title">🌼 加入主畫面</div>
+      <button class="ib-close" onclick="dismissBanner()">×</button>
     </div>
-    <button class="ib-close" onclick="dismissBanner()" title="關閉">×</button>
+    <div class="ib-steps" id="ib-steps"></div>
+  </div>
+  <div class="ib-pointer" id="ib-pointer">
+    <div class="ib-pointer-txt" id="ib-pointer-txt">從這裡</div>
+    <div class="ib-pointer-arrow">👇</div>
   </div>
 </div>
 
@@ -473,32 +487,44 @@ function openLb(src){document.getElementById('lb-img').src=src;document.getEleme
 
 // ══ 加入主畫面引導 ══
 (function(){
-  // 已是 standalone App 就不顯示
   if(window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches) return;
-  // 已關閉過就不顯示
   if(localStorage.getItem('ib_dismissed')) return;
 
   var ua=navigator.userAgent;
-  var isIOS=/iphone|ipad|ipod/i.test(ua);
+  var isIOS=/iphone|ipod/i.test(ua);
+  var isIPad=/ipad/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var isAndroid=/android/i.test(ua);
-  var isMobile=isIOS||isAndroid;
-  if(!isMobile) return; // 電腦/平板不顯示
+  if(!isIOS&&!isIPad&&!isAndroid) return;
 
-  var banner=document.getElementById('install-banner');
-  var desc=document.getElementById('ib-desc');
+  var steps=document.getElementById('ib-steps');
+  var pointer=document.getElementById('ib-pointer');
+  var pointerTxt=document.getElementById('ib-pointer-txt');
 
   if(isIOS){
-    desc.innerHTML='用 <b>Safari</b> 開啟網站，點下方'
-      +'<svg class="ib-share" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10L12 6m0 0l4 4m-4-4v12"/><path d="M20 16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg>'
-      +'<b>分享</b>，再選 <b>「加入主畫面」</b>，就能像 App 一樣使用！'
-      +'<span class="ib-arrow">👇</span>';
+    // iPhone：分享按鈕在底部中間偏右
+    steps.innerHTML=
+      '<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">用 <b>Safari</b> 開啟這個網站（不能用 Chrome）</div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點畫面<b>右下角</b>的 <b>分享</b> 按鈕<br><span style="font-size:11px;color:var(--bl)">（一個方形裡面有向上箭頭的圖示）</span></div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">3</div><div class="ib-step-txt">往下滑，點 <b>「加入主畫面」</b>，就完成了！</div></div>';
+    pointer.style.cssText='position:absolute;bottom:16px;right:22px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;';
+    pointerTxt.textContent='分享按鈕在這裡';
+  } else if(isIPad){
+    steps.innerHTML=
+      '<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">用 <b>Safari</b> 開啟這個網站</div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點畫面<b>右上角</b>的 <b>分享</b> 按鈕</div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">3</div><div class="ib-step-txt">點 <b>「加入主畫面」</b>，就完成了！</div></div>';
+    pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;';
+    pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg);animation:arrowBounce .7s ease-in-out infinite alternate">👇</div><div class="ib-pointer-txt">分享按鈕在這裡</div>';
   } else if(isAndroid){
-    desc.innerHTML='用 <b>Chrome</b> 開啟網站，點右上角 <b>⋮</b>，選 <b>「新增至主畫面」</b>，就能像 App 一樣使用！'
-      +'<span class="ib-arrow">👆</span>';
+    steps.innerHTML=
+      '<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">用 <b>Chrome</b> 開啟這個網站</div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點畫面<b>右上角</b>的 <b>⋮</b> 選單</div></div>'+
+      '<div class="ib-step"><div class="ib-step-num">3</div><div class="ib-step-txt">選 <b>「新增至主畫面」</b>，就完成了！</div></div>';
+    pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;';
+    pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg);animation:arrowBounce .7s ease-in-out infinite alternate">👇</div><div class="ib-pointer-txt">⋮ 選單在這裡</div>';
   }
 
-  // 延遲 2 秒再出現
-  setTimeout(function(){ banner.style.display='block'; }, 2000);
+  setTimeout(function(){ document.getElementById('install-banner').style.display='block'; }, 2000);
 })();
 
 function dismissBanner(){
