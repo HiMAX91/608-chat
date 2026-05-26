@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -7,10 +8,6 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="蒲公英">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="蒲公英">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -182,6 +179,13 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
+/* ══ 進入網站彈出式通知詢問引導卡片（專為 iPhone 13 Pro 優化） ══ */
+#ask-notify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+.ask-card{width:88%;max-width:340px;background:var(--bg-card);border:1px solid var(--gold);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 12px 40px var(--sh)}
+.ask-icon{font-size:42px;margin-bottom:12px;display:block}
+.ask-ttl{font-family:'Noto Serif TC',serif;font-size:20px;margin-bottom:10px}
+.ask-txt{font-size:13px;color:var(--bm);line-height:1.6;margin-bottom:24px}
+
 /* ══ 加入主畫面引導 ══ */
 #install-banner{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
 .ib-card{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);border-radius:20px;padding:20px 22px 18px;box-shadow:0 8px 40px var(--sh);border:1px solid rgba(212,160,23,.3);width:calc(100% - 40px);max-width:360px;pointer-events:all;animation:popIn .4s cubic-bezier(.34,1.4,.64,1)}
@@ -326,6 +330,17 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
+<!-- 💡 進入網站主動跳出的通知啟動器（完美跨端兼顧 iPhone 13 Pro） -->
+<div id="ask-notify-overlay">
+  <div class="ask-card">
+    <span class="ask-icon">🔔</span>
+    <div class="ask-ttl">開啟背景通知</div>
+    <div class="ask-txt">開啟通知後，即使關閉網頁，也能第一時間收到同學傳給你的最新精彩訊息與檔案喔！</div>
+    <button class="pill pri" style="width:100%;" onclick="requestUserPushPermission()">立刻同步開啟</button>
+    <button class="set-close" style="font-size:13px; margin-top:14px; display:inline-block;" onclick="document.getElementById('ask-notify-overlay').style.display='none'">稍後再說</button>
+  </div>
+</div>
+
 <!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
@@ -358,22 +373,37 @@ var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=fals
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
-// 背景通知註冊代碼
+// 註冊 Service Worker 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   navigator.serviceWorker.register('sw.js')
-    .then(reg => {
-      console.log('背景服務 Service Worker 註冊成功！');
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') console.log('同學已同意開啟通知！🌼');
-      });
-    })
+    .then(reg => { console.log('背景服務 Service Worker 註冊成功！'); })
     .catch(err => console.error('背景服務註冊失敗:', err));
+}
+
+// 點擊卡片按鈕，立即向手機申請通知權限
+function requestUserPushPermission(){
+  document.getElementById('ask-notify-overlay').style.display='none';
+  if ('Notification' in window) {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        alert('🌼 通知開啟成功！之後有新訊息就會通知你囉！');
+        if(me) sysMsg(me + ' 已成功同步開啟手機背景通知接收 📢');
+      }
+    });
+  }
 }
 
 // 網頁初始化與主題確認、自動登入檢查
 window.addEventListener('DOMContentLoaded', function(){
   var savedTheme = localStorage.getItem('dandelion_theme') || 'light';
   setTheme(savedTheme);
+
+  // 💡 進入網站檢查：如果還沒同意過通知，直接強制跳出引導小卡片
+  if ('Notification' in window && Notification.permission === 'default') {
+    setTimeout(function(){
+      document.getElementById('ask-notify-overlay').style.display='flex';
+    }, 1200);
+  }
 
   // 飄逸種子動畫生成
   var c=document.getElementById('seeds');
