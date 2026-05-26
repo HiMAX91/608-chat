@@ -297,7 +297,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
       <div class="set-lbl">介面主題</div>
       <div class="theme-options">
         <button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button>
-        <button class="t-opt" id="t-dark" onclick="setTheme('dark')">深色模式</button>
+        <button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button>
       </div>
     </div>
     <div style="display:flex; gap:12px; margin-top:24px;">
@@ -353,6 +353,18 @@ var cropSourceSrc='', cropTargetHandler=null;
 var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
+
+// 背景通知註冊代碼
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => {
+      console.log('背景服務 Service Worker 註冊成功！');
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') console.log('同學已同意開啟通知！🌼');
+      });
+    })
+    .catch(err => console.error('背景服務註冊失敗:', err));
+}
 
 // 網頁初始化與主題確認、自動登入檢查
 window.addEventListener('DOMContentLoaded', function(){
@@ -640,7 +652,6 @@ function saveCrop(){
   cv.width=100;cv.height=100;
   var ctx=cv.getContext('2d');
   
-  // 計算在原圖尺寸下的對應座標與範圍
   var rScale=imgScale/cimg.width;
   var srcSize=280/rScale;
   var srcX=(-imgX)/rScale;
