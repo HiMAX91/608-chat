@@ -73,7 +73,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .c-hint{font-size:12px;color:var(--bl);line-height:1.8;margin-bottom:22px}
 
 /* 大頭貼 */
-.av-zone{display:flex;justify-content:center;margin:4px 0 18px}
+.av-zone{display:flex;justifycontent:center;margin:4px 0 18px}
 .av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
 .av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
 .av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
@@ -141,7 +141,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:3px 9px;font-size:11px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
 .action-btn:hover{background:var(--gold-p)}
 
-@media(hover:none){.hvr-actions{opacity:0.3}} /* 手機版預設半隱藏，長按或點擊會呼叫出 */
+@media(hover:none){.hvr-actions{opacity:0.3}} 
 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
@@ -150,7 +150,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
 @media(max-width:600px){.inp-area{padding:10px 14px 16px}}
 
-.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:between;font-size:13px;animation:slideUp .2s ease}
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;animation:slideUp .2s ease}
 @keyframes slideUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
 .reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
@@ -167,7 +167,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .snd-btn:hover{transform:scale(1.08)}
 .snd-btn svg{width:17px;height:17px;fill:#fff}
 
-/* ══ 設置側邊/彈出面板 ══ */
+/* ══ 設置面板 ══ */
 #setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh);animation:pop .25s ease}
 @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
@@ -222,7 +222,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -249,7 +248,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar">
     <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
@@ -258,7 +256,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -279,9 +276,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
-  <!-- 輸入區域 -->
   <div class="inp-area">
-    <!-- 智慧型回覆狀態列 -->
     <div class="reply-bar" id="reply-bar">
       <div class="reply-bar-info" id="reply-bar-info"></div>
       <button class="reply-bar-close" onclick="cancelReply()">×</button>
@@ -300,7 +295,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -338,7 +332,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -353,7 +346,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<!-- 💡 進入網站主動跳出的通知啟動器 -->
 <div id="ask-notify-overlay">
   <div class="ask-card">
     <span class="ask-icon">🔔</span>
@@ -364,7 +356,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -399,12 +390,14 @@ var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=fals
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
+// 註冊 Service Worker 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   navigator.serviceWorker.register('sw.js')
     .then(reg => { console.log('背景服務 Service Worker 註冊成功！'); })
     .catch(err => console.error('背景服務註冊失敗:', err));
 }
 
+// 點擊卡片按鈕，立即向手機申請通知權限
 function requestUserPushPermission(){
   document.getElementById('ask-notify-overlay').style.display='none';
   if ('Notification' in window) {
@@ -417,16 +410,19 @@ function requestUserPushPermission(){
   }
 }
 
+// 網頁初始化與主題確認、自動登入檢查
 window.addEventListener('DOMContentLoaded', function(){
   var savedTheme = localStorage.getItem('dandelion_theme') || 'light';
   setTheme(savedTheme);
 
+  // 進入網站檢查：如果還沒同意過通知，直接強制跳出引導小卡片
   if ('Notification' in window && Notification.permission === 'default') {
     setTimeout(function(){
       document.getElementById('ask-notify-overlay').style.display='flex';
     }, 1200);
   }
 
+  // 飄逸種子動畫生成
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
     var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
@@ -435,6 +431,7 @@ window.addEventListener('DOMContentLoaded', function(){
     c.appendChild(s);
   }
 
+  // 讀取本地快取自動登入
   var autoName = localStorage.getItem('dandelion_me');
   var autoId = localStorage.getItem('dandelion_id');
   if(autoName && autoId){
@@ -458,6 +455,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
+// ══ 步驟流程定義 ══
 var REG=[
   {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'讓同學認識你，點擊圖示裁切漂亮範圍 📷',type:'avatar'},
   {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名，讓同學找到你',type:'text',id:'rn',ph:'輸入你的真實姓名',it:'text'},
@@ -577,8 +575,17 @@ function openSetting(){
   document.getElementById('setting-overlay').style.display='flex';
 }
 
+// 修正後的 cancelReply 函式（完美修好點擊 x 沒反應的 bug）
+function cancelReply() {
+  replyTargetId = null;
+  replyTargetName = '';
+  replyTargetSnippet = '';
+  document.getElementById('reply-bar').style.display = 'none'; 
+}
+
 function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').style.display='none';}
 
+// 介面主題切換
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('dandelion_theme',t);
@@ -740,7 +747,7 @@ document.getElementById('snd-btn').addEventListener('click',sendTxt);
 document.getElementById('msg-ta').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTxt();}});
 document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 
-// 💡 點擊觸發回覆動作
+// 點擊觸發回覆動作
 function initReply(msgKey, name, snippet) {
   replyTargetId = msgKey;
   replyTargetName = name;
@@ -753,19 +760,11 @@ function initReply(msgKey, name, snippet) {
   document.getElementById('msg-ta').focus();
 }
 
-function cancelReply() {
-  replyTargetId = null;
-  replyTargetName = '';
-  replyTargetSnippet = '';
-  document.getElementById('reply-bar').style.style.display = 'none';
-}
-
 function sendTxt(){
   var ta=document.getElementById('msg-ta'),txt=ta.value.trim();
   if(!txt||!me)return;ta.value='';ta.style.height='auto';
   
   var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId};
-  // 注入回覆結構
   if(replyTargetId){
     m.replyId = replyTargetId;
     m.replyName = replyTargetName;
@@ -825,7 +824,6 @@ function addBubble(d,key){
   if(key)w.setAttribute('data-key',key);
   var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
   
-  // 建立內部回覆小卡
   var quoteHtml = '';
   if(!rcld && d.replyId){
     quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>';
@@ -837,7 +835,6 @@ function addBubble(d,key){
   else if(d.type==='file')bb='<div class="bbl">'+quoteHtml+'<a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
   else bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
   
-  // 建立操作按鈕 (電腦版滑鼠移入、手機版長按共用)
   var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
   if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
   var escapedSnippet = snippetText.replace(/'/g, "\\'");
@@ -860,16 +857,15 @@ function addBubble(d,key){
   }
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
   
-  // 💡 手機版長按事件監聽
   if(!rcld && key){
     var pressTimer;
     var bblBox = w.querySelector('.bbl');
     
     var startPress = function(e) {
       pressTimer = setTimeout(function() {
-        if('vibrate' in navigator) navigator.vibrate(40); // 震動反饋
+        if('vibrate' in navigator) navigator.vibrate(40); 
         w.classList.toggle('show-menu');
-      }, 600); // 長按 0.6 秒
+      }, 600); 
     };
     var cancelPress = function() { clearTimeout(pressTimer); };
     
