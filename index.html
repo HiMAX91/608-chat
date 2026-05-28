@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -112,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-.mw{display:flex;flex-direction:column;max-width:60%;animation:mIn .22s ease}
+.mw{position:relative;display:flex;flex-direction:column;max-width:60%;animation:mIn .22s ease}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .mw.self{align-self:flex-end;align-items:flex-end}
 .mw.other{align-self:flex-start;align-items:flex-start}
@@ -122,7 +121,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
-.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word}
+
+/* 對話框與回覆樣式 */
+.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
 .bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important}
@@ -130,16 +131,30 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-.rcl-wrap{display:flex;align-items:center;gap:6px}
-.rcl-btn{opacity:0;transition:opacity .15s;background:var(--bg-card);border:1px solid rgba(212,160,23,.35);border-radius:10px;padding:3px 9px;font-size:11px;color:var(--bm);cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit}
-.mw.self:hover .rcl-btn,.mw.self.sr .rcl-btn{opacity:1}
-.rcl-btn:hover{background:var(--gold-p)}
+/* 訊息內的被回覆小卡 */
+.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
+.quote-box:hover{background:rgba(212,160,23,.15)}
+
+/* 操作按鈕群 (回覆、收回) */
+.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px}
+.mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1}
+.action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:3px 9px;font-size:11px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
+.action-btn:hover{background:var(--gold-p)}
+
+@media(hover:none){.hvr-actions{opacity:0.3}} /* 手機版預設半隱藏，長按或點擊會呼叫出 */
 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
 
-.inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12)}
+/* 輸入區域與回覆預覽列 */
+.inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
 @media(max-width:600px){.inp-area{padding:10px 14px 16px}}
+
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:between;font-size:13px;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
+.reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
+
 .inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:border-color .2s}
 .inp-row:focus-within{border-color:var(--gold)}
 .att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0}
@@ -179,7 +194,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
-/* ══ 進入網站彈出式通知詢問引導卡片（專為 iPhone 13 Pro 優化） ══ */
+/* ══ 進入網站彈出式通知詢問引導卡片 ══ */
 #ask-notify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
 .ask-card{width:88%;max-width:340px;background:var(--bg-card);border:1px solid var(--gold);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 12px 40px var(--sh)}
 .ask-icon{font-size:42px;margin-bottom:12px;display:block}
@@ -221,7 +236,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
         <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="16" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-22" cy="0" r="3" fill="#E8B84B"/>
-        <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
         <circle cx="0" cy="0" r="6" fill="#D4A017"/><circle cx="0" cy="0" r="3.5" fill="#E8B84B"/>
       </g>
     </svg>
@@ -263,7 +278,15 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="msgs" id="msgs">
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
+  
+  <!-- 輸入區域 -->
   <div class="inp-area">
+    <!-- 智慧型回覆狀態列 -->
+    <div class="reply-bar" id="reply-bar">
+      <div class="reply-bar-info" id="reply-bar-info"></div>
+      <button class="reply-bar-close" onclick="cancelReply()">×</button>
+    </div>
+    
     <div class="inp-row">
       <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案／圖片">
         <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
@@ -330,7 +353,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<!-- 💡 進入網站主動跳出的通知啟動器（完美跨端兼顧 iPhone 13 Pro） -->
+<!-- 💡 進入網站主動跳出的通知啟動器 -->
 <div id="ask-notify-overlay">
   <div class="ask-card">
     <span class="ask-icon">🔔</span>
@@ -367,20 +390,21 @@ var CLASS_CODE="608";
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 
+// 回覆功能狀態控制組
+var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
+
 // 輕量裁切器狀態變數
 var cropSourceSrc='', cropTargetHandler=null;
 var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
-// 註冊 Service Worker 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   navigator.serviceWorker.register('sw.js')
     .then(reg => { console.log('背景服務 Service Worker 註冊成功！'); })
     .catch(err => console.error('背景服務註冊失敗:', err));
 }
 
-// 點擊卡片按鈕，立即向手機申請通知權限
 function requestUserPushPermission(){
   document.getElementById('ask-notify-overlay').style.display='none';
   if ('Notification' in window) {
@@ -393,19 +417,16 @@ function requestUserPushPermission(){
   }
 }
 
-// 網頁初始化與主題確認、自動登入檢查
 window.addEventListener('DOMContentLoaded', function(){
   var savedTheme = localStorage.getItem('dandelion_theme') || 'light';
   setTheme(savedTheme);
 
-  // 💡 進入網站檢查：如果還沒同意過通知，直接強制跳出引導小卡片
   if ('Notification' in window && Notification.permission === 'default') {
     setTimeout(function(){
       document.getElementById('ask-notify-overlay').style.display='flex';
     }, 1200);
   }
 
-  // 飄逸種子動畫生成
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
     var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
@@ -414,7 +435,6 @@ window.addEventListener('DOMContentLoaded', function(){
     c.appendChild(s);
   }
 
-  // 讀取本地快取自動登入
   var autoName = localStorage.getItem('dandelion_me');
   var autoId = localStorage.getItem('dandelion_id');
   if(autoName && autoId){
@@ -438,7 +458,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
-// ══ 步驟流程定義 ══
 var REG=[
   {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'讓同學認識你，點擊圖示裁切漂亮範圍 📷',type:'avatar'},
   {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名，讓同學找到你',type:'text',id:'rn',ph:'輸入你的真實姓名',it:'text'},
@@ -721,11 +740,40 @@ document.getElementById('snd-btn').addEventListener('click',sendTxt);
 document.getElementById('msg-ta').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTxt();}});
 document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 
+// 💡 點擊觸發回覆動作
+function initReply(msgKey, name, snippet) {
+  replyTargetId = msgKey;
+  replyTargetName = name;
+  replyTargetSnippet = snippet;
+  
+  var bar = document.getElementById('reply-bar');
+  var info = document.getElementById('reply-bar-info');
+  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」';
+  bar.style.display = 'flex';
+  document.getElementById('msg-ta').focus();
+}
+
+function cancelReply() {
+  replyTargetId = null;
+  replyTargetName = '';
+  replyTargetSnippet = '';
+  document.getElementById('reply-bar').style.style.display = 'none';
+}
+
 function sendTxt(){
   var ta=document.getElementById('msg-ta'),txt=ta.value.trim();
   if(!txt||!me)return;ta.value='';ta.style.height='auto';
+  
   var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId};
+  // 注入回覆結構
+  if(replyTargetId){
+    m.replyId = replyTargetId;
+    m.replyName = replyTargetName;
+    m.replySnippet = replyTargetSnippet;
+  }
+  
   addBubble(m,null);pushMsg(m);
+  cancelReply();
 }
 
 document.getElementById('fi2').addEventListener('change',function(e){
@@ -743,43 +791,103 @@ document.getElementById('fi2').addEventListener('change',function(e){
         var data=cv.toDataURL('image/jpeg',.78);
         if(data.length>1100*1024){alert('圖片太大，請選一張較小的照片');return;}
         var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
+        if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
         addBubble(m,null);pushMsg(m);
+        cancelReply();
       };img.src=ev.target.result;
     } else {
       var data=ev.target.result;
       if(data.length>1200*1024){alert('檔案太大！最大支援 900KB');return;}
       var m={name:me,type:'file',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
+      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       addBubble(m,null);pushMsg(m);
+      cancelReply();
     }
   };reader.readAsDataURL(file);
 });
+
+function jumpToMessage(key) {
+  var target = document.querySelector('[data-key="'+key+'"]');
+  if(target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.style.outline = '2px dashed var(--gold)';
+    setTimeout(function(){ target.style.outline='none'; }, 2000);
+  }
+}
 
 function addBubble(d,key){
   var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
   var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||'';
   var date=fmtD(ts);
   if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
+  
   var w=document.createElement('div');w.className='mw '+(self?'self':'other');
   if(key)w.setAttribute('data-key',key);
   var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
+  
+  // 建立內部回覆小卡
+  var quoteHtml = '';
+  if(!rcld && d.replyId){
+    quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>';
+  }
+
   var bb='';
   if(rcld)bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
-  else if(d.type==='image')bb='<div class="bbl" style="padding:6px"><img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
-  else if(d.type==='file')bb='<div class="bbl"><a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
-  else bb='<div class="bbl">'+esc(d.text||'')+'</div>';
+  else if(d.type==='image')bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
+  else if(d.type==='file')bb='<div class="bbl">'+quoteHtml+'<a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
+  else bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
+  
+  // 建立操作按鈕 (電腦版滑鼠移入、手機版長按共用)
+  var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
+  if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
+  var escapedSnippet = snippetText.replace(/'/g, "\\'");
+
+  var actionButtonsHtml = '';
+  if(!rcld && key){
+    actionButtonsHtml = '<div class="hvr-actions">';
+    actionButtonsHtml += '<button class="action-btn" onclick="initReply(\''+key+'\', \''+d.name+'\', \''+escapedSnippet+'\')">回覆</button>';
+    if(self){
+      actionButtonsHtml += '<button class="action-btn" onclick="rclMsg(this)">收回</button>';
+    }
+    actionButtonsHtml += '</div>';
+  }
+
   var row='';
-  if(self&&!rcld){row='<div class="mw-row"><div class="rcl-wrap"><button class="rcl-btn" onclick="rclMsg(this)">收回</button>'+bb+'</div>'+avH+'</div>';}
-  else if(self){row='<div class="mw-row">'+bb+avH+'</div>';}
-  else{row='<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+'</div>';}
+  if(self){
+    row='<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>';
+  }else{
+    row='<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
+  }
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
-  if(self&&!rcld){w.addEventListener('click',function(e){if(e.target.classList.contains('rcl-btn'))return;w.classList.toggle('sr');setTimeout(function(){w.classList.remove('sr');},3000);});}
+  
+  // 💡 手機版長按事件監聽
+  if(!rcld && key){
+    var pressTimer;
+    var bblBox = w.querySelector('.bbl');
+    
+    var startPress = function(e) {
+      pressTimer = setTimeout(function() {
+        if('vibrate' in navigator) navigator.vibrate(40); // 震動反饋
+        w.classList.toggle('show-menu');
+      }, 600); // 長按 0.6 秒
+    };
+    var cancelPress = function() { clearTimeout(pressTimer); };
+    
+    bblBox.addEventListener('touchstart', startPress);
+    bblBox.addEventListener('touchend', cancelPress);
+    bblBox.addEventListener('touchmove', cancelPress);
+    bblBox.addEventListener('mousedown', startPress);
+    bblBox.addEventListener('mouseup', cancelPress);
+    bblBox.addEventListener('mouseleave', cancelPress);
+  }
+
   document.getElementById('msgs').appendChild(w);
   requestAnimationFrame(function(){var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;});
   return w;
 }
 
 function addSys(t){var e=document.createElement('div');e.className='sysmsg';e.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(e);var m=document.getElementById('msgs');requestAnimationFrame(function(){m.scrollTop=m.scrollHeight;});}
-function markRcl(w){var rw=w.querySelector('.rcl-wrap');if(rw)rw.innerHTML='<div class="bbl recalled">🌬️ 此訊息已收回</div>';else{var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';}}}
+function markRcl(w){var rw=w.querySelector('.quote-box'); var b=w.querySelector('.bbl'); if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';}}
 function rclMsg(btn){var w=btn.closest('.mw');if(!w)return;if(!confirm('確定要收回嗎？'))return;markRcl(w);var k=w.getAttribute('data-key');if(k&&db)db.ref('messages/'+k).update({recalled:true});}
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
