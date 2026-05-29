@@ -220,10 +220,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
+<!-- 🎵 背景音樂播放器（直接替換為無 CORS 跨網域阻擋、載入流暢的《菊次郎的夏天》原曲高音質純音樂） -->
 <audio id="bg-music" loop preload="auto">
   <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
 </audio>
 
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -250,6 +252,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar">
     <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
@@ -258,6 +261,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
+<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -278,6 +282,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
+  <!-- 輸入區域 -->
   <div class="inp-area">
     <div class="reply-bar" id="reply-bar">
       <div class="reply-bar-info" id="reply-bar-info"></div>
@@ -297,6 +302,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -341,6 +347,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -355,6 +362,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
+<!-- 進入網站引導卡片 -->
 <div id="ask-notify-overlay">
   <div class="ask-card">
     <span class="ask-icon">🎵</span>
@@ -365,6 +373,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -479,7 +488,6 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 });
 
-// 💡 修正首頁按鈕手勢攔截核心事件控制（防阻 iPhone 13 Pro 點擊失效）
 function handleHomeFlow(e, targetFlow) {
   e.preventDefault();
   e.stopPropagation();
