@@ -220,9 +220,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器 (更換為極度穩定、無跨網域封鎖的全球CDN音訊源) -->
+<!-- 🎵 背景音樂播放器 (更換為正版、無跨網域限制的《菊次郎的夏天》鋼琴原音串流網址) -->
 <audio id="bg-music" loop preload="auto">
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
 </audio>
 
 <!-- 首頁 -->
@@ -673,6 +673,7 @@ function initCrop(src, callback){
   document.getElementById('crop-overlay').style.display='flex';
 }
 
+// 修正後的動態裁切渲染
 function updateCropTransform(){
   document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')';
 }
@@ -798,6 +799,7 @@ function jumpToMessage(key) {
   }
 }
 
+// 💡 點擊功能改進：直接點擊立即執行，杜絕 iOS 重複手勢覆蓋
 function handleMenuAction(e, callback) {
   e.preventDefault();
   e.stopPropagation();
@@ -842,6 +844,7 @@ function addBubble(d,key){
   var row=self?'<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
   
+  // 手機版長按綁定與多端事件解開
   if(!rcld && key){
     var pressTimer;var bblBox = w.querySelector('.bbl');
     var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
@@ -890,7 +893,7 @@ function openLb(src){document.getElementById('lb-img').src=src;document.getEleme
     pointer.style.cssText='position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;';
     pointerTxt.textContent='分享按鈕在正下方';
   } else if(isIPad){
-    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點擊右上角 <b>分享</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點選 <b>「加入主畫面」</b></div></div>';
+    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點擊右上角 <b>分享</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點選 <b>「加入主畫面']</b></div></div>';
     pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;pointer-events:none;';
     pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg)">👇</div><div class="ib-pointer-txt">按鈕在這裡</div>';
   } else if(isAndroid){
