@@ -46,8 +46,8 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 .big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px}
 .big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
-.home-btns{display:flex;gap:14px;margin-top:4px}
-.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;transition:all .2s}
+.home-btns{display:flex;gap:14px;margin-top:4px;z-index:20;pointer-events:auto;}
+.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;transition:all .2s;user-select:none;-webkit-user-select:none;}
 .pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 4px 18px rgba(212,160,23,.4)}
 .pill.pri:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(212,160,23,.5)}
 .pill.sec{background:var(--bg-card);color:var(--bm);border:1.5px solid rgba(212,160,23,.4)}
@@ -220,12 +220,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器 (更換為正版、無跨網域限制的《菊次郎的夏天》鋼琴原音串流網址) -->
 <audio id="bg-music" loop preload="auto">
   <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -247,12 +245,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="big-title">蒲公英</div>
   <div class="big-sub">我們的故事，隨風飄揚</div>
   <div class="home-btns">
-    <button class="pill pri" onclick="startFlow('register')">註 冊</button>
-    <button class="pill sec" onclick="startFlow('login')">登 入</button>
+    <button class="pill pri" id="btn-reg">註 冊</button>
+    <button class="pill sec" id="btn-log">登 入</button>
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar">
     <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
@@ -261,7 +258,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -282,7 +278,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
-  <!-- 輸入區域 -->
   <div class="inp-area">
     <div class="reply-bar" id="reply-bar">
       <div class="reply-bar-info" id="reply-bar-info"></div>
@@ -302,7 +297,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -347,7 +341,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -362,18 +355,16 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<!-- 進入網站引導卡片 -->
 <div id="ask-notify-overlay">
   <div class="ask-card">
     <span class="ask-icon">🎵</span>
     <div class="ask-ttl">開啟背景通知與音樂</div>
     <div class="ask-txt">同步啟動後即可在背景接收同學訊息，並在夏日悠揚的鋼琴聲中開始與班上聊天。</div>
-    <button class="pill pri" style="width:100%;" onclick="requestUserPushPermission()">立刻同步開啟</button>
+    <button class="pill pri" style="width:100%;" id="btn-agree-notify">立刻同步開啟</button>
     <button class="set-close" style="font-size:13px; margin-top:14px; display:inline-block;" onclick="document.getElementById('ask-notify-overlay').style.display='none'">稍後再說</button>
   </div>
 </div>
 
-<!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -487,6 +478,21 @@ window.addEventListener('DOMContentLoaded', function(){
     }
   }
 });
+
+// 💡 修正首頁按鈕手勢攔截核心事件控制（防阻 iPhone 13 Pro 點擊失效）
+function handleHomeFlow(e, targetFlow) {
+  e.preventDefault();
+  e.stopPropagation();
+  startFlow(targetFlow);
+}
+
+document.getElementById('btn-reg').addEventListener('click', function(e){ handleHomeFlow(e, 'register'); });
+document.getElementById('btn-reg').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'register'); });
+document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
+document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
+
+document.getElementById('btn-agree-notify').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
+document.getElementById('btn-agree-notify').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -673,7 +679,6 @@ function initCrop(src, callback){
   document.getElementById('crop-overlay').style.display='flex';
 }
 
-// 修正後的動態裁切渲染
 function updateCropTransform(){
   document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')';
 }
@@ -799,7 +804,6 @@ function jumpToMessage(key) {
   }
 }
 
-// 💡 點擊功能改進：直接點擊立即執行，杜絕 iOS 重複手勢覆蓋
 function handleMenuAction(e, callback) {
   e.preventDefault();
   e.stopPropagation();
@@ -844,7 +848,6 @@ function addBubble(d,key){
   var row=self?'<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
   
-  // 手機版長按綁定與多端事件解開
   if(!rcld && key){
     var pressTimer;var bblBox = w.querySelector('.bbl');
     var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
@@ -893,7 +896,7 @@ function openLb(src){document.getElementById('lb-img').src=src;document.getEleme
     pointer.style.cssText='position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;';
     pointerTxt.textContent='分享按鈕在正下方';
   } else if(isIPad){
-    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點擊右上角 <b>分享</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點選 <b>「加入主畫面']</b></div></div>';
+    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點擊右上角 <b>分享</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點選 <b>「加入主畫面」</b></div></div>';
     pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;pointer-events:none;';
     pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg)">👇</div><div class="ib-pointer-txt">按鈕在這裡</div>';
   } else if(isAndroid){
