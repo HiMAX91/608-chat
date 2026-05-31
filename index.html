@@ -220,9 +220,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器（直接替換為無 CORS 跨網域阻擋、載入流暢的《菊次郎的夏天》原曲高音質純音樂） -->
+<!-- 🎵 背景音樂播放器 (直接讀取同資料夾下的實體音訊檔) -->
 <audio id="bg-music" loop preload="auto">
-  <source src="summer.mp3" type="audio/mpeg">
+  <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
 <!-- 首頁 -->
@@ -397,7 +397,7 @@ var CLASS_CODE="608";
 // ══════════
 
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
-var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
+var flow='register',rAv='',rName='',rGmail='',rPwd=',lName='',lPwd='',stepIdx=0;
 
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
 var isMusicEnabled=true;
