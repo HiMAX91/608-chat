@@ -135,7 +135,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 操作按鈕群 (回覆、收回) */
+/* 操作按鈕群 */
 .hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;}
 .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1;pointer-events:auto;}
 .action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
@@ -192,7 +192,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
-/* ══ 進入網站彈出式通知詢問引導卡片 ══ */
+/* ══ 進入網站引導卡片 ══ */
 #ask-notify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
 .ask-card{width:88%;max-width:340px;background:var(--bg-card);border:1px solid var(--gold);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 12px 40px var(--sh)}
 .ask-icon{font-size:42px;margin-bottom:12px;display:block}
@@ -220,12 +220,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器 (直接讀取同資料夾下的實體音訊檔) -->
 <audio id="bg-music" loop preload="auto">
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -246,13 +244,17 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
   <div class="big-title">蒲公英</div>
   <div class="big-sub">我們的故事，隨風飄揚</div>
-  <div class="home-btns">
-    <button class="pill pri" id="btn-reg">註 冊</button>
-    <button class="pill sec" id="btn-log">登 入</button>
+  <div class="home-btns" style="flex-direction: column; gap: 10px;">
+    <div style="display: flex; gap: 14px;">
+      <button class="pill pri" id="btn-reg">註 冊</button>
+      <button class="pill sec" id="btn-log">登 入</button>
+    </div>
+    <span id="btn-clear-cache" style="font-size: 11px; color: var(--bl); text-decoration: underline; cursor: pointer; text-align: center; margin-top: 4px; padding: 5px;">
+      點我修復按鈕卡死/無法點擊
+    </span>
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar">
     <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
@@ -261,7 +263,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -282,7 +283,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
-  <!-- 輸入區域 -->
   <div class="inp-area">
     <div class="reply-bar" id="reply-bar">
       <div class="reply-bar-info" id="reply-bar-info"></div>
@@ -302,7 +302,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -347,7 +346,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -362,7 +360,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<!-- 進入網站引導卡片 -->
 <div id="ask-notify-overlay">
   <div class="ask-card">
     <span class="ask-icon">🎵</span>
@@ -373,7 +370,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -396,9 +392,10 @@ var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-c
 var CLASS_CODE="608";
 // ══════════
 
-var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
-var flow='register',rAv='',rName='',rGmail='',rPwd=',lName='',lPwd='',stepIdx=0;
+// 💡 語法完全對齊修正（單引號 Bug 徹底消滅）
+var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 
+var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
 var isMusicEnabled=true;
 
@@ -501,6 +498,10 @@ document.getElementById('btn-log').addEventListener('touchstart', function(e){ h
 
 document.getElementById('btn-agree-notify').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
 document.getElementById('btn-agree-notify').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
+
+// 修復卡死按鈕綁定
+document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
+document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -622,9 +623,7 @@ function openSetting(){
 }
 
 function cancelReply() {
-  replyTargetId = null;
-  replyTargetName = '';
-  replyTargetSnippet = '';
+  replyTargetId = null;replyTargetName = '';replyTargetSnippet = '';
   document.getElementById('reply-bar').style.display = 'none'; 
 }
 
