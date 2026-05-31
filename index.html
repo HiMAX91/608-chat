@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="蒲公英">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght=700&family=Noto+Sans+TC:wght=300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -36,12 +36,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-/* 畫面 */
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .35s,transform .35s}
-.scr.off{opacity:0;pointer-events:none;transform:translateY(14px)}
+/* 畫面基礎隱藏切換機制 */
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .35s,transform .35s;background:var(--cream)}
+.scr.off{opacity:0!important;pointer-events:none!important;transform:translateY(14px)!important}
 
 /* ══ 首頁 ══ */
-#s-home{gap:28px;padding:24px}
+#s-home{gap:28px;padding:24px;z-index:11}
 .logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 .big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px}
@@ -54,7 +54,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .pill.sec:hover{background:var(--gold-p)}
 
 /* ══ 步驟頁 ══ */
-#s-steps{justify-content:flex-start;padding:0}
+#s-steps{justify-content:flex-start;padding:0;z-index:12}
 .stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
 .bk-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);transition:all .2s}
 .bk-btn:hover{background:var(--gold-p)}
@@ -63,7 +63,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .dot.on{background:var(--gold);width:20px}
 
 .stp-body{flex:1;width:100%;max-width:480px;padding:14px 22px 22px;overflow:hidden}
-.card{background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:28px;padding:36px 30px 28px;box-shadow:0 6px 36px var(--sh);animation:cIn .32s cubic-bezier(.34,1.3,.64,1)}
+.card{background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:28px;padding:36px 30px 28px;box-shadow:0 6px 36px var(--sh);animation:cIn .32s cubic-bezier(.34,1.3,.64,1);width:100%}
 .card.rev{animation:cInR .32s cubic-bezier(.34,1.3,.64,1)}
 @keyframes cIn {from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
 @keyframes cInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
@@ -93,12 +93,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .nb:disabled{opacity:.5;cursor:default}
 
 /* ══ 聊天 ══ */
-#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch}
+#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:13}
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr-l{display:flex;align-items:center;gap:10px}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
 .my-chip{display:flex;align-items:center;gap:8px;cursor:pointer}
-.hav(width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
+.hav{width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
 .hav img{width:100%;height:100%;object-fit:cover}
 .hname-box{display:flex;flex-direction:column}
 .hname{font-size:14px;color:var(--brown);font-weight:500;line-height:1.2}
@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 🛠️ 修正被卡住的核心 CSS：防止 Flexbox 子元件爆開，並確保寬度計算嚴格 */
+/* 🛠️ 徹底解決對話框切掉卡死 Bug */
 .mw{position:relative;display:flex;flex-direction:column;max-width:65%;animation:mIn .22s ease;min-width: 0;}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .mw.self{align-self:flex-end;align-items:flex-end}
@@ -119,13 +119,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 @media(max-width:600px){.mw{max-width:85%}}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
 
-/* 🛠️ 確保訊息列這行可以被完美縮小、而且不會把左邊推出螢幕 */
 .mw-row{display:flex;align-items:flex-end;gap:7px;width:100%;min-width: 0;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-/* 🛠️ 對話框加入彈性縮緊與邊界控制 */
 .bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-all;position:relative;user-select:none;-webkit-user-select:none;flex: 1;min-width: 0;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
@@ -134,11 +132,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-/* 🛠️ 限制被回覆小卡的最長寬度與文字換行切斷 */
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 操作按鈕群 */
 .hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;flex-shrink: 0;}
 .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1;pointer-events:auto;}
 .action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
@@ -168,7 +164,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .snd-btn:hover{transform:scale(1.08)}
 .snd-btn svg{width:17px;height:17px;fill:#fff}
 
-/* ══ 設置面板 ══ */
+/* ══ 設置面板遮罩 ══ */
 #setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh);animation:pop .25s ease}
 @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
@@ -211,6 +207,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .ib-pointer-txt{font-size:11px;color:var(--bm);font-weight:500;background:var(--bg-card);padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
 .ib-pointer-arrow{font-size:28px;animation:arrowBounce .7s ease-in-out infinite alternate}
 @keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(8px)}}
+
+/* 🛠️ 清除快取按鈕的獨立精緻定位樣式（絕對不會再跟首頁按鈕疊死） */
+#btn-clear-cache{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--bl);text-decoration:underline;cursor:pointer;z-index:99;padding:8px 16px;user-select:none;-webkit-user-select:none;}
 </style>
 </head>
 <body>
@@ -221,7 +220,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 首頁 -->
+<!-- 🛠️ 快取清理修復鍵 (獨立層級、外觀乾淨) -->
+<span id="btn-clear-cache">點我清除暫存重置網站</span>
+
+<!-- 首頁 (絕美乾淨版) -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -242,14 +244,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
   <div class="big-title">蒲公英</div>
   <div class="big-sub">我們的故事，隨風飄揚</div>
-  <div class="home-btns" style="flex-direction: column; gap: 10px;">
-    <div style="display: flex; gap: 14px;">
-      <button class="pill pri" id="btn-reg">註 冊</button>
-      <button class="pill sec" id="btn-log">登 入</button>
-    </div>
-    <span id="btn-clear-cache" style="font-size: 11px; color: var(--bl); text-decoration: underline; cursor: pointer; text-align: center; margin-top: 4px; padding: 5px;">
-      點我修復按鈕卡死/無法點擊
-    </span>
+  <div class="home-btns">
+    <button class="pill pri" id="btn-reg">註 冊</button>
+    <button class="pill sec" id="btn-log">登 入</button>
   </div>
 </div>
 
@@ -363,21 +360,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<!-- 加入主畫面引導 -->
-<div id="install-banner">
-  <div class="ib-card">
-    <div class="ib-top">
-      <div class="ib-title">🌼 加入主畫面</div>
-      <button class="ib-close" onclick="dismissBanner()">×</button>
-    </div>
-    <div class="ib-steps" id="ib-steps"></div>
-  </div>
-  <div class="ib-pointer" id="ib-pointer">
-    <div class="ib-pointer-txt" id="ib-pointer-txt">從這裡</div>
-    <div class="ib-pointer-arrow">👇</div>
-  </div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -387,7 +369,6 @@ var CLASS_CODE="608";
 // ══════════
 
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
-
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
 var isMusicEnabled=true;
@@ -415,7 +396,7 @@ function toggleMusic(play) {
       p.then(() => {
         document.getElementById('m-on').classList.add('active');
         document.getElementById('m-off').classList.remove('active');
-      }).catch(e => console.log("等待手勢動作觸發音樂播放", e));
+      }).catch(e => console.log("等待手勢解鎖播放", e));
     }
   } else {
     audio.pause();
@@ -475,8 +456,9 @@ document.getElementById('btn-reg').addEventListener('touchstart', function(e){ h
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
 
-document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
-document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
+// 快取修復鍵點擊
+document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
+document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -595,6 +577,11 @@ function openSetting(){
   var simg=document.getElementById('set-av-img');
   if(myAv){simg.src=myAv;simg.style.display='block';}else{simg.style.display='none';}
   document.getElementById('setting-overlay').style.display='flex';
+}
+
+function cancelReply() {
+  replyTargetId = null;replyTargetName = '';replyTargetSnippet = '';
+  document.getElementById('reply-bar').style.display = 'none'; 
 }
 
 function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').style.display='none';}
