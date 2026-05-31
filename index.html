@@ -98,7 +98,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .c-hdr-l{display:flex;align-items:center;gap:10px}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
 .my-chip{display:flex;align-items:center;gap:8px;cursor:pointer}
-.hav{width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
+.hav(width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
 .hav img{width:100%;height:100%;object-fit:cover}
 .hname-box{display:flex;flex-direction:column}
 .hname{font-size:14px;color:var(--brown);font-weight:500;line-height:1.2}
@@ -111,19 +111,22 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-.mw{position:relative;display:flex;flex-direction:column;max-width:60%;animation:mIn .22s ease}
+/* 🛠️ 修正被卡住的核心 CSS：防止 Flexbox 子元件爆開，並確保寬度計算嚴格 */
+.mw{position:relative;display:flex;flex-direction:column;max-width:65%;animation:mIn .22s ease;min-width: 0;}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .mw.self{align-self:flex-end;align-items:flex-end}
 .mw.other{align-self:flex-start;align-items:flex-start}
-@media(max-width:600px){.mw{max-width:82%}}
+@media(max-width:600px){.mw{max-width:85%}}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
-.mw-row{display:flex;align-items:flex-end;gap:7px}
+
+/* 🛠️ 確保訊息列這行可以被完美縮小、而且不會把左邊推出螢幕 */
+.mw-row{display:flex;align-items:flex-end;gap:7px;width:100%;min-width: 0;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-/* 對話框與回覆樣式 */
-.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;}
+/* 🛠️ 對話框加入彈性縮緊與邊界控制 */
+.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-all;position:relative;user-select:none;-webkit-user-select:none;flex: 1;min-width: 0;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
 .bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important}
@@ -131,12 +134,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-/* 訊息內的被回覆小卡 */
-.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
+/* 🛠️ 限制被回覆小卡的最長寬度與文字換行切斷 */
+.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
 /* 操作按鈕群 */
-.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;}
+.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;flex-shrink: 0;}
 .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1;pointer-events:auto;}
 .action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
 .action-btn:hover{background:var(--gold-p)}
@@ -213,10 +216,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
+<!-- 🎵 背景音樂播放器 (讀取同資料夾下的實體《菊次郎的夏天》原曲音訊檔) -->
 <audio id="bg-music" loop preload="auto">
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -237,12 +242,18 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
   <div class="big-title">蒲公英</div>
   <div class="big-sub">我們的故事，隨風飄揚</div>
-  <div class="home-btns">
-    <button class="pill pri" id="btn-reg">註 冊</button>
-    <button class="pill sec" id="btn-log">登 入</button>
+  <div class="home-btns" style="flex-direction: column; gap: 10px;">
+    <div style="display: flex; gap: 14px;">
+      <button class="pill pri" id="btn-reg">註 冊</button>
+      <button class="pill sec" id="btn-log">登 入</button>
+    </div>
+    <span id="btn-clear-cache" style="font-size: 11px; color: var(--bl); text-decoration: underline; cursor: pointer; text-align: center; margin-top: 4px; padding: 5px;">
+      點我修復按鈕卡死/無法點擊
+    </span>
   </div>
 </div>
 
+<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar">
     <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
@@ -251,6 +262,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
+<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -271,6 +283,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
+  <!-- 輸入區域 -->
   <div class="inp-area">
     <div class="reply-bar" id="reply-bar">
       <div class="reply-bar-info" id="reply-bar-info"></div>
@@ -290,6 +303,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -334,6 +348,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -348,6 +363,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
+<!-- 加入主畫面引導 -->
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -387,14 +403,13 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     .catch(err => console.error('背景服務註冊失敗:', err));
 }
 
-// 💡 智慧型背景音訊調度引擎（雙端點擊瞬間自動在背後隱蔽啟動音樂）
 function toggleMusic(play) {
   isMusicEnabled = play;
   var audio = document.getElementById('bg-music');
   if(!audio) return;
   
   if(play) {
-    audio.volume = 0.7; 
+    audio.volume = 0.7; // 📢 大音量設定
     var p = audio.play();
     if(p !== undefined) {
       p.then(() => {
@@ -414,7 +429,6 @@ window.addEventListener('DOMContentLoaded', function(){
   setTheme(savedTheme);
   document.getElementById('m-on').classList.add('active');
 
-  // 一進網頁，如果有快取資料自動登入，也順便嘗試在背景啟動音軌
   window.addEventListener('touchstart', function autoPlayOnGesture() {
     toggleMusic(true);
     window.removeEventListener('touchstart', autoPlayOnGesture);
@@ -449,11 +463,10 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 });
 
-// 💡 點擊註冊或登入的同時，在網頁背後直接默默啟動音樂
 function handleHomeFlow(e, targetFlow) {
   e.preventDefault();
   e.stopPropagation();
-  toggleMusic(true); // 👈 就在這裡！不露痕跡地解鎖 iPhone 音訊播放
+  toggleMusic(true);
   startFlow(targetFlow);
 }
 
@@ -461,6 +474,9 @@ document.getElementById('btn-reg').addEventListener('click', function(e){ handle
 document.getElementById('btn-reg').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'register'); });
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
+
+document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
+document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -582,6 +598,24 @@ function openSetting(){
 }
 
 function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').style.display='none';}
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('dandelion_theme',t);
+  document.getElementById('t-light').classList[t==='light'?'add':'remove']('active');
+  document.getElementById('t-dark').classList[t==='dark'?'add':'remove']('active');
+}
+
+document.getElementById('set-av-file').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();r.onload=function(ev){
+    initCrop(ev.target.result, function(croppedData){
+      myAv=croppedData;
+      document.getElementById('set-av-img').src=myAv;
+      document.getElementById('hav-img').src=myAv;
+    });
+  };r.readAsDataURL(f);
+});
 
 function saveSettings(){
   var nb=document.getElementById('set-bio').value.trim();
@@ -820,7 +854,7 @@ function addBubble(d,key){
 }
 
 function addSys(t){var e=document.createElement('div');e.className='sysmsg';e.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(e);var m=document.getElementById('msgs');requestAnimationFrame(function(){m.scrollTop=m.scrollHeight;});}
-function markRcl(w){var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已回';b.className='bbl recalled';var ha=w.querySelector('.hvr-actions');if(ha)ha.remove();}}
+function markRcl(w){var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';var ha=w.querySelector('.hvr-actions');if(ha)ha.remove();}}
 function rclMsg(btn){var w=btn.closest('.mw');if(!w)return;if(!confirm('確定要收回嗎？'))return;var k=w.getAttribute('data-key');if(k&&db)db.ref('messages/'+k).update({recalled:true});}
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
