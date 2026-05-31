@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="蒲公英">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght=700&family=Noto+Sans+TC:wght=300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -75,7 +75,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 /* 大頭貼 */
 .av-zone{display:flex;justify-content:center;margin:4px 0 18px}
 .av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
-.av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
+.av-btn hover{border-color:var(--gold);transform:scale(1.04)}
 .av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
 .av-cam{font-size:28px}.av-lbl{font-size:11px;color:var(--bl)}
 #av-file{display:none}
@@ -111,31 +111,35 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 🛠️ 徹底解決對話框切掉卡死 Bug */
-.mw{position:relative;display:flex;flex-direction:column;max-width:65%;animation:mIn .22s ease;min-width: 0;}
+/* 🛠️ 訊息列最外層：維持最大 68% 或 85% 舒服寬度，拒絕硬縮小 */
+.mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
+@media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .mw.self{align-self:flex-end;align-items:flex-end}
 .mw.other{align-self:flex-start;align-items:flex-start}
-@media(max-width:600px){.mw{max-width:85%}}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
 
-.mw-row{display:flex;align-items:flex-end;gap:7px;width:100%;min-width: 0;}
+/* 🛠️ 核心修正：讓這行允許其內部元件進行寬度縮緊壓縮 */
+.mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-all;position:relative;user-select:none;-webkit-user-select:none;flex: 1;min-width: 0;}
+/* 🛠️ 對話框本體：加上 overflow: hidden 攔截內部的爆走文字，彈性放大不設限 */
+.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
-.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important}
+.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important;display:block;}
 .bbl img{max-width:100%;max-height:220px;border-radius:12px;display:block;cursor:zoom-in}
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
+/* 🛠️ 回覆小卡：強制指定 max-width: 100%，文字太長在小卡內自動變 ... 絕不撐開外面 */
+.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;flex-shrink: 0;}
+/* 操作按鈕群 */
+.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;flex-shrink:0;}
 .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1;pointer-events:auto;}
 .action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
 .action-btn:hover{background:var(--gold-p)}
@@ -191,39 +195,21 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
-/* ══ 加入主畫面引導 ══ */
-#install-banner{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
-.ib-card{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);border-radius:20px;padding:20px 22px 18px;box-shadow:0 8px 40px var(--sh);border:1px solid rgba(212,160,23,.3);width:calc(100% - 40px);max-width:360px;pointer-events:all;animation:popIn .4s cubic-bezier(.34,1.4,.64,1)}
-@keyframes popIn{from{opacity:0;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1)}}
-.ib-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.ib-title{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--brown);font-weight:700;display:flex;align-items:center;gap:8px}
-.ib-close{background:none;border:none;width:28px;height:28px;border-radius:50%;background:rgba(200,168,130,.2);color:var(--bl);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.ib-steps{display:flex;flex-direction:column;gap:10px}
-.ib-step{display:flex;align-items:center;gap:12px;background:var(--gold-p);border-radius:12px;padding:10px 14px}
-.ib-step-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ib-step-txt{font-size:13px;color:var(--brown);line-height:1.5}
-.ib-step-txt b{color:var(--gold)}
-.ib-pointer{position:absolute;bottom:12px;right:28px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
-.ib-pointer-txt{font-size:11px;color:var(--bm);font-weight:500;background:var(--bg-card);padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
-.ib-pointer-arrow{font-size:28px;animation:arrowBounce .7s ease-in-out infinite alternate}
-@keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(8px)}}
-
-/* 🛠️ 清除快取按鈕的獨立精緻定位樣式（絕對不會再跟首頁按鈕疊死） */
+/* 快取清理修復鍵 */
 #btn-clear-cache{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--bl);text-decoration:underline;cursor:pointer;z-index:99;padding:8px 16px;user-select:none;-webkit-user-select:none;}
 </style>
 </head>
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器 (讀取同資料夾下的實體《菊次郎的夏天》原曲音訊檔) -->
+<!-- 🎵 背景音樂播放器 (讀取實體音樂檔) -->
 <audio id="bg-music" loop preload="auto">
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 🛠️ 快取清理修復鍵 (獨立層級、外觀乾淨) -->
 <span id="btn-clear-cache">點我清除暫存重置網站</span>
 
-<!-- 首頁 (絕美乾淨版) -->
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -300,7 +286,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
+<!-- 設置面板 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -345,7 +331,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 專屬無庫輕量裁切器遮罩 -->
+<!-- 裁切器 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -456,7 +442,6 @@ document.getElementById('btn-reg').addEventListener('touchstart', function(e){ h
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
 
-// 快取修復鍵點擊
 document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
 document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
 
