@@ -192,13 +192,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
-/* ══ 進入網站引導卡片 ══ */
-#ask-notify-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
-.ask-card{width:88%;max-width:340px;background:var(--bg-card);border:1px solid var(--gold);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 12px 40px var(--sh)}
-.ask-icon{font-size:42px;margin-bottom:12px;display:block}
-.ask-ttl{font-family:'Noto Serif TC',serif;font-size:20px;margin-bottom:10px}
-.ask-txt{font-size:13px;color:var(--bm);line-height:1.6;margin-bottom:24px}
-
 /* ══ 加入主畫面引導 ══ */
 #install-banner{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
 .ib-card{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);border-radius:20px;padding:20px 22px 18px;box-shadow:0 8px 40px var(--sh);border:1px solid rgba(212,160,23,.3);width:calc(100% - 40px);max-width:360px;pointer-events:all;animation:popIn .4s cubic-bezier(.34,1.4,.64,1)}
@@ -244,14 +237,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
   <div class="big-title">蒲公英</div>
   <div class="big-sub">我們的故事，隨風飄揚</div>
-  <div class="home-btns" style="flex-direction: column; gap: 10px;">
-    <div style="display: flex; gap: 14px;">
-      <button class="pill pri" id="btn-reg">註 冊</button>
-      <button class="pill sec" id="btn-log">登 入</button>
-    </div>
-    <span id="btn-clear-cache" style="font-size: 11px; color: var(--bl); text-decoration: underline; cursor: pointer; text-align: center; margin-top: 4px; padding: 5px;">
-      點我修復按鈕卡死/無法點擊
-    </span>
+  <div class="home-btns">
+    <button class="pill pri" id="btn-reg">註 冊</button>
+    <button class="pill sec" id="btn-log">登 入</button>
   </div>
 </div>
 
@@ -360,16 +348,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
-<div id="ask-notify-overlay">
-  <div class="ask-card">
-    <span class="ask-icon">🎵</span>
-    <div class="ask-ttl">開啟背景通知與音樂</div>
-    <div class="ask-txt">同步啟動後即可在背景接收同學訊息，並在夏日悠揚的鋼琴聲中開始與班上聊天。</div>
-    <button class="pill pri" style="width:100%;" id="btn-agree-notify">立刻同步開啟</button>
-    <button class="set-close" style="font-size:13px; margin-top:14px; display:inline-block;" onclick="document.getElementById('ask-notify-overlay').style.display='none'">稍後再說</button>
-  </div>
-</div>
-
 <div id="install-banner">
   <div class="ib-card">
     <div class="ib-top">
@@ -392,7 +370,6 @@ var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-c
 var CLASS_CODE="608";
 // ══════════
 
-// 💡 語法完全對齊修正（單引號 Bug 徹底消滅）
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
@@ -410,20 +387,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     .catch(err => console.error('背景服務註冊失敗:', err));
 }
 
-function requestUserPushPermission(){
-  document.getElementById('ask-notify-overlay').style.display='none';
-  toggleMusic(true);
-
-  if ('Notification' in window) {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        alert('🌼 通知與音樂開啟成功！');
-        if(me) sysMsg(me + ' 已成功同步開啟手機背景通知接收 📢');
-      }
-    });
-  }
-}
-
+// 💡 智慧型背景音訊調度引擎（雙端點擊瞬間自動在背後隱蔽啟動音樂）
 function toggleMusic(play) {
   isMusicEnabled = play;
   var audio = document.getElementById('bg-music');
@@ -436,7 +400,7 @@ function toggleMusic(play) {
       p.then(() => {
         document.getElementById('m-on').classList.add('active');
         document.getElementById('m-off').classList.remove('active');
-      }).catch(e => console.log("播放被限制:", e));
+      }).catch(e => console.log("等待手勢動作觸發音樂播放", e));
     }
   } else {
     audio.pause();
@@ -450,11 +414,11 @@ window.addEventListener('DOMContentLoaded', function(){
   setTheme(savedTheme);
   document.getElementById('m-on').classList.add('active');
 
-  if ('Notification' in window && Notification.permission === 'default') {
-    setTimeout(function(){
-      document.getElementById('ask-notify-overlay').style.display='flex';
-    }, 1200);
-  }
+  // 一進網頁，如果有快取資料自動登入，也順便嘗試在背景啟動音軌
+  window.addEventListener('touchstart', function autoPlayOnGesture() {
+    toggleMusic(true);
+    window.removeEventListener('touchstart', autoPlayOnGesture);
+  }, {passive: true});
 
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
@@ -485,9 +449,11 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+// 💡 點擊註冊或登入的同時，在網頁背後直接默默啟動音樂
 function handleHomeFlow(e, targetFlow) {
   e.preventDefault();
   e.stopPropagation();
+  toggleMusic(true); // 👈 就在這裡！不露痕跡地解鎖 iPhone 音訊播放
   startFlow(targetFlow);
 }
 
@@ -495,13 +461,6 @@ document.getElementById('btn-reg').addEventListener('click', function(e){ handle
 document.getElementById('btn-reg').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'register'); });
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
-
-document.getElementById('btn-agree-notify').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
-document.getElementById('btn-agree-notify').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); requestUserPushPermission(); });
-
-// 修復卡死按鈕綁定
-document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
-document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 快取已清理！App即將刷新重置！'); location.reload(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -622,30 +581,7 @@ function openSetting(){
   document.getElementById('setting-overlay').style.display='flex';
 }
 
-function cancelReply() {
-  replyTargetId = null;replyTargetName = '';replyTargetSnippet = '';
-  document.getElementById('reply-bar').style.display = 'none'; 
-}
-
 function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').style.display='none';}
-
-function setTheme(t){
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('dandelion_theme',t);
-  document.getElementById('t-light').classList[t==='light'?'add':'remove']('active');
-  document.getElementById('t-dark').classList[t==='dark'?'add':'remove']('active');
-}
-
-document.getElementById('set-av-file').addEventListener('change',function(e){
-  var f=e.target.files[0];if(!f)return;
-  var r=new FileReader();r.onload=function(ev){
-    initCrop(ev.target.result, function(croppedData){
-      myAv=croppedData;
-      document.getElementById('set-av-img').src=myAv;
-      document.getElementById('hav-img').src=myAv;
-    });
-  };r.readAsDataURL(f);
-});
 
 function saveSettings(){
   var nb=document.getElementById('set-bio').value.trim();
@@ -884,7 +820,7 @@ function addBubble(d,key){
 }
 
 function addSys(t){var e=document.createElement('div');e.className='sysmsg';e.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(e);var m=document.getElementById('msgs');requestAnimationFrame(function(){m.scrollTop=m.scrollHeight;});}
-function markRcl(w){var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';var ha=w.querySelector('.hvr-actions');if(ha)ha.remove();}}
+function markRcl(w){var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已回';b.className='bbl recalled';var ha=w.querySelector('.hvr-actions');if(ha)ha.remove();}}
 function rclMsg(btn){var w=btn.closest('.mw');if(!w)return;if(!confirm('確定要收回嗎？'))return;var k=w.getAttribute('data-key');if(k&&db)db.ref('messages/'+k).update({recalled:true});}
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
