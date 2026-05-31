@@ -75,7 +75,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 /* 大頭貼 */
 .av-zone{display:flex;justify-content:center;margin:4px 0 18px}
 .av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
-.av-btn hover{border-color:var(--gold);transform:scale(1.04)}
+.av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
 .av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
 .av-cam{font-size:28px}.av-lbl{font-size:11px;color:var(--bl)}
 #av-file{display:none}
@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 🛠️ 訊息列最外層：維持最大 68% 或 85% 舒服寬度，拒絕硬縮小 */
+/* 🛠️ 訊息元件：設定正常的 max-width，保留對話框最舒服的寬度，絕不硬縮窄 */
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
 @media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -119,13 +119,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mw.other{align-self:flex-start;align-items:flex-start}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
 
-/* 🛠️ 核心修正：讓這行允許其內部元件進行寬度縮緊壓縮 */
 .mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-/* 🛠️ 對話框本體：加上 overflow: hidden 攔截內部的爆走文字，彈性放大不設限 */
+/* 🛠️ 對話框文字外殼：加入內縮斷字邏輯，同時與回覆小卡共用 overflow 屏障 */
 .bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
@@ -134,7 +133,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-/* 🛠️ 回覆小卡：強制指定 max-width: 100%，文字太長在小卡內自動變 ... 絕不撐開外面 */
+/* 🛠️ 精準微調回覆小卡：文字如果爆走，會乖乖在小卡裡切斷並顯示 ...，絕不推開外面的對話框 */
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
@@ -195,8 +194,22 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
 
-/* 快取清理修復鍵 */
-#btn-clear-cache{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--bl);text-decoration:underline;cursor:pointer;z-index:99;padding:8px 16px;user-select:none;-webkit-user-select:none;}
+/* 加入主畫面引導 */
+#install-banner{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
+.ib-card{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);border-radius:20px;padding:20px 22px 18px;box-shadow:0 8px 40px var(--sh);border:1px solid rgba(212,160,23,.3);width:calc(100% - 40px);max-width:360px;pointer-events:all;animation:popIn .4s cubic-bezier(.34,1.4,.64,1)}
+@keyframes popIn{from{opacity:0;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+.ib-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ib-title{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--brown);font-weight:700;display:flex;align-items:center;gap:8px}
+.ib-close{background:none;border:none;width:28px;height:28px;border-radius:50%;background:rgba(200,168,130,.2);color:var(--bl);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.ib-steps{display:flex;flex-direction:column;gap:10px}
+.ib-step{display:flex;align-items:center;gap:12px;background:var(--gold-p);border-radius:12px;padding:10px 14px}
+.ib-step-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ib-step-txt{font-size:13px;color:var(--brown);line-height:1.5}
+.ib-step-txt b{color:var(--gold)}
+.ib-pointer{position:absolute;bottom:12px;right:28px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
+.ib-pointer-txt{font-size:11px;color:var(--bm);font-weight:500;background:var(--bg-card);padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
+.ib-pointer-arrow{font-size:28px;animation:arrowBounce .7s ease-in-out infinite alternate}
+@keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(8px)}}
 </style>
 </head>
 <body>
@@ -207,9 +220,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
-<span id="btn-clear-cache">點我清除暫存重置網站</span>
-
-<!-- 首頁 -->
+<!-- 首頁 (完美純淨，重疊 Bug 與重置按鈕全部消滅) -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -217,7 +228,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
       <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
       <g transform="translate(45,34)">
         <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
-        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" y1="-16" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
@@ -286,7 +297,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板 -->
+<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h">
@@ -331,7 +342,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器 -->
+<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
   <div class="crop-box-wrap">
     <img id="crop-img" alt="" draggable="false">
@@ -376,7 +387,7 @@ function toggleMusic(play) {
   if(!audio) return;
   
   if(play) {
-    audio.volume = 0.7; // 📢 大音量設定
+    audio.volume = 0.7; // 大音量設定
     var p = audio.play();
     if(p !== undefined) {
       p.then(() => {
@@ -441,9 +452,6 @@ document.getElementById('btn-reg').addEventListener('click', function(e){ handle
 document.getElementById('btn-reg').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'register'); });
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'login'); });
-
-document.getElementById('btn-clear-cache').addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
-document.getElementById('btn-clear-cache').addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); localStorage.clear(); alert('🌼 暫存已清空！即將重置網頁！'); location.reload(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
