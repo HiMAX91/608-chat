@@ -97,7 +97,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr-l{display:flex;align-items:center;gap:10px}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
-.my-chip{display:flex;align-items:center;gap:8px;cursor:pointer}
+.my-chip{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none;}
 .hav{width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
 .hav img{width:100%;height:100%;object-fit:cover}
 .hname-box{display:flex;flex-direction:column}
@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 訊息元件排版 */
+/* 訊息與對話框 */
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
 @media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -124,7 +124,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-/* 對話框本體 */
 .bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
@@ -137,7 +136,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 絕對定位操作按鈕群 */
+/* 絕對定位的操作按鈕群 */
 .hvr-actions{
   position: absolute;
   bottom: calc(100% + 4px); 
@@ -158,7 +157,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
 
-/* 輸入區域與回覆預覽列 */
+/* 輸入區域 */
 .inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
 @media(max-width:600px){.inp-area{padding:10px 14px 16px}}
 
@@ -192,7 +191,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .t-opt{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(212,160,23,.3);background:transparent;color:var(--brown);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s;text-align:center}
 .t-opt.active{background:var(--gold-p);border-color:var(--gold);font-weight:500}
 
-/* 裁切器 */
+/* 裁切器燈箱 */
 #crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .crop-box-wrap{position:relative;width:280px;height:280px;overflow:hidden;background:#111;border-radius:12px}
 #crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none}
@@ -205,23 +204,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px}
-
-/* 加入主畫面引導 */
-#install-banner{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
-.ib-card{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);border-radius:20px;padding:20px 22px 18px;box-shadow:0 8px 40px var(--sh);border:1px solid rgba(212,160,23,.3);width:calc(100% - 40px);max-width:360px;pointer-events:all;animation:popIn .4s cubic-bezier(.34,1.4,.64,1)}
-@keyframes popIn{from{opacity:0;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1)}}
-.ib-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.ib-title{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--brown);font-weight:700;display:flex;align-items:center;gap:8px}
-.ib-close{background:none;border:none;width:28px;height:28px;border-radius:50%;background:rgba(200,168,130,.2);color:var(--bl);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.ib-steps{display:flex;flex-direction:column;gap:10px}
-.ib-step{display:flex;align-items:center;gap:12px;background:var(--gold-p);border-radius:12px;padding:10px 14px}
-.ib-step-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ib-step-txt{font-size:13px;color:var(--brown);line-height:1.5}
-.ib-step-txt b{color:var(--gold)}
-.ib-pointer{position:absolute;bottom:12px;right:28px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
-.ib-pointer-txt{font-size:11px;color:var(--bm);font-weight:500;background:var(--bg-card);padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
-.ib-pointer-arrow{font-size:28px;animation:arrowBounce .7s ease-in-out infinite alternate}
-@keyframes arrowBounce{from{transform:translateY(0)}to{transform:translateY(8px)}}
 </style>
 </head>
 <body>
@@ -238,7 +220,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
       <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
       <g transform="translate(45,34)">
         <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
-        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" y1="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/>
         <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
@@ -265,7 +247,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span style="font-size:22px">🌼</span><span class="c-hdr-t">蒲公英</span></div>
-    <div class="my-chip" onclick="openSetting()">
+    <div class="my-chip" id="btn-open-set">
       <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
       <div class="hname-box"><span class="hname" id="hname"></span><span class="hbio-sub" id="hbio-sub">查看設置...</span></div>
     </div>
@@ -326,7 +308,7 @@ function toggleMusic(play) {
   else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
 }
 
-// 💡 智慧防耗電音軌控制：離開 APP 即時暫停，回來自動補播
+// 智慧防耗電音軌控制
 document.addEventListener('visibilitychange', function() {
   var audio = document.getElementById('bg-music'); if (!audio) return;
   if (document.hidden) { audio.pause(); } 
@@ -343,6 +325,7 @@ window.addEventListener('DOMContentLoaded', function(){
   var savedTheme = localStorage.getItem('dandelion_theme') || 'light'; setTheme(savedTheme);
   document.getElementById('m-on').classList.add('active');
   window.addEventListener('touchstart', function autoPlayOnGesture() { toggleMusic(true); window.removeEventListener('touchstart', autoPlayOnGesture); }, {passive: true});
+  
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
     var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
@@ -350,24 +333,34 @@ window.addEventListener('DOMContentLoaded', function(){
     s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width=".8" opacity=".7"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';
     c.appendChild(s);
   }
-  var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
-  if(autoName && autoId && db){
-    db.ref('users/'+autoName).once('value', function(snap){
-      var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterChat(autoName, autoId, rAv); } else { localStorage.clear(); }
-    });
-  }
+
+  // try-catch 安全防護網
+  try {
+    var autoName = localStorage.getItem('dandelion_me');
+    var autoId = localStorage.getItem('dandelion_id');
+    if(autoName && autoId && db){
+      db.ref('users/'+autoName).once('value', function(snap){
+        try {
+          var d = snap.val(); 
+          if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterChat(autoName, autoId, rAv); } 
+          else { localStorage.clear(); }
+        } catch(innerErr) { localStorage.clear(); }
+      }, function(err) { localStorage.clear(); });
+    }
+  } catch(globalErr) { localStorage.clear(); }
 });
 
-// 💡 乾淨唯一的點擊流暢控制邏輯（澈底解決按鈕打架、點擊沒反應的致命 Bug）
-function handleHomeFlow(targetFlow) {
-  toggleMusic(true);
-  startFlow(targetFlow);
-}
+// 點擊控制
+function handleHomeFlow(targetFlow) { toggleMusic(true); startFlow(targetFlow); }
 
 document.getElementById('btn-reg').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('register'); });
 document.getElementById('btn-reg').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('register'); });
 document.getElementById('btn-log').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
+
+// 🛠️ 專為右上角個人設置晶片設計的專用雙端事件監聽器（彻底解鎖設置點不進去的 Bug）
+document.getElementById('btn-open-set').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
+document.getElementById('btn-open-set').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -568,6 +561,7 @@ function addBubble(d,key){
   return w;
 }
 
+// 原生 HTML 轉換防爆
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
