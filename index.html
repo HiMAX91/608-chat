@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 🛠️ 訊息元件：設定正常的 max-width，保留對話框最舒服的寬度，絕不硬縮窄 */
+/* 訊息元件外殼 */
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
 @media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -119,12 +119,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mw.other{align-self:flex-start;align-items:flex-start}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
 
-.mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;}
+.mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;position:relative;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
 
-/* 🛠️ 對話框文字外殼：加入內縮斷字邏輯，同時與回覆小卡共用 overflow 屏障 */
+/* 對話框本體 */
 .bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
@@ -133,15 +133,27 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
-/* 🛠️ 精準微調回覆小卡：文字如果爆走，會乖乖在小卡裡切斷並顯示 ...，絕不推開外面的對話框 */
+/* 回覆小卡 */
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 操作按鈕群 */
-.hvr-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s;padding:0 4px;margin-bottom:2px;pointer-events:none;flex-shrink:0;}
-.mw:hover .hvr-actions, .mw.show-menu .hvr-actions{opacity:1;pointer-events:auto;}
-.action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s}
-.action-btn:hover{background:var(--gold-p)}
+/* 漂浮絕對定位的操作按鈕群 */
+.hvr-actions{
+  position: absolute;
+  bottom: calc(100% + 4px); 
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s, transform .15s;
+  z-index: 50;
+}
+.mw.self .hvr-actions { right: 40px; transform: translateY(3px); }
+.mw.other .hvr-actions { left: 40px; transform: translateY(3px); }
+.mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ opacity: 1; pointer-events: auto; transform: translateY(0); }
+.action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s;box-shadow: 0 2px 8px var(--sh);}
+.action-btn:hover{background:var(--gold-p);border-color:var(--gold);}
 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
@@ -215,12 +227,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <body>
 <div id="seeds"></div>
 
-<!-- 🎵 背景音樂播放器 (讀取實體音樂檔) -->
 <audio id="bg-music" loop preload="auto">
   <source src="Summer.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 首頁 (完美純淨，重疊 Bug 與重置按鈕全部消滅) -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -247,16 +257,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
-  <div class="stp-bar">
-    <button class="bk-btn" id="bk-btn" onclick="goBack()">←</button>
-    <div class="dots" id="dots"></div>
-  </div>
+  <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 聊天 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l">
@@ -264,154 +269,86 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
       <span class="c-hdr-t">蒲公英</span>
     </div>
     <div class="my-chip" onclick="openSetting()">
-      <div class="hav" id="hav">
-        <img id="hav-img" alt="" style="display:none">
-      </div>
-      <div class="hname-box">
-        <span class="hname" id="hname"></span>
-        <span class="hbio-sub" id="hbio-sub">查看設置...</span>
-      </div>
+      <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
+      <div class="hname-box"><span class="hname" id="hname"></span><span class="hbio-sub" id="hbio-sub">查看設置...</span></div>
     </div>
   </div>
   <div class="msgs" id="msgs">
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
   
-  <!-- 輸入區域 -->
   <div class="inp-area">
-    <div class="reply-bar" id="reply-bar">
-      <div class="reply-bar-info" id="reply-bar-info"></div>
-      <button class="reply-bar-close" onclick="cancelReply()">×</button>
-    </div>
-    
+    <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
     <div class="inp-row">
-      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案／圖片">
-        <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-      </button>
+      <button class="att-btn" onclick="document.getElementById('fi2').click()"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
       <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
       <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
-      <button class="snd-btn" id="snd-btn">
-        <svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
-      </button>
+      <button class="snd-btn" id="snd-btn"><svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>
     </div>
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
-    <div class="set-h">
-      <div class="set-t">個人設置</div>
-      <button class="set-close" onclick="document.getElementById('setting-overlay').style.display='none'">×</button>
-    </div>
-    <div class="set-item" style="text-align:center;">
-      <div class="av-zone">
-        <div class="av-btn" onclick="document.getElementById('set-av-file').click()">
-          <img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;">
-        </div>
-      </div>
-      <input type="file" id="set-av-file" accept="image/*" style="display:none">
-      <span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span>
-    </div>
-    <div class="set-item">
-      <div class="set-lbl">我的介紹</div>
-      <input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…">
-    </div>
-    <div class="set-item">
-      <div class="set-lbl">個人密碼變更</div>
-      <input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼">
-    </div>
-    <div class="set-item">
-      <div class="set-lbl">介面主題</div>
-      <div class="theme-options">
-        <button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button>
-        <button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button>
-      </div>
-    </div>
-    <div class="set-item">
-      <div class="set-lbl">背景音樂</div>
-      <div class="theme-options">
-        <button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button>
-        <button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button>
-      </div>
-    </div>
-    <div style="display:flex; gap:12px; margin-top:24px;">
-      <button class="pill sec" style="padding:10px 20px; flex:1;" onclick="doLogout()">登 出</button>
-      <button class="pill pri" style="padding:10px 20px; flex:1;" onclick="saveSettings()">保 存</button>
-    </div>
+    <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').style.display='none'">×</button></div>
+    <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
+    <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
+    <div class="set-item"><div class="set-lbl">個人密碼變更</div><input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼"></div>
+    <div class="set-item"><div class="set-lbl">介面主題</div><div class="theme-options"><button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button><button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button></div></div>
+    <div class="set-item"><div class="set-lbl">背景音樂</div><div class="theme-options"><button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button><button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button></div></div>
+    <div style="display:flex; gap:12px; margin-top:24px;"><button class="pill sec" style="padding:10px 20px; flex:1;" onclick="doLogout()">登 出</button><button class="pill pri" style="padding:10px 20px; flex:1;" onclick="saveSettings()">保 存</button></div>
   </div>
 </div>
 
-<!-- 專屬無庫輕量裁切器遮罩 -->
 <div id="crop-overlay">
-  <div class="crop-box-wrap">
-    <img id="crop-img" alt="" draggable="false">
-    <div class="crop-mask"></div>
-  </div>
-  <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
-  <div class="crop-btns">
-    <button class="c-btn cancel" onclick="closeCrop()">取消</button>
-    <button class="c-btn save" onclick="saveCrop()">裁切</button>
-  </div>
-</div>
-
+  <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div><div class="crop-tips">雙指縮放或拖動照片調整範圍</div><div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div></div>
 <div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// ══ 設定 ══
+// ══ 全域變數定義 ══
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
-// ══════════
-
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
 var isMusicEnabled=true;
-
 var cropSourceSrc='', cropTargetHandler=null;
 var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
-  navigator.serviceWorker.register('sw.js')
-    .then(reg => { console.log('背景服務 Service Worker 註冊成功！'); })
-    .catch(err => console.error('背景服務註冊失敗:', err));
+  navigator.serviceWorker.register('sw.js').catch(err => console.error('背景服務註冊失敗:', err));
 }
 
+// 💡 音樂控制邏輯
 function toggleMusic(play) {
-  isMusicEnabled = play;
-  var audio = document.getElementById('bg-music');
-  if(!audio) return;
-  
-  if(play) {
-    audio.volume = 0.7; // 大音量設定
-    var p = audio.play();
-    if(p !== undefined) {
-      p.then(() => {
-        document.getElementById('m-on').classList.add('active');
-        document.getElementById('m-off').classList.remove('active');
-      }).catch(e => console.log("等待手勢解鎖播放", e));
-    }
+  isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
+  if(play) { audio.volume = 0.7; var p = audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>console.log(e));} }
+  else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
+}
+
+// 💡 修正後的主題控制（按鈕外觀同步高亮，再也不會按下去沒反應）
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('dandelion_theme',t);
+  // 幫兩個按鈕做精準外觀切換
+  if(t === 'light') {
+    document.getElementById('t-light').classList.add('active');
+    document.getElementById('t-dark').classList.remove('active');
   } else {
-    audio.pause();
-    document.getElementById('m-on').classList.remove('active');
-    document.getElementById('m-off').classList.add('active');
+    document.getElementById('t-light').classList.remove('active');
+    document.getElementById('t-dark').classList.add('active');
   }
 }
 
 window.addEventListener('DOMContentLoaded', function(){
-  var savedTheme = localStorage.getItem('dandelion_theme') || 'light';
-  setTheme(savedTheme);
+  var savedTheme = localStorage.getItem('dandelion_theme') || 'light'; 
+  setTheme(savedTheme); // 初始化載入時同步亮起按鈕
   document.getElementById('m-on').classList.add('active');
-
-  window.addEventListener('touchstart', function autoPlayOnGesture() {
-    toggleMusic(true);
-    window.removeEventListener('touchstart', autoPlayOnGesture);
-  }, {passive: true});
-
+  window.addEventListener('touchstart', function autoPlayOnGesture() { toggleMusic(true); window.removeEventListener('touchstart', autoPlayOnGesture); }, {passive: true});
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
     var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
@@ -419,35 +356,15 @@ window.addEventListener('DOMContentLoaded', function(){
     s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width=".8" opacity=".7"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';
     c.appendChild(s);
   }
-
-  var autoName = localStorage.getItem('dandelion_me');
-  var autoId = localStorage.getItem('dandelion_id');
-  if(autoName && autoId){
-    if(db){
-      db.ref('users/'+autoName).once('value', function(snap){
-        var d = snap.val();
-        if(d && d.identity === autoId){
-          myBio = d.bio || '';
-          rAv = d.avatar || '';
-          myPwdRaw = d.rawPwd || '';
-          enterChat(autoName, autoId, rAv);
-        } else {
-          localStorage.clear();
-        }
-      });
-    }else{
-      enterChat(autoName, autoId, '');
-    }
+  var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
+  if(autoName && autoId && db){
+    db.ref('users/'+autoName).once('value', function(snap){
+      var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterChat(autoName, autoId, rAv); } else { localStorage.clear(); }
+    });
   }
 });
 
-function handleHomeFlow(e, targetFlow) {
-  e.preventDefault();
-  e.stopPropagation();
-  toggleMusic(true);
-  startFlow(targetFlow);
-}
-
+function handleHomeFlow(e, targetFlow) { e.preventDefault(); e.stopPropagation(); toggleMusic(true); startFlow(targetFlow); }
 document.getElementById('btn-reg').addEventListener('click', function(e){ handleHomeFlow(e, 'register'); });
 document.getElementById('btn-reg').addEventListener('touchstart', function(e){ handleHomeFlow(e, 'register'); });
 document.getElementById('btn-log').addEventListener('click', function(e){ handleHomeFlow(e, 'login'); });
@@ -455,58 +372,27 @@ document.getElementById('btn-log').addEventListener('touchstart', function(e){ h
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
-var REG=[
-  {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'讓同學認識你，點擊圖示裁切漂亮範圍 📷',type:'avatar'},
-  {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名，讓同學找到你',type:'text',id:'rn',ph:'輸入你的真實姓名',it:'text'},
-  {lbl:'3 / 5',ttl:'Gmail 信箱',hint:'用來找回帳號用。請勿使用學校帳號。',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},
-  {lbl:'4 / 5',ttl:'設定個人密碼',hint:'換裝置登入也要用這組密碼，請記好！',type:'text',id:'rp',ph:'設定你的個人密碼',it:'password'},
-  {lbl:'5 / 5',ttl:'班級密碼',hint:'輸入正確就能進去了 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}
-];
-var LOG=[
-  {lbl:'1 / 3',ttl:'你的名字',hint:'輸入你當初註冊時填的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},
-  {lbl:'2 / 3',ttl:'個人密碼',hint:'輸入你當時設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},
-  {lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}
-];
+var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入你的真實姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱',hint:'請勿使用學校帳號',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定你的個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
+var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
 function steps(){return flow==='register'?REG:LOG;}
-
-function startFlow(f){
-  flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;
-  show('s-steps');renderStep(0,false);
-}
+function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
 
 function renderStep(idx,back){
-  stepIdx=idx;
-  var ss=steps(),s=ss[idx];
-  var d=document.getElementById('dots');d.innerHTML='';
+  stepIdx=idx; var ss=steps(),s=ss[idx]; var d=document.getElementById('dots'); d.innerHTML='';
   ss.forEach(function(_,i){var el=document.createElement('div');el.className='dot'+(i===idx?' on':'');d.appendChild(el);});
   document.getElementById('bk-btn').style.visibility=idx===0?'hidden':'visible';
-
   var body='';
-  if(s.type==='avatar'){
-    body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>';
-  } else {
-    var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||'';
-    body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">';
-  }
+  if(s.type==='avatar'){ body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>'; }
+  else { var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||''; body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">'; }
   body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
-
   document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
-
   if(s.type==='avatar'){
     if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
     document.getElementById('av-file').addEventListener('change',function(e){
       var f=e.target.files[0];if(!f)return;
-      var r=new FileReader();r.onload=function(ev){
-        initCrop(ev.target.result, function(croppedData){
-          rAv=croppedData;
-          var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';
-          document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';
-        });
-      };r.readAsDataURL(f);
+      var r=new FileReader();r.onload=function(ev){ initCrop(ev.target.result, function(croppedData){ rAv=croppedData; var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none'; }); };r.readAsDataURL(f);
     });
-  } else {
-    setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80);
-  }
+  } else { setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80); }
 }
 
 function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
@@ -517,236 +403,112 @@ function nextStep(){
   if(s.type==='avatar'){stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;}
   var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
   if(!v){setErr('⚠️ 這個欄位不能空白');return;}
-  if(s.id==='rn')rName=v;
-  else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用個人 Gmail（結尾 @gmail.com）');return;}rGmail=v;}
-  else if(s.id==='rp')rPwd=v;
-  else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 班級密碼不對！');return;}}
-  else if(s.id==='ln')lName=v;
-  else if(s.id==='lp')lPwd=v;
-  else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 班級密碼不對！');return;}}
+  if(s.id==='rn')rName=v; else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用 Gmail 信箱');return;}rGmail=v;} else if(s.id==='rp')rPwd=v; else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  else if(s.id==='ln')lName=v; else if(s.id==='lp')lPwd=v; else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
   stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
 }
 
-function mkId(n,p){var s=n+'|'+p,h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);h=h>>>0;}return'id_'+h.toString(36);}
-
 function doAuth(){
   var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
-  if(!db){enterChat(flow==='register'?rName:lName,'',rAv);return;}
   if(flow==='register'){
     var id=mkId(rName,rPwd);
     db.ref('users/'+rName).once('value',function(snap){
-      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 這個名字已有人用了，請換一個！');},100);return;}
-      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd});
-      myPwdRaw=rPwd;
-      enterChat(rName,id,rAv);
+      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 名字已被佔用');},100);return;}
+      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd}); myPwdRaw=rPwd; enterChat(rName,id,rAv);
     });
   } else {
     var id2=mkId(lName,lPwd);
     db.ref('users/'+lName).once('value',function(snap){
-      var d=snap.val();
-      if(!d){setErr('❌ 找不到這個帳號，請先去註冊！');if(nb){nb.disabled=false;nb.innerHTML='<svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';}return;}
-      if(d.identity!==id2){setErr('❌ 個人密碼錯誤！');if(nb){nb.disabled=false;nb.innerHTML='<svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';}return;}
-      if(d.avatar){rAv=d.avatar;}
-      myBio=d.bio||'';
-      myPwdRaw=d.rawPwd||lPwd;
-      enterChat(lName,id2,d.avatar||'');
+      var d=snap.val();if(!d){setErr('❌ 帳號不存在');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.identity!==id2){setErr('❌ 密碼錯誤');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.avatar){rAv=d.avatar;} myBio=d.bio||''; myPwdRaw=d.rawPwd||lPwd; enterChat(lName,id2,d.avatar||'');
     });
   }
 }
 
 function enterChat(name,id,av){
-  me=name;myId=id;myAv=av;
-  localStorage.setItem('dandelion_me', name);
-  localStorage.setItem('dandelion_id', id);
-  document.getElementById('hname').textContent=name;
-  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...';
+  me=name;myId=id;myAv=av; localStorage.setItem('dandelion_me', name); localStorage.setItem('dandelion_id', id);
+  document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...';
   if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
   show('s-chat');startListen();sysMsg(name+' 來了 🌼');
 }
 
-function openSetting(){
-  document.getElementById('set-bio').value=myBio;
-  document.getElementById('set-pwd').value='';
-  var simg=document.getElementById('set-av-img');
-  if(myAv){simg.src=myAv;simg.style.display='block';}else{simg.style.display='none';}
-  document.getElementById('setting-overlay').style.display='flex';
-}
-
-function cancelReply() {
-  replyTargetId = null;replyTargetName = '';replyTargetSnippet = '';
-  document.getElementById('reply-bar').style.display = 'none'; 
-}
-
-function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').style.display='none';}
-
-function setTheme(t){
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('dandelion_theme',t);
-  document.getElementById('t-light').classList[t==='light'?'add':'remove']('active');
-  document.getElementById('t-dark').classList[t==='dark'?'add':'remove']('active');
-}
-
-document.getElementById('set-av-file').addEventListener('change',function(e){
-  var f=e.target.files[0];if(!f)return;
-  var r=new FileReader();r.onload=function(ev){
-    initCrop(ev.target.result, function(croppedData){
-      myAv=croppedData;
-      document.getElementById('set-av-img').src=myAv;
-      document.getElementById('hav-img').src=myAv;
-    });
-  };r.readAsDataURL(f);
-});
-
 function saveSettings(){
-  var nb=document.getElementById('set-bio').value.trim();
-  var np=document.getElementById('set-pwd').value.trim();
-  myBio=nb;
-  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...';
-  var upData={bio:myBio,avatar:myAv};
-  if(np){
-    var newId=mkId(me,np);
-    myId=newId;myPwdRaw=np;
-    localStorage.setItem('dandelion_id',newId);
-    upData.identity=newId;upData.rawPwd=np;
-  }
-  if(db && me) db.ref('users/'+me).update(upData);
-  document.getElementById('setting-overlay').style.display='none';
+  var nb=document.getElementById('set-bio').value.trim(); var np=document.getElementById('set-pwd').value.trim(); myBio=nb;
+  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...'; var upData={bio:myBio,avatar:myAv};
+  if(np){ var newId=mkId(me,np); myId=newId;myPwdRaw=np; localStorage.setItem('dandelion_id',newId); upData.identity=newId;upData.rawPwd=np; }
+  if(db && me) db.ref('users/'+me).update(upData); document.getElementById('setting-overlay').style.display='none';
 }
-
-function doLogout(){
-  if(!confirm('確定要登出嗎？'))return;
-  localStorage.clear();
-  location.reload();
-}
+function doLogout(){ if(!confirm('確定要登出嗎？'))return; localStorage.clear(); location.reload(); }
 
 function initCrop(src, callback){
-  cropSourceSrc=src;cropTargetHandler=callback;
-  var cimg=document.getElementById('crop-img');
-  cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;
+  cropSourceSrc=src;cropTargetHandler=callback; var cimg=document.getElementById('crop-img'); cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;
   cimg.style.transform='translate(0px, 0px) scale(1)';
   cimg.onload=function(){
-    var wrap=280;
-    if(cimg.naturalWidth>cimg.naturalHeight){
-      imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;
-    }else{
-      imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;
-    }
-    updateCropTransform();
+    var wrap=280; if(cimg.naturalWidth>cimg.naturalHeight){imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;}else{imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;} updateCropTransform();
   };
   document.getElementById('crop-overlay').style.display='flex';
 }
-
-function updateCropTransform(){
-  document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')';
-}
+function updateCropTransform(){ document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')'; }
 
 (function(){
   var cimg=document.getElementById('crop-img');
   function start(x,y,dist){ isDragging=true;startX=x-imgX;startY=y-imgY;startDist=dist; }
   function move(x,y,dist){
-    if(!isDragging)return;
-    imgX=x-startX;imgY=y-startY;
-    if(dist>0 && startDist>0){
-      var sc=dist/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=dist;
-    }
-    updateCropTransform();
+    if(!isDragging)return; imgX=x-startX;imgY=y-startY;
+    if(dist>0 && startDist>0){ var sc=dist/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=dist; } updateCropTransform();
   }
-  function end(){isDragging=false;}
   cimg.addEventListener('mousedown',function(e){start(e.clientX,e.clientY,0);});
   window.addEventListener('mousemove',function(e){if(isDragging)move(e.clientX,e.clientY,0);});
-  window.addEventListener('mouseup',end);
+  window.addEventListener('mouseup',function(){isDragging=false;});
   cimg.addEventListener('touchstart',function(e){
     if(e.touches.length===1){ start(e.touches[0].clientX,e.touches[0].clientY,0); }
-    else if(e.touches.length===2){
-      var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
-      start((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d);
-    }
-  });
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); start((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: true});
   window.addEventListener('touchmove',function(e){
-    if(!isDragging)return;
-    if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
-    else if(e.touches.length===2){
-      var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
-      move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d);
-    }
-  });
-  window.addEventListener('touchend',end);
+    if(!isDragging)return; if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: true});
+  window.addEventListener('touchend',function(){isDragging=false;});
 })();
-
 function closeCrop(){document.getElementById('crop-overlay').style.display='none';}
 function saveCrop(){
-  var cimg=document.getElementById('crop-img');
-  var cv=document.createElement('canvas');cv.width=100;cv.height=100;
-  var rScale=imgScale/cimg.width;
+  var cimg=document.getElementById('crop-img'); var cv=document.createElement('canvas');cv.width=100;cv.height=100; var rScale=imgScale/cimg.width;
   cv.getContext('2d').drawImage(cimg, (-imgX)/rScale, (-imgY)/rScale, 280/rScale, 280/rScale, 0, 0, 100, 100);
-  var data=cv.toDataURL('image/jpeg',0.82);
-  if(cropTargetHandler)cropTargetHandler(data);
-  closeCrop();
+  var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
 }
 
 function startListen(){
   if(!db)return;
-  db.ref('messages').on('child_added',function(snap){
-    var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true;
-    var d=snap.val();if(!d)return;
-    d.name==='__system__'?addSys(d.text):addBubble(d,k);
-  });
-  db.ref('messages').on('child_changed',function(snap){
-    var d=snap.val();if(!d||!d.recalled)return;
-    var w=document.querySelector('[data-key="'+snap.key+'"]');if(w)markRcl(w);
-  });
+  db.ref('messages').on('child_added',function(snap){ var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true; var d=snap.val();if(!d)return; d.name==='__system__'?addSys(d.text):addBubble(d,k); });
+  db.ref('messages').on('child_changed',function(snap){ var d=snap.val();if(!d||!d.recalled)return; var w=document.querySelector('[data-key="'+snap.key+'"]');if(w)markRcl(w); });
 }
-
-function pushMsg(obj){
-  if(!db)return;var nr=db.ref('messages').push();
-  shownKeys[nr.key]=true;obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj);
-}
-function sysMsg(t){if(!db)return;var nr=db.ref('messages').push();shownKeys[nr.key]=true;nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});}
+function pushMsg(obj){ if(!db)return;var nr=db.ref('messages').push(); shownKeys[nr.key]=true;obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj); }
+function sysMsg(t){ if(!db)return;var nr=db.ref('messages').push();shownKeys[nr.key]=true;nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});}
 
 document.getElementById('snd-btn').addEventListener('click',sendTxt);
 document.getElementById('msg-ta').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTxt();}});
 document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 
-function initReply(msgKey, name, snippet) {
-  replyTargetId = msgKey;replyTargetName = name;replyTargetSnippet = snippet;
-  var bar = document.getElementById('reply-bar');
-  var info = document.getElementById('reply-bar-info');
-  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」';
-  bar.style.display = 'flex';
-  document.getElementById('msg-ta').focus();
-}
-
 function sendTxt(){
-  var ta=document.getElementById('msg-ta'),txt=ta.value.trim();
-  if(!txt||!me)return;ta.value='';ta.style.height='auto';
-  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId};
-  if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
-  addBubble(m,null);pushMsg(m);
-  cancelReply();
+  var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
+  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
+  addBubble(m,null);pushMsg(m);cancelReply();
 }
 
 document.getElementById('fi2').addEventListener('change',function(e){
-  var file=e.target.files[0];if(!file||!me)return;this.value='';
-  var isImg=/^image\//i.test(file.type);
-  if(file.size>900*1024&&!isImg){alert('檔案太大！最大支援 900KB');return;}
+  var file=e.target.files[0];if(!file||!me)return;this.value=''; var isImg=/^image\//i.test(file.type); if(file.size>900*1024&&!isImg){alert('檔案太大！');return;}
   var reader=new FileReader();
   reader.onload=function(ev){
     if(isImg){
       var img=new Image();img.onload=function(){
-        var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height;
-        if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
-        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
-        var data=cv.toDataURL('image/jpeg',.78);
-        if(data.length>1100*1024){alert('圖片太大，請選一張較小的照片');return;}
-        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
-        if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+        var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
+        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.78);
+        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
         addBubble(m,null);pushMsg(m);cancelReply();
       };img.src=ev.target.result;
     } else {
-      var data=ev.target.result;
-      if(data.length>1200*1024){alert('檔案太大！最大支援 900KB');return;}
-      var m={name:me,type:'file',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId};
-      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      var m={name:me,type:'file',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       addBubble(m,null);pushMsg(m);cancelReply();
     }
   };reader.readAsDataURL(file);
@@ -754,35 +516,19 @@ document.getElementById('fi2').addEventListener('change',function(e){
 
 function jumpToMessage(key) {
   var target = document.querySelector('[data-key="'+key+'"]');
-  if(target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    target.style.outline = '2px dashed var(--gold)';
-    setTimeout(function(){ target.style.outline='none'; }, 2000);
-  }
+  if(target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.style.outline = '2px dashed var(--gold)'; setTimeout(function(){ target.style.outline='none'; }, 2000); }
 }
 
-function handleMenuAction(e, callback) {
-  e.preventDefault();
-  e.stopPropagation();
-  var mw = e.target.closest('.mw');
-  if(mw) mw.classList.remove('show-menu');
-  callback();
-}
+function handleMenuAction(e, callback) { e.preventDefault(); e.stopPropagation(); var mw = e.target.closest('.mw'); if(mw) mw.classList.remove('show-menu'); callback(); }
 
 function addBubble(d,key){
   var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
-  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||'';
-  var date=fmtD(ts);
+  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||''; var date=fmtD(ts);
   if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
   
-  var w=document.createElement('div');w.className='mw '+(self?'self':'other');
-  if(key)w.setAttribute('data-key',key);
+  var w=document.createElement('div');w.className='mw '+(self?'self':'other'); if(key)w.setAttribute('data-key',key);
   var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
-  
-  var quoteHtml = '';
-  if(!rcld && d.replyId){
-    quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>';
-  }
+  var quoteHtml = ''; if(!rcld && d.replyId){ quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>'; }
 
   var bb='';
   if(rcld)bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
@@ -806,26 +552,14 @@ function addBubble(d,key){
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
   
   if(!rcld && key){
-    var pressTimer;var bblBox = w.querySelector('.bbl');
+    var pressTimer; var bblBox = w.querySelector('.bbl');
     var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
     var cancelPress = function() { clearTimeout(pressTimer); };
-    bblBox.addEventListener('touchstart', startPress, {passive: true});
-    bblBox.addEventListener('touchend', cancelPress);
-    bblBox.addEventListener('touchmove', cancelPress);
-    bblBox.addEventListener('mousedown', startPress);
-    bblBox.addEventListener('mouseup', cancelPress);
-    bblBox.addEventListener('mouseleave', cancelPress);
+    bblBox.addEventListener('touchstart', startPress, {passive: true}); bblBox.addEventListener('touchend', cancelPress); bblBox.addEventListener('touchmove', cancelPress);
+    bblBox.addEventListener('mousedown', startPress); bblBox.addEventListener('mouseup', cancelPress); bblBox.addEventListener('mouseleave', cancelPress);
 
-    var rBtn = w.querySelector('.rpl-act');
-    if(rBtn){
-      rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); });
-      rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); });
-    }
-    var cBtn = w.querySelector('.rcl-act');
-    if(cBtn){
-      cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); });
-      cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); });
-    }
+    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); }
+    var cBtn = w.querySelector('.rcl-act'); if(cBtn){ cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); }
   }
 
   document.getElementById('msgs').appendChild(w);
@@ -833,37 +567,10 @@ function addBubble(d,key){
   return w;
 }
 
-function addSys(t){var e=document.createElement('div');e.className='sysmsg';e.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(e);var m=document.getElementById('msgs');requestAnimationFrame(function(){m.scrollTop=m.scrollHeight;});}
-function markRcl(w){var b=w.querySelector('.bbl');if(b){b.innerHTML='🌬️ 此訊息已收回';b.className='bbl recalled';var ha=w.querySelector('.hvr-actions');if(ha)ha.remove();}}
-function rclMsg(btn){var w=btn.closest('.mw');if(!w)return;if(!confirm('確定要收回嗎？'))return;var k=w.getAttribute('data-key');if(k&&db)db.ref('messages/'+k).update({recalled:true});}
-
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
 function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').style.display='flex';}
-
-(function(){
-  if(window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches) return;
-  if(localStorage.getItem('ib_dismissed')) return;
-  var ua=navigator.userAgent, isIOS=/iphone|ipod/i.test(ua), isIPad=/ipad/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), isAndroid=/android/i.test(ua);
-  if(!isIOS&&!isIPad&&!isAndroid) return;
-  var steps=document.getElementById('ib-steps'), pointer=document.getElementById('ib-pointer'), pointerTxt=document.getElementById('ib-pointer-txt');
-  if(isIOS){
-    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">用 <b>Safari</b> 開啟網頁</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點畫面底部正中間的 <b>分享</b> 箭頭按鈕</div></div><div class="ib-step"><div class="ib-step-num">3</div><div class="ib-step-txt">選擇 <b>「加入主畫面」</b> 即可！</div></div>';
-    pointer.style.cssText='position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;';
-    pointerTxt.textContent='分享按鈕在正下方';
-  } else if(isIPad){
-    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點擊右上角 <b>分享</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">點選 <b>「加入主畫面」</b></div></div>';
-    pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;pointer-events:none;';
-    pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg)">👇</div><div class="ib-pointer-txt">按鈕在這裡</div>';
-  } else if(isAndroid){
-    steps.innerHTML='<div class="ib-step"><div class="ib-step-num">1</div><div class="ib-step-txt">點右上角 <b>⋮</b> 按鈕</div></div><div class="ib-step"><div class="ib-step-num">2</div><div class="ib-step-txt">選擇 <b>「新增至主畫面」</b></div></div>';
-    pointer.style.cssText='position:absolute;top:16px;right:22px;display:flex;flex-direction:column;align-items:center;pointer-events:none;';
-    pointer.innerHTML='<div class="ib-pointer-arrow" style="transform:rotate(180deg)">👇</div><div class="ib-pointer-txt">選單在這裡</div>';
-  }
-  setTimeout(function(){ document.getElementById('install-banner').style.display='block'; }, 2000);
-})();
-function dismissBanner(){document.getElementById('install-banner').style.display='none';localStorage.setItem('ib_dismissed','1');}
 </script>
 </body>
 </html>
