@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
 
-/* 訊息元件外殼 */
+/* 訊息元件排版 */
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
 @media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -137,7 +137,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 漂浮絕對定位的操作按鈕群 */
+/* 絕對定位操作按鈕群 */
 .hvr-actions{
   position: absolute;
   bottom: calc(100% + 4px); 
@@ -179,7 +179,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .snd-btn:hover{transform:scale(1.08)}
 .snd-btn svg{width:17px;height:17px;fill:#fff}
 
-/* ══ 設置面板遮罩 ══ */
+/* 設置面板 */
 #setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh);animation:pop .25s ease}
 @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
@@ -192,7 +192,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .t-opt{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(212,160,23,.3);background:transparent;color:var(--brown);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s;text-align:center}
 .t-opt.active{background:var(--gold-p);border-color:var(--gold);font-weight:500}
 
-/* ══ 裁切器燈箱 ══ */
+/* 裁切器 */
 #crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .crop-box-wrap{position:relative;width:280px;height:280px;overflow:hidden;background:#111;border-radius:12px}
 #crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none}
@@ -264,10 +264,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
-    <div class="c-hdr-l">
-      <span style="font-size:22px">🌼</span>
-      <span class="c-hdr-t">蒲公英</span>
-    </div>
+    <div class="c-hdr-l"><span style="font-size:22px">🌼</span><span class="c-hdr-t">蒲公英</span></div>
     <div class="my-chip" onclick="openSetting()">
       <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
       <div class="hname-box"><span class="hname" id="hname"></span><span class="hbio-sub" id="hbio-sub">查看設置...</span></div>
@@ -276,7 +273,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="msgs" id="msgs">
     <div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div>
   </div>
-  
   <div class="inp-area">
     <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
     <div class="inp-row">
@@ -288,26 +284,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<div id="setting-overlay" onclick="closeSetting(event)">
-  <div class="set-card" onclick="event.stopPropagation()">
-    <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').style.display='none'">×</button></div>
-    <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
-    <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
-    <div class="set-item"><div class="set-lbl">個人密碼變更</div><input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼"></div>
-    <div class="set-item"><div class="set-lbl">介面主題</div><div class="theme-options"><button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button><button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button></div></div>
-    <div class="set-item"><div class="set-lbl">背景音樂</div><div class="theme-options"><button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button><button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button></div></div>
-    <div style="display:flex; gap:12px; margin-top:24px;"><button class="pill sec" style="padding:10px 20px; flex:1;" onclick="doLogout()">登 出</button><button class="pill pri" style="padding:10px 20px; flex:1;" onclick="saveSettings()">保 存</button></div>
-  </div>
-</div>
-
-<div id="crop-overlay">
-  <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div><div class="crop-tips">雙指縮放或拖動照片調整範圍</div><div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div></div>
-<div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// ══ 全域變數定義 ══
+// ══ 全域資料配置 ══
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
@@ -320,33 +300,39 @@ var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=fals
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
-  navigator.serviceWorker.register('sw.js').catch(err => console.error('背景服務註冊失敗:', err));
+  navigator.serviceWorker.register('sw.js').catch(err => console.error(err));
 }
 
-// 💡 音樂控制邏輯
 function toggleMusic(play) {
   isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
   if(play) { audio.volume = 0.7; var p = audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>console.log(e));} }
   else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
 }
 
-// 💡 修正後的主題控制（按鈕外觀同步高亮，再也不會按下去沒反應）
-function setTheme(t){
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('dandelion_theme',t);
-  // 幫兩個按鈕做精準外觀切換
-  if(t === 'light') {
-    document.getElementById('t-light').classList.add('active');
-    document.getElementById('t-dark').classList.remove('active');
+// 💡 退出 APP / 切換分頁時，自動暫停背景音樂；返回時自動恢復
+document.addEventListener('visibilitychange', function() {
+  var audio = document.getElementById('bg-music');
+  if (!audio) return;
+  
+  if (document.hidden) {
+    // 同學切換出 App、滑掉或鎖屏待機時，強制切斷音軌
+    audio.pause();
   } else {
-    document.getElementById('t-light').classList.remove('active');
-    document.getElementById('t-dark').classList.add('active');
+    // 同學重新返回 App 時，如果他本來沒有開靜音，自動幫他恢復播放
+    if (isMusicEnabled) {
+      audio.play().catch(e => console.log("等待同學手勢解鎖音訊:", e));
+    }
   }
+});
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t); localStorage.setItem('dandelion_theme',t);
+  if(t === 'light') { document.getElementById('t-light').classList.add('active'); document.getElementById('t-dark').classList.remove('active'); } 
+  else { document.getElementById('t-light').classList.remove('active'); document.getElementById('t-dark').classList.add('active'); }
 }
 
 window.addEventListener('DOMContentLoaded', function(){
-  var savedTheme = localStorage.getItem('dandelion_theme') || 'light'; 
-  setTheme(savedTheme); // 初始化載入時同步亮起按鈕
+  var savedTheme = localStorage.getItem('dandelion_theme') || 'light'; setTheme(savedTheme);
   document.getElementById('m-on').classList.add('active');
   window.addEventListener('touchstart', function autoPlayOnGesture() { toggleMusic(true); window.removeEventListener('touchstart', autoPlayOnGesture); }, {passive: true});
   var c=document.getElementById('seeds');
@@ -390,187 +376,4 @@ function renderStep(idx,back){
     if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
     document.getElementById('av-file').addEventListener('change',function(e){
       var f=e.target.files[0];if(!f)return;
-      var r=new FileReader();r.onload=function(ev){ initCrop(ev.target.result, function(croppedData){ rAv=croppedData; var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none'; }); };r.readAsDataURL(f);
-    });
-  } else { setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80); }
-}
-
-function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
-function goBack(){if(stepIdx===0){show('s-home');return;}renderStep(stepIdx-1,true);}
-
-function nextStep(){
-  var ss=steps(),s=ss[stepIdx];setErr('');
-  if(s.type==='avatar'){stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;}
-  var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
-  if(!v){setErr('⚠️ 這個欄位不能空白');return;}
-  if(s.id==='rn')rName=v; else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用 Gmail 信箱');return;}rGmail=v;} else if(s.id==='rp')rPwd=v; else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
-  else if(s.id==='ln')lName=v; else if(s.id==='lp')lPwd=v; else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
-  stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
-}
-
-function doAuth(){
-  var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
-  if(flow==='register'){
-    var id=mkId(rName,rPwd);
-    db.ref('users/'+rName).once('value',function(snap){
-      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 名字已被佔用');},100);return;}
-      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd}); myPwdRaw=rPwd; enterChat(rName,id,rAv);
-    });
-  } else {
-    var id2=mkId(lName,lPwd);
-    db.ref('users/'+lName).once('value',function(snap){
-      var d=snap.val();if(!d){setErr('❌ 帳號不存在');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
-      if(d.identity!==id2){setErr('❌ 密碼錯誤');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
-      if(d.avatar){rAv=d.avatar;} myBio=d.bio||''; myPwdRaw=d.rawPwd||lPwd; enterChat(lName,id2,d.avatar||'');
-    });
-  }
-}
-
-function enterChat(name,id,av){
-  me=name;myId=id;myAv=av; localStorage.setItem('dandelion_me', name); localStorage.setItem('dandelion_id', id);
-  document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...';
-  if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
-  show('s-chat');startListen();sysMsg(name+' 來了 🌼');
-}
-
-function saveSettings(){
-  var nb=document.getElementById('set-bio').value.trim(); var np=document.getElementById('set-pwd').value.trim(); myBio=nb;
-  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...'; var upData={bio:myBio,avatar:myAv};
-  if(np){ var newId=mkId(me,np); myId=newId;myPwdRaw=np; localStorage.setItem('dandelion_id',newId); upData.identity=newId;upData.rawPwd=np; }
-  if(db && me) db.ref('users/'+me).update(upData); document.getElementById('setting-overlay').style.display='none';
-}
-function doLogout(){ if(!confirm('確定要登出嗎？'))return; localStorage.clear(); location.reload(); }
-
-function initCrop(src, callback){
-  cropSourceSrc=src;cropTargetHandler=callback; var cimg=document.getElementById('crop-img'); cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;
-  cimg.style.transform='translate(0px, 0px) scale(1)';
-  cimg.onload=function(){
-    var wrap=280; if(cimg.naturalWidth>cimg.naturalHeight){imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;}else{imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;} updateCropTransform();
-  };
-  document.getElementById('crop-overlay').style.display='flex';
-}
-function updateCropTransform(){ document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')'; }
-
-(function(){
-  var cimg=document.getElementById('crop-img');
-  function start(x,y,dist){ isDragging=true;startX=x-imgX;startY=y-imgY;startDist=dist; }
-  function move(x,y,dist){
-    if(!isDragging)return; imgX=x-startX;imgY=y-startY;
-    if(dist>0 && startDist>0){ var sc=dist/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=dist; } updateCropTransform();
-  }
-  cimg.addEventListener('mousedown',function(e){start(e.clientX,e.clientY,0);});
-  window.addEventListener('mousemove',function(e){if(isDragging)move(e.clientX,e.clientY,0);});
-  window.addEventListener('mouseup',function(){isDragging=false;});
-  cimg.addEventListener('touchstart',function(e){
-    if(e.touches.length===1){ start(e.touches[0].clientX,e.touches[0].clientY,0); }
-    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); start((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
-  }, {passive: true});
-  window.addEventListener('touchmove',function(e){
-    if(!isDragging)return; if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
-    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
-  }, {passive: true});
-  window.addEventListener('touchend',function(){isDragging=false;});
-})();
-function closeCrop(){document.getElementById('crop-overlay').style.display='none';}
-function saveCrop(){
-  var cimg=document.getElementById('crop-img'); var cv=document.createElement('canvas');cv.width=100;cv.height=100; var rScale=imgScale/cimg.width;
-  cv.getContext('2d').drawImage(cimg, (-imgX)/rScale, (-imgY)/rScale, 280/rScale, 280/rScale, 0, 0, 100, 100);
-  var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
-}
-
-function startListen(){
-  if(!db)return;
-  db.ref('messages').on('child_added',function(snap){ var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true; var d=snap.val();if(!d)return; d.name==='__system__'?addSys(d.text):addBubble(d,k); });
-  db.ref('messages').on('child_changed',function(snap){ var d=snap.val();if(!d||!d.recalled)return; var w=document.querySelector('[data-key="'+snap.key+'"]');if(w)markRcl(w); });
-}
-function pushMsg(obj){ if(!db)return;var nr=db.ref('messages').push(); shownKeys[nr.key]=true;obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj); }
-function sysMsg(t){ if(!db)return;var nr=db.ref('messages').push();shownKeys[nr.key]=true;nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});}
-
-document.getElementById('snd-btn').addEventListener('click',sendTxt);
-document.getElementById('msg-ta').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTxt();}});
-document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
-
-function sendTxt(){
-  var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
-  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
-  addBubble(m,null);pushMsg(m);cancelReply();
-}
-
-document.getElementById('fi2').addEventListener('change',function(e){
-  var file=e.target.files[0];if(!file||!me)return;this.value=''; var isImg=/^image\//i.test(file.type); if(file.size>900*1024&&!isImg){alert('檔案太大！');return;}
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    if(isImg){
-      var img=new Image();img.onload=function(){
-        var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
-        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.78);
-        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
-        addBubble(m,null);pushMsg(m);cancelReply();
-      };img.src=ev.target.result;
-    } else {
-      var m={name:me,type:'file',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
-      addBubble(m,null);pushMsg(m);cancelReply();
-    }
-  };reader.readAsDataURL(file);
-});
-
-function jumpToMessage(key) {
-  var target = document.querySelector('[data-key="'+key+'"]');
-  if(target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.style.outline = '2px dashed var(--gold)'; setTimeout(function(){ target.style.outline='none'; }, 2000); }
-}
-
-function handleMenuAction(e, callback) { e.preventDefault(); e.stopPropagation(); var mw = e.target.closest('.mw'); if(mw) mw.classList.remove('show-menu'); callback(); }
-
-function addBubble(d,key){
-  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
-  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||''; var date=fmtD(ts);
-  if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
-  
-  var w=document.createElement('div');w.className='mw '+(self?'self':'other'); if(key)w.setAttribute('data-key',key);
-  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
-  var quoteHtml = ''; if(!rcld && d.replyId){ quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>'; }
-
-  var bb='';
-  if(rcld)bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
-  else if(d.type==='image')bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
-  else if(d.type==='file')bb='<div class="bbl">'+quoteHtml+'<a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
-  else bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
-  
-  var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
-  if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
-  var escapedSnippet = snippetText.replace(/'/g, "\\'");
-
-  var actionButtonsHtml = '';
-  if(!rcld && key){
-    actionButtonsHtml = '<div class="hvr-actions">';
-    actionButtonsHtml += '<button class="action-btn rpl-act">回覆</button>';
-    if(self){ actionButtonsHtml += '<button class="action-btn rcl-act">收回</button>'; }
-    actionButtonsHtml += '</div>';
-  }
-
-  var row=self?'<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
-  w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
-  
-  if(!rcld && key){
-    var pressTimer; var bblBox = w.querySelector('.bbl');
-    var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
-    var cancelPress = function() { clearTimeout(pressTimer); };
-    bblBox.addEventListener('touchstart', startPress, {passive: true}); bblBox.addEventListener('touchend', cancelPress); bblBox.addEventListener('touchmove', cancelPress);
-    bblBox.addEventListener('mousedown', startPress); bblBox.addEventListener('mouseup', cancelPress); bblBox.addEventListener('mouseleave', cancelPress);
-
-    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); }
-    var cBtn = w.querySelector('.rcl-act'); if(cBtn){ cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); }
-  }
-
-  document.getElementById('msgs').appendChild(w);
-  requestAnimationFrame(function(){var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;});
-  return w;
-}
-
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
-function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
-function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
-function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').style.display='flex';}
-</script>
-</body>
-</html>
+      var r=new FileReader();r.onload=function(ev){ init
