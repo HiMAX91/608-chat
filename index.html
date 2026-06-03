@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="蒲公英">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght=700&family=Noto+Sans+TC:wght=300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -32,21 +32,21 @@
 html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .3s, color .3s}
 
 /* 種子 */
-#seeds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-/* 畫面基礎隱藏切換機制 */
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .35s,transform .35s;background:var(--cream)}
-.scr.off{opacity:0!important;pointer-events:none!important;transform:translateY(14px)!important}
+/* ⚡ 修正隱形層級遮擋大魔王：將 opacity 隱藏直接改為 display: none 徹底釋放點擊空間！ */
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:var(--cream)}
+.scr.off{display:none!important;}
 
 /* ══ 首頁 ══ */
-#s-home{gap:28px;padding:24px;z-index:11}
+#s-home{gap:28px;padding:24px;z-index:20}
 .logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 .big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px}
 .big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
-.home-btns{display:flex;gap:14px;margin-top:4px;z-index:20;pointer-events:auto;}
+.home-btns{display:flex;gap:14px;margin-top:4px;z-index:30;pointer-events:auto;}
 .pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;transition:all .2s;user-select:none;-webkit-user-select:none;}
 .pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 4px 18px rgba(212,160,23,.4)}
 .pill.pri:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(212,160,23,.5)}
@@ -54,7 +54,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .pill.sec:hover{background:var(--gold-p)}
 
 /* ══ 步驟頁 ══ */
-#s-steps{justify-content:flex-start;padding:0;z-index:12}
+#s-steps{justify-content:flex-start;padding:0;z-index:40}
 .stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
 .bk-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);transition:all .2s}
 .bk-btn:hover{background:var(--gold-p)}
@@ -93,16 +93,20 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .nb:disabled{opacity:.5;cursor:default}
 
 /* ══ 聊天 ══ */
-#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:13}
-.c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.c-hdr-l{display:flex;align-items:center;gap:10px}
+#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:50}
+.c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.c-hdr-l{display:flex;align-items:center;gap:6px;padding-left:4px;}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
-.my-chip{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none;}
-.hav{width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
+
+/* ⚡ 修正元件點擊搶焦點魔王：強制將內部子元件的 pointer-events 設為 none，使點擊力道直達晶片按鈕本身！ */
+.my-chip{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none;background:rgba(212,160,23,.05);padding:4px 10px;border-radius:30px;border:1px solid rgba(212,160,23,.15);z-index:90;position:relative;}
+.my-chip * { pointer-events: none !important; }
+
+.hav{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
 .hav img{width:100%;height:100%;object-fit:cover}
 .hname-box{display:flex;flex-direction:column}
-.hname{font-size:14px;color:var(--brown);font-weight:500;line-height:1.2}
-.hbio-sub{font-size:11px;color:var(--bl);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hname{font-size:13px;color:var(--brown);font-weight:500;line-height:1.2}
+.hbio-sub{font-size:10px;color:var(--bl);max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:10px}
 @media(max-width:600px){.msgs{padding:14px 14px}}
@@ -136,7 +140,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 
-/* 絕對定位的操作按鈕群 */
+/* 操作按鈕群 */
 .hvr-actions{
   position: absolute;
   bottom: calc(100% + 4px); 
@@ -179,7 +183,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .snd-btn svg{width:17px;height:17px;fill:#fff}
 
 /* 設置面板 */
-#setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh);animation:pop .25s ease}
 @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .set-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
@@ -192,7 +196,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .t-opt.active{background:var(--gold-p);border-color:var(--gold);font-weight:500}
 
 /* 裁切器燈箱 */
-#crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+#crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .crop-box-wrap{position:relative;width:280px;height:280px;overflow:hidden;background:#111;border-radius:12px}
 #crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none}
 .crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.6);pointer-events:none;border:2px solid var(--gold)}
@@ -298,17 +302,12 @@ var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=fals
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  navigator.serviceWorker.register('sw.js').catch(err => console.error(err));
-}
-
 function toggleMusic(play) {
   isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
   if(play) { audio.volume = 0.7; var p = audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>console.log(e));} }
   else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
 }
 
-// 智慧防耗電音軌控制
 document.addEventListener('visibilitychange', function() {
   var audio = document.getElementById('bg-music'); if (!audio) return;
   if (document.hidden) { audio.pause(); } 
@@ -320,6 +319,14 @@ function setTheme(t){
   if(t === 'light') { document.getElementById('t-light').classList.add('active'); document.getElementById('t-dark').classList.remove('active'); } 
   else { document.getElementById('t-light').classList.remove('active'); document.getElementById('t-dark').classList.add('active'); }
 }
+
+function openSetting() {
+  document.getElementById('set-bio').value = myBio || '';
+  document.getElementById('set-pwd').value = '';
+  if(myAv) { document.getElementById('set-av-img').src = myAv; }
+  document.getElementById('setting-overlay').style.display = 'flex';
+}
+function closeSetting(e) { if(e.target.id === 'setting-overlay') document.getElementById('setting-overlay').style.display = 'none'; }
 
 window.addEventListener('DOMContentLoaded', function(){
   var savedTheme = localStorage.getItem('dandelion_theme') || 'light'; setTheme(savedTheme);
@@ -334,7 +341,6 @@ window.addEventListener('DOMContentLoaded', function(){
     c.appendChild(s);
   }
 
-  // try-catch 安全防護網
   try {
     var autoName = localStorage.getItem('dandelion_me');
     var autoId = localStorage.getItem('dandelion_id');
@@ -358,9 +364,10 @@ document.getElementById('btn-reg').addEventListener('touchstart', function(e){ e
 document.getElementById('btn-log').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
 document.getElementById('btn-log').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
 
-// 🛠️ 專為右上角個人設置晶片設計的專用雙端事件監聽器（彻底解鎖設置點不進去的 Bug）
-document.getElementById('btn-open-set').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
-document.getElementById('btn-open-set').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
+// 🛠️ 終極綁定：專為右上角晶片按鈕設計的點擊與觸控監聽器，雙管齊下絕對暢通
+var setBtn = document.getElementById('btn-open-set');
+setBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
+setBtn.addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); }, {passive: false});
 
 function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
 
@@ -462,8 +469,20 @@ function updateCropTransform(){ document.getElementById('crop-img').style.transf
     if(!isDragging)return; if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
     else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
   }, {passive: true});
+  window.addEventListener('touchclean',function(){isDragging=false;});
   window.addEventListener('touchend',function(){isDragging=false;});
 })();
+
+document.getElementById('set-av-file').addEventListener('change', function(e){
+  var f=e.target.files[0]; if(!f)return;
+  var r=new FileReader(); r.onload=function(ev){
+    initCrop(ev.target.result, function(croppedData){
+      myAv=croppedData; document.getElementById('set-av-img').src=myAv;
+      var hImg=document.getElementById('hav-img'); hImg.src=myAv; hImg.style.display='block';
+    });
+  }; r.readAsDataURL(f);
+});
+
 function closeCrop(){document.getElementById('crop-overlay').style.display='none';}
 function saveCrop(){
   var cimg=document.getElementById('crop-img'); var cv=document.createElement('canvas');cv.width=100;cv.height=100; var rScale=imgScale/cimg.width;
@@ -484,11 +503,26 @@ function initReply(msgKey, name, snippet) {
   var bar = document.getElementById('reply-bar'); var info = document.getElementById('reply-bar-info');
   info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」'; bar.style.display = 'flex'; document.getElementById('msg-ta').focus();
 }
+function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').style.display='none'; }
+
+function rclMsg(btn) {
+  var mw = btn.closest('.mw'); if(!mw) return; var key = mw.getAttribute('data-key');
+  if(key && db && confirm('確定要收回這條訊息嗎？')) { db.ref('messages/'+key).update({recalled: true}); }
+}
+function markRcl(mw) {
+  var bbl = mw.querySelector('.bbl'); if(!bbl) return;
+  bbl.className = 'bbl recalled'; bbl.innerHTML = '🌬️ 此訊息已收回';
+  var qa = mw.querySelector('.hvr-actions'); if(qa) qa.remove();
+  var qb = mw.querySelector('.quote-box'); if(qb) qb.remove();
+}
+
 function sendTxt(){
   var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
   var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
   addBubble(m,null);pushMsg(m);cancelReply();
 }
+document.getElementById('snd-btn').addEventListener('click', sendTxt);
+document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
 
 document.getElementById('fi2').addEventListener('change',function(e){
   var file=e.target.files[0];if(!file||!me)return;this.value=''; var isImg=/^image\//i.test(file.type); if(file.size>900*1024&&!isImg){alert('檔案太大！');return;}
@@ -561,7 +595,7 @@ function addBubble(d,key){
   return w;
 }
 
-// 原生 HTML 轉換防爆
+function addSys(t){var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(sep);var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
