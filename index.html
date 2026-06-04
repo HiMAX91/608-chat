@@ -20,7 +20,6 @@
   --bg-input-f:rgba(255,248,220,.7);--bg-hdr:rgba(255,255,255,.88);
   --bbl-other:#fff;--bbl-self:#FFF8DC;
 }
-
 [data-theme="dark"] {
   --cream:#1F160E;--gold:#E8B84B;--gold-l:#F5D382;--gold-p:#362719;
   --brown:#F5EFEB;--bm:#D1BAA3;--bl:#A38563;--sh:rgba(0,0,0,.4);
@@ -28,19 +27,12 @@
   --bg-input-f:rgba(77,56,34,.8);--bg-hdr:rgba(31,22,14,.92);
   --bbl-other:#2D1F14;--bbl-self:#4A3622;
 }
-
 html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .3s, color .3s}
-
-/* 種子 */
 #seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
-
-/* 畫面基礎隱藏切換機制 */
 .scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:var(--cream)}
 .scr.off{display:none!important;}
-
-/* ══ 首頁 ══ */
 #s-home{gap:28px;padding:24px;z-index:20}
 .logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
@@ -52,8 +44,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .pill.pri:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(212,160,23,.5)}
 .pill.sec{background:var(--bg-card);color:var(--bm);border:1.5px solid rgba(212,160,23,.4)}
 .pill.sec:hover{background:var(--gold-p)}
-
-/* ══ 步驟頁 ══ */
 #s-steps{justify-content:flex-start;padding:0;z-index:40}
 .stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
 .bk-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);transition:all .2s}
@@ -61,76 +51,456 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .dots{display:flex;gap:6px;margin-left:auto}
 .dot{width:7px;height:7px;border-radius:50%;background:rgba(212,160,23,.25);transition:all .3s}
 .dot.on{background:var(--gold);width:20px}
-
 .stp-body{flex:1;width:100%;max-width:480px;padding:14px 22px 22px;overflow:hidden}
 .card{background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:28px;padding:36px 30px 28px;box-shadow:0 6px 36px var(--sh);animation:cIn .32s cubic-bezier(.34,1.3,.64,1);width:100%}
 .card.rev{animation:cInR .32s cubic-bezier(.34,1.3,.64,1)}
 @keyframes cIn {from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
 @keyframes cInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
-
 .c-lbl{font-size:11px;font-weight:500;letter-spacing:2px;color:var(--bl);margin-bottom:8px}
 .c-ttl{font-family:'Noto Serif TC',serif;font-size:22px;margin-bottom:6px}
 .c-hint{font-size:12px;color:var(--bl);line-height:1.8;margin-bottom:22px}
-
-/* 大頭貼 */
 .av-zone{display:flex;justify-content:center;margin:4px 0 18px}
 .av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
 .av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
 .av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
 .av-cam{font-size:28px}.av-lbl{font-size:11px;color:var(--bl)}
 #av-file{display:none}
-
-/* 輸入 */
 .fi{width:100%;padding:14px 18px;border:1.5px solid rgba(212,160,23,.3);border-radius:16px;font-family:inherit;font-size:16px;color:var(--brown);background:var(--bg-input);outline:none;transition:all .2s}
 .fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 3px rgba(212,160,23,.12)}
 .fi::placeholder{color:var(--bl)}
 .ferr{font-size:12px;color:#C0392B;margin-top:10px;min-height:16px}
-
 .nr{display:flex;justify-content:flex-end;margin-top:22px}
 .nb{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(212,160,23,.4);transition:all .2s}
 .nb:hover{transform:scale(1.1)}
 .nb svg{width:22px;height:22px;fill:#fff}
 .nb:disabled{opacity:.5;cursor:default}
-
-/* ══ 聊天 ══ */
 #s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:50}
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr-l{display:flex;align-items:center;gap:6px;padding-left:4px;}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:4px}
-
-/* 右上角個人設置晶片 */
 .my-chip{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none;background:rgba(212,160,23,.05);padding:4px 10px;border-radius:30px;border:1px solid rgba(212,160,23,.15);z-index:90;position:relative;}
 .my-chip > * { pointer-events: none !important; }
-
 .hav{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
 .hav img{width:100%;height:100%;object-fit:cover}
 .hname-box{display:flex;flex-direction:column}
 .hname{font-size:13px;color:var(--brown);font-weight:500;line-height:1.2}
 .hbio-sub{font-size:10px;color:var(--bl);max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 .msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:10px}
 @media(max-width:600px){.msgs{padding:14px 14px}}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:rgba(212,160,23,.3);border-radius:2px}
 .wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
 .wlc span{font-size:30px;display:block;margin-bottom:8px}
-
-/* 訊息與對話框排版 */
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:mIn .22s ease;}
 @media(max-width:600px){.mw{max-width:85%}}
 @keyframes mIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .mw.self{align-self:flex-end;align-items:flex-end}
 .mw.other{align-self:flex-start;align-items:flex-start}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
-
 .mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;position:relative;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
 .mav img{width:100%;height:100%;object-fit:cover}
-
 .bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
 .mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
 .bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important;display:block;}
 .bbl img{max-width:100%;max-height:220px;border-radius:12px;display:block;cursor:zoom-in}
-.flink{display:flex;align-items
+.flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
+.mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
+.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:background .2s}
+.quote-box:hover{background:rgba(212,160,23,.15)}
+.hvr-actions{position:absolute;bottom:calc(100% + 4px);display:flex;align-items:center;gap:5px;opacity:0;pointer-events:none;transition:opacity .15s, transform .15s;z-index:50;}
+.mw.self .hvr-actions { right:40px; transform:translateY(3px); }
+.mw.other .hvr-actions { left:40px; transform:translateY(3px); }
+.mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ opacity:1; pointer-events:auto; transform:translateY(0); }
+.action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .2s;box-shadow:0 2px 8px var(--sh);}
+.action-btn:hover{background:var(--gold-p);border-color:var(--gold);}
+.sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px}
+.sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
+.inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
+@media(max-width:600px){.inp-area{padding:10px 14px 16px}}
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
+.reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
+.inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:border-color .2s}
+.inp-row:focus-within{border-color:var(--gold)}
+.att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0}
+.att-btn:hover{background:var(--gold-p)}
+.att-btn svg{width:20px;height:20px;stroke:var(--bl);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#fi2{display:none}
+.msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--brown);background:transparent;resize:none;max-height:100px;line-height:1.5;padding:5px 0}
+.msg-ta::placeholder{color:var(--bl)}
+.snd-btn{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-l));cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(212,160,23,.4);transition:all .2s}
+.snd-btn:hover{transform:scale(1.08)}
+.snd-btn svg{width:17px;height:17px;fill:#fff}
+#setting-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh);animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.set-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.set-t{font-family:'Noto Serif TC',serif;font-size:20px}
+.set-close{background:none;border:none;font-size:22px;color:var(--bl);cursor:pointer}
+.set-item{margin-bottom:16px}
+.set-lbl{font-size:12px;font-weight:500;color:var(--bl);margin-bottom:6px;letter-spacing:1px}
+.theme-options{display:flex;gap:10px}
+.t-opt{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(212,160,23,.3);background:transparent;color:var(--brown);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s;text-align:center}
+.t-opt.active{background:var(--gold-p);border-color:var(--gold);font-weight:500}
+#crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;pointer-events:auto !important;}
+.crop-box-wrap{position:relative;width:280px;height:280px;overflow:hidden;background:#111;border-radius:12px;pointer-events:auto !important;}
+#crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none;pointer-events:auto !important;}
+.crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.6);pointer-events:none;border:2px solid var(--gold)}
+.crop-tips{color:#fff;font-size:12px;margin:14px 0 20px;opacity:.7;letter-spacing:1px}
+.crop-btns{display:flex;gap:12px;width:100%;max-width:280px;pointer-events:auto !important;}
+.c-btn{flex:1;padding:12px;border-radius:30px;font-family:inherit;font-size:14px;border:none;cursor:pointer;font-weight:500;pointer-events:auto !important;}
+.c-btn.cancel{background:rgba(255,255,255,.15);color:#fff}
+.c-btn.save{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;align-items:center;justify-content:center;cursor:zoom-out}
+#lb img{max-width:92vw;max-height:92vh;border-radius:12px}
+</style>
+</head>
+<body>
+<div id="seeds"></div>
+<audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
+
+<div class="scr" id="s-home">
+  <div class="logo-wrap">
+    <svg width="78" height="90" viewBox="0 0 90 100" fill="none"><path d="M45 98 Q43 70 45 50" stroke="#5C8A3C" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/><g transform="translate(45,34)"><line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="16" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-22" cy="0" r="3" fill="#E8B84B"/><line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/><circle cx="0" cy="0" r="6" fill="#D4A017"/><circle cx="0" cy="0" r="3.5" fill="#E8B84B"/></g></svg>
+  </div>
+  <div class="big-title">蒲公英</div><div class="big-sub">我們的故事，隨風飄揚</div>
+  <div class="home-btns"><button class="pill pri" id="btn-reg">註 冊</button><button class="pill sec" id="btn-log">登 入</button></div>
+</div>
+
+<div class="scr off" id="s-steps">
+  <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
+  <div class="stp-body" id="stp-body"></div>
+</div>
+
+<div class="scr off" id="s-chat">
+  <div class="c-hdr">
+    <div class="c-hdr-l"><span style="font-size:22px">🌼</span><span class="c-hdr-t">蒲公英</span></div>
+    <div class="my-chip" id="btn-open-set">
+      <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
+      <div class="hname-box"><span class="hname" id="hname"></span><span class="hbio-sub" id="hbio-sub">查看設置...</span></div>
+    </div>
+  </div>
+  <div class="msgs" id="msgs"><div class="wlc"><span>🌼</span>歡迎來到蒲公英聊天室<br><span style="color:#C8A882;font-size:12px">在這裡，你可以和同學說說心裡話</span></div></div>
+  <div class="inp-area">
+    <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
+    <div class="inp-row">
+      <button class="att-btn" onclick="document.getElementById('fi2').click()"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+      <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
+      <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
+      <button class="snd-btn" id="snd-btn"><svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div id="setting-overlay" onclick="closeSetting(event)">
+  <div class="set-card" onclick="event.stopPropagation()">
+    <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').style.display='none'">×</button></div>
+    <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
+    <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
+    <div class="set-item"><div class="set-lbl">個人密碼變更</div><input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼"></div>
+    <div class="set-item"><div class="set-lbl">介面主題</div><div class="theme-options"><button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button><button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button></div></div>
+    <div class="set-item"><div class="set-lbl">背景音樂</div><div class="theme-options"><button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button><button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button></div></div>
+    <div style="display:flex; gap:12px; margin-top:24px;"><button class="pill sec" style="padding:10px 20px; flex:1;" onclick="doLogout()">登 出</button><button class="pill pri" style="padding:10px 20px; flex:1;" onclick="saveSettings()">保 存</button></div>
+  </div>
+</div>
+
+<div id="crop-overlay"><div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div><div class="crop-tips">雙指縮放或拖動照片調整範圍</div><div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div></div>
+<div id="lb" onclick="this.style.display='none'"><img id="lb-img" alt=""></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
+var CLASS_CODE="608";
+var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
+var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
+var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
+var isMusicEnabled=true;
+var cropSourceSrc='', cropTargetHandler=null;
+var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
+
+try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
+
+function toggleMusic(play) {
+  isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
+  if(play) { audio.volume = 0.7; var p = audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>{});} }
+  else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
+}
+document.addEventListener('visibilitychange', function() { var audio = document.getElementById('bg-music'); if (!audio) return; if (document.hidden) { audio.pause(); } else { if (isMusicEnabled) audio.play().catch(e=>{}); }});
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t); localStorage.setItem('dandelion_theme',t);
+  if(t === 'light') { document.getElementById('t-light').classList.add('active'); document.getElementById('t-dark').classList.remove('active'); } 
+  else { document.getElementById('t-light').classList.remove('active'); document.getElementById('t-dark').classList.add('active'); }
+}
+
+function openSetting() {
+  document.getElementById('set-bio').value = myBio || ''; document.getElementById('set-pwd').value = '';
+  if(myAv) document.getElementById('set-av-img').src = myAv;
+  document.getElementById('setting-overlay').style.display = 'flex';
+}
+function closeSetting(e) { if(e.target.id === 'setting-overlay') document.getElementById('setting-overlay').style.display = 'none'; }
+
+window.addEventListener('DOMContentLoaded', function(){
+  setTheme(localStorage.getItem('dandelion_theme') || 'light'); document.getElementById('m-on').classList.add('active');
+  window.addEventListener('touchstart', function autoPlay() { toggleMusic(true); window.removeEventListener('touchstart', autoPlay); }, {passive: true});
+  var c=document.getElementById('seeds');
+  for(var i=0;i<16;i++){
+    var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
+    s.style.cssText='left:'+(Math.random()*100)+'%;--dx:'+((Math.random()-.5)*120)+'px;animation-duration:'+(Math.random()*12+10)+'s;animation-delay:'+(Math.random()*18)+'s;';
+    s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width=".8" opacity=".7"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';
+    c.appendChild(s);
+  }
+  try {
+    var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
+    if(autoName && autoId && db){
+      db.ref('users/'+autoName).once('value', function(snap){
+        try{ var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterChat(autoName, autoId, rAv); } }catch(err){}
+      });
+    }
+  } catch(e) {}
+});
+
+function handleHomeFlow(targetFlow) { toggleMusic(true); startFlow(targetFlow); }
+document.getElementById('btn-reg').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('register'); });
+document.getElementById('btn-reg').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('register'); });
+document.getElementById('btn-log').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
+document.getElementById('btn-log').addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); handleHomeFlow('login'); });
+
+var setBtn = document.getElementById('btn-open-set');
+setBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); });
+setBtn.addEventListener('touchstart', function(e){ e.preventDefault(); e.stopPropagation(); openSetting(); }, {passive: false});
+
+function show(id){['s-home','s-steps','s-chat'].forEach(function(s){document.getElementById(s).classList[s===id?'remove':'add']('off');});}
+
+var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱',hint:'請勿使用學校帳號',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
+var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
+function steps(){return flow==='register'?REG:LOG;}
+function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
+
+function renderStep(idx,back){
+  stepIdx=idx; var ss=steps(),s=ss[idx]; var d=document.getElementById('dots'); d.innerHTML='';
+  ss.forEach(function(_,i){var el=document.createElement('div');el.className='dot'+(i===idx?' on':'');d.appendChild(el);});
+  document.getElementById('bk-btn').style.visibility=idx===0?'hidden':'visible';
+  var body='';
+  if(s.type==='avatar'){ body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>'; }
+  else { var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||''; body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">'; }
+  body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
+  document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
+  if(s.type==='avatar'){
+    if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
+    document.getElementById('av-file').addEventListener('change',function(e){ var f=e.target.files[0];if(!f)return; var r=new FileReader();r.onload=function(ev){ initCrop(ev.target.result, function(c){ rAv=c; var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none'; }); };r.readAsDataURL(f); });
+  } else { setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80); }
+}
+
+function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
+function goBack(){if(stepIdx===0){show('s-home');return;}renderStep(stepIdx-1,true);}
+function mkId(n,p){var s=n+'|'+p,h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);h=h>>>0;}return'id_'+h.toString(36);}
+
+function nextStep(){
+  var ss=steps(),s=ss[stepIdx];setErr('');
+  if(s.type==='avatar'){stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;}
+  var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
+  if(!v){setErr('⚠️ 欄位不能空白');return;}
+  if(s.id==='rn')rName=v; else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用 Gmail');return;}rGmail=v;} else if(s.id==='rp')rPwd=v; else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  else if(s.id==='ln')lName=v; else if(s.id==='lp')lPwd=v; else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
+}
+
+function doAuth(){
+  var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
+  if(flow==='register'){
+    var id=mkId(rName,rPwd);
+    db.ref('users/'+rName).once('value',function(snap){
+      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 名字已被使用');},100);return;}
+      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd}); myPwdRaw=rPwd; enterChat(rName,id,rAv);
+    });
+  } else {
+    var id2=mkId(lName,lPwd);
+    db.ref('users/'+lName).once('value',function(snap){
+      var d=snap.val();if(!d){setErr('❌ 帳號不存在');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.identity!==id2){setErr('❌ 密碼錯誤');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.avatar){rAv=d.avatar;} myBio=d.bio||''; myPwdRaw=d.rawPwd||lPwd; enterChat(lName,id2,d.avatar||'');
+    });
+  }
+}
+
+function enterChat(name,id,av){
+  me=name;myId=id;myAv=av; localStorage.setItem('dandelion_me', name); localStorage.setItem('dandelion_id', id);
+  document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...';
+  if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
+  show('s-chat');startListen();sysMsg(name+' 來了 🌼');
+}
+
+function saveSettings(){
+  var nb=document.getElementById('set-bio').value.trim(); var np=document.getElementById('set-pwd').value.trim(); myBio=nb;
+  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...'; var upData={bio:myBio,avatar:myAv};
+  if(np){ var newId=mkId(me,np); myId=newId;myPwdRaw=np; localStorage.setItem('dandelion_id',newId); upData.identity=newId;upData.rawPwd=np; }
+  if(db && me) db.ref('users/'+me).update(upData); document.getElementById('setting-overlay').style.display='none';
+}
+function doLogout(){ if(!confirm('確定要登出嗎？'))return; localStorage.clear(); location.reload(); }
+
+function initCrop(src, callback){
+  cropSourceSrc=src;cropTargetHandler=callback; var cimg=document.getElementById('crop-img'); cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;
+  cimg.style.transform='translate(0px, 0px) scale(1)';
+  cimg.onload=function(){
+    var wrap=280; if(cimg.naturalWidth>cimg.naturalHeight){imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;}else{imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;} updateCropTransform();
+  };
+  document.getElementById('crop-overlay').style.display='flex';
+}
+function updateCropTransform(){ document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')'; }
+
+(function(){
+  var cimg=document.getElementById('crop-img');
+  function start(x,y,dist){ isDragging=true;startX=x-imgX;startY=y-imgY;startDist=dist; }
+  function move(x,y,dist){
+    if(!isDragging)return; imgX=x-startX;imgY=y-startY;
+    if(dist>0 && startDist>0){ var sc=dist/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=dist; } updateCropTransform();
+  }
+  cimg.addEventListener('mousedown',function(e){start(e.clientX,e.clientY,0);});
+  window.addEventListener('mousemove',function(e){if(isDragging)move(e.clientX,e.clientY,0);});
+  window.addEventListener('mouseup',function(){isDragging=false;});
+  cimg.addEventListener('touchstart',function(e){
+    if(e.touches.length===1){ start(e.touches[0].clientX,e.touches[0].clientY,0); }
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); start((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: true});
+  window.addEventListener('touchmove',function(e){
+    if(!isDragging)return; if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: true});
+  window.addEventListener('touchclean',function(){isDragging=false;});
+  window.addEventListener('touchend',function(){isDragging=false;});
+})();
+
+document.getElementById('set-av-file').addEventListener('change', function(e){
+  var f=e.target.files[0]; if(!f)return;
+  var r=new FileReader(); r.onload=function(ev){
+    initCrop(ev.target.result, function(cData){
+      myAv=cData; document.getElementById('set-av-img').src=myAv;
+      var hImg=document.getElementById('hav-img'); hImg.src=myAv; hImg.style.display='block';
+    });
+  }; r.readAsDataURL(f);
+});
+
+function closeCrop(){document.getElementById('crop-overlay').style.display='none';}
+function saveCrop(){
+  var cimg=document.getElementById('crop-img'); var cv=document.createElement('canvas');cv.width=100;cv.height=100; var rScale=imgScale/cimg.width;
+  cv.getContext('2d').drawImage(cimg, (-imgX)/rScale, (-imgY)/rScale, 280/rScale, 280/rScale, 0, 0, 100, 100);
+  var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
+}
+
+function startListen(){
+  if(!db)return;
+  db.ref('messages').on('child_added',function(snap){ var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true; var d=snap.val();if(!d)return; d.name==='__system__'?addSys(d.text):addBubble(d,k); });
+  db.ref('messages').on('child_changed',function(snap){ var d=snap.val();if(!d||!d.recalled)return; var w=document.querySelector('[data-key="'+snap.key+'"]');if(w)markRcl(w); });
+}
+function pushMsg(obj){ if(!db)return;var nr=db.ref('messages').push(); shownKeys[nr.key]=true;obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj); }
+function sysMsg(t){ if(!db)return;var nr=db.ref('messages').push();shownKeys[nr.key]=true;nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});}
+
+function initReply(msgKey, name, snippet) {
+  replyTargetId = msgKey; replyTargetName = name; replyTargetSnippet = snippet;
+  var bar = document.getElementById('reply-bar'); var info = document.getElementById('reply-bar-info');
+  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」'; bar.style.display = 'flex'; document.getElementById('msg-ta').focus();
+}
+function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').style.display='none'; }
+
+function rclMsg(btn) {
+  var mw = btn.closest('.mw'); if(!mw) return; var key = mw.getAttribute('data-key');
+  if(key && db && confirm('確定要收回這條訊息嗎？')) { db.ref('messages/'+key).update({recalled: true}); }
+}
+function markRcl(mw) {
+  var bbl = mw.querySelector('.bbl'); if(!bbl) return;
+  bbl.className = 'bbl recalled'; bbl.innerHTML = '🌬️ 此訊息已收回';
+  var qa = mw.querySelector('.hvr-actions'); if(qa) qa.remove();
+}
+
+function sendTxt(){
+  var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
+  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
+  addBubble(m,null);pushMsg(m);cancelReply();
+}
+document.getElementById('snd-btn').addEventListener('click', sendTxt);
+document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
+
+document.getElementById('fi2').addEventListener('change',function(e){
+  var file=e.target.files[0];if(!file||!me)return;this.value=''; var isImg=/^image\//i.test(file.type); if(file.size>900*1024&&!isImg){alert('檔案太大！');return;}
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    if(isImg){
+      var img=new Image();img.onload=function(){
+        var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
+        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.78);
+        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+        addBubble(m,null);pushMsg(m);cancelReply();
+      };img.src=ev.target.result;
+    } else {
+      var m={name:me,type:'file',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      addBubble(m,null);pushMsg(m);cancelReply();
+    }
+  };reader.readAsDataURL(file);
+});
+
+function jumpToMessage(key) {
+  var target = document.querySelector('[data-key="'+key+'"]');
+  if(target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.style.outline = '2px dashed var(--gold)'; setTimeout(function(){ target.style.outline='none'; }, 2000); }
+}
+
+function handleMenuAction(e, callback) { e.preventDefault(); e.stopPropagation(); var mw = e.target.closest('.mw'); if(mw) mw.classList.remove('show-menu'); callback(); }
+
+function addBubble(d,key){
+  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
+  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||''; var date=fmtD(ts);
+  if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
+  
+  var w=document.createElement('div');w.className='mw '+(self?'self':'other'); if(key)w.setAttribute('data-key',key);
+  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
+  var quoteHtml = ''; if(!rcld && d.replyId){ quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>'; }
+
+  var bb='';
+  if(rcld)bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
+  else if(d.type==='image')bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
+  else if(d.type==='file')bb='<div class="bbl">'+quoteHtml+'<a class="flink" href="'+d.fileData+'" download="'+esc(d.fileName||'檔案')+'">📎 '+esc(d.fileName||'檔案')+'</a></div>';
+  else bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
+  
+  var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
+  if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
+  var escapedSnippet = snippetText.replace(/'/g, "\\'");
+
+  var actionButtonsHtml = '';
+  if(!rcld && key){
+    actionButtonsHtml = '<div class="hvr-actions">';
+    actionButtonsHtml += '<button class="action-btn rpl-act">回覆</button>';
+    if(self){ actionButtonsHtml += '<button class="action-btn rcl-act">收回</button>'; }
+    actionButtonsHtml += '</div>';
+  }
+
+  var row=self?'<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
+  w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
+  
+  if(!rcld && key){
+    var pressTimer; var bblBox = w.querySelector('.bbl');
+    var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
+    var cancelPress = function() { clearTimeout(pressTimer); };
+    bblBox.addEventListener('touchstart', startPress, {passive: true}); bblBox.addEventListener('touchend', cancelPress); bblBox.addEventListener('touchmove', cancelPress);
+    bblBox.addEventListener('mousedown', startPress); bblBox.addEventListener('mouseup', cancelPress); bblBox.addEventListener('mouseleave', cancelPress);
+
+    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); }
+    var cBtn = w.querySelector('.rcl-act'); if(cBtn){ cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); }
+  }
+
+  document.getElementById('msgs').appendChild(w);
+  requestAnimationFrame(function(){var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;});
+  return w;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
+function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').style.display='flex';}
+</script>
+</body>
+</html>
