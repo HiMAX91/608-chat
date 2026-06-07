@@ -19,7 +19,7 @@
   --bg-card:rgba(255,255,255,.9);--bg-input:rgba(255,248,220,.3);
   --bg-input-f:rgba(255,248,220,.7);--bg-hdr:rgba(255,255,255,.88);
   --bbl-other:#fff;--bbl-self:#FFF8DC;
-  /* 🌟 加入 iOS 原生質感的全局動畫曲線 */
+  /* 🌟 全局絲滑物理動畫曲線 */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -34,24 +34,23 @@
 
 html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .4s var(--ease-smooth), color .4s var(--ease-smooth)}
 
-/* 種子 */
 #seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-/* 🌟 畫面切換柔和漸變 */
+/* 🌟 畫面切換：柔和漸變 */
 .scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:var(--cream);opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
 .scr.off{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:scale(0.97) translateY(10px)!important;}
 
-/* 🌟 全局物理微回饋：所有互動元件點擊時 Q彈縮小 */
+/* 🌟 全局按鈕物理回饋（按下時內縮） */
 .pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt { transition:all .25s var(--ease-smooth); }
-.pill:active, .action-btn:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active { transform: scale(0.95) !important; opacity: 0.85; transition: transform 0.1s, opacity 0.1s; }
+.pill:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active { transform: scale(0.94) !important; opacity: 0.85; transition: transform 0.1s, opacity 0.1s; }
 
 /* ══ 首頁 ══ */
 #s-home{gap:28px;padding:24px;z-index:20}
-.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center}
+.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center;transition:transform .4s var(--ease-spring);}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px}
+.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px;transition:font-size .4s;}
 .big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
 .home-btns{display:flex;gap:14px;margin-top:4px;z-index:30;pointer-events:auto;}
 .pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;user-select:none;-webkit-user-select:none;}
@@ -84,7 +83,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #av-file{display:none}
 
 .fi{width:100%;padding:14px 18px;border:1.5px solid rgba(212,160,23,.3);border-radius:16px;font-family:inherit;font-size:16px;color:var(--brown);background:var(--bg-input);outline:none;transition:all .3s var(--ease-smooth)}
-.fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 4px rgba(212,160,23,.15)}
+.fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 4px rgba(212,160,23,.15); transform:scale(1.01);}
 .fi::placeholder{color:var(--bl)}
 .ferr{font-size:12px;color:#C0392B;margin-top:10px;min-height:16px}
 .nr{display:flex;justify-content:flex-end;margin-top:22px}
@@ -109,7 +108,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .main-hero-t{font-family:'Noto Serif TC',serif;font-size:22px;color:var(--brown);letter-spacing:6px;font-weight:700;margin-top:14px;}
 .main-hero-s{font-size:11px;color:var(--bl);letter-spacing:3px;margin-top:4px;}
 
-.usr-list-wrap{flex:1;width:100%;overflow-y:auto;padding:10px 20px 20px;display:flex;flex-direction:column;gap:12px;max-width:600px;align-self:center;}
+.usr-list-wrap{flex:1;width:100%;overflow-y:auto;padding:10px 20px 20px;display:flex;flex-direction:column;gap:12px;max-width:600px;align-self:center;transition:gap .3s;}
 .usr-list-wrap::-webkit-scrollbar{width:3px}
 .usr-list-wrap::-webkit-scrollbar-thumb{background:rgba(212,160,23,.3);border-radius:2px}
 .usr-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card);border-radius:18px;border:1px solid rgba(212,160,23,.15);cursor:pointer;box-shadow:0 2px 10px var(--sh);animation:popInMessage .4s var(--ease-spring) both;}
@@ -144,6 +143,15 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   0% { opacity: 0; transform: translateY(12px) scale(0.9); transform-origin: bottom center; }
   100% { opacity: 1; transform: translateY(0) scale(1); transform-origin: bottom center; }
 }
+
+/* 🌟 動態高亮跳轉訊息動畫 */
+@keyframes highlightPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(212,160,23,0.3); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
+}
+.highlight-anim .bbl { animation: highlightPulse 1.2s var(--ease-spring); border-color:var(--gold)!important; }
+
 .mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:popInMessage .45s var(--ease-spring);}
 .mw.self{align-self:flex-end;align-items:flex-end;transform-origin:bottom right;}
 .mw.other{align-self:flex-start;align-items:flex-start;transform-origin:bottom left;}
@@ -163,38 +171,73 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
 .mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
 
+.file-box{display:flex;align-items:center;gap:10px;background:var(--bg-hdr);padding:8px 12px;border-radius:14px;border:1px solid rgba(212,160,23,.25);text-decoration:none;color:var(--brown);width:100%;max-width:260px;margin-top:2px;box-shadow:0 2px 8px var(--sh);}
+.file-box:hover{border-color:var(--gold);background:var(--gold-p);}
+.file-icon{font-size:26px;}
+.file-info{flex:1;overflow:hidden;}
+.file-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-sub{font-size:11px;color:var(--bl);margin-top:2px;}
+.file-dl{width:28px;height:28px;border-radius:50%;background:var(--cream);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid rgba(212,160,23,.2);transition:all .2s;}
+.file-box:hover .file-dl{background:var(--gold);color:#fff;border-color:var(--gold);}
+
 .quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:all .2s var(--ease-smooth);}
 .quote-box:hover{background:rgba(212,160,23,.15)}
 .quote-box:active{transform:scale(0.97);}
 
-/* 🚀 旗艦級懸浮按鈕：電腦版自動排在氣泡側邊，隨手好點絕不卡！ */
+/* 🚀 電腦版懸浮按鈕：超級防手震感應區！ */
 .hvr-actions{
   position: absolute;
   top: 50%;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s var(--ease-smooth), transform .2s var(--ease-smooth);
+  transition: opacity .3s var(--ease-smooth), transform .3s var(--ease-smooth);
   z-index: 50;
 }
-.mw.self .hvr-actions { right: 100%; margin-right: 10px; transform: translateY(-50%) translateX(10px); }
-.mw.other .hvr-actions { left: 100%; margin-left: 10px; transform: translateY(-50%) translateX(-10px); }
+/* 隱形護城河：滑鼠不小心移出去一點點也絕對不會消失！ */
+.hvr-actions::before {
+  content: '';
+  position: absolute;
+  top: -30px; bottom: -30px; left: -30px; right: -30px;
+  z-index: -1;
+}
+.mw.self .hvr-actions { right: 100%; transform: translateY(-50%) translateX(15px); }
+.mw.other .hvr-actions { left: 100%; transform: translateY(-50%) translateX(-15px); }
 .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ opacity:1; pointer-events:auto; transform: translateY(-50%) translateX(0); }
-.action-btn{background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:5px 11px;font-size:12px;color:var(--bm);cursor:pointer;white-space:nowrap;font-family:inherit;box-shadow:0 2px 8px var(--sh);}
-.action-btn:hover{background:var(--gold-p);border-color:var(--gold);}
+
+/* 精緻放大的果凍按鈕 */
+.action-btn{
+  background: var(--bg-hdr);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(212,160,23,.4);
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--bm);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(61,44,26,.15);
+}
+.action-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 20px rgba(212,160,23,.3); }
+.action-btn:active { transform: scale(0.92) !important; transition: transform .1s; }
 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px;animation:popInMessage .4s ease;}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
 
-/* 🌟 輸入區域呼吸光暈 */
+/* 輸入區域動畫 */
 .inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
-.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;animation:popInMessage .3s var(--ease-spring)}
+.reply-bar{display:flex;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;
+  opacity:0;visibility:hidden;transform:translateY(10px);transition:all .35s var(--ease-spring);}
+.reply-bar.show { opacity:1;visibility:visible;transform:translateY(0); }
 .reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
 .reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
 .inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:all .3s var(--ease-smooth)}
-.inp-row:focus-within{border-color:var(--gold); box-shadow:0 4px 16px rgba(212,160,23,.2);}
+.inp-row:focus-within{border-color:var(--gold); box-shadow:0 6px 18px rgba(212,160,23,.25); transform:translateY(-1px);}
 .att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
 .att-btn:hover{background:var(--gold-p)}
 .att-btn svg{width:20px;height:20px;stroke:var(--bl);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -248,28 +291,28 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   .main-hero { padding: 15px 20px 5px; }
   .main-hero .logo-wrap { transform: scale(0.9); }
   .main-hero-t { font-size: 18px; margin-top: 8px; }
+  .usr-list-wrap { gap: 10px; padding-bottom: 10px; }
   .c-hdr { padding: 10px 16px; }
   .inp-area { padding: 10px 20px 14px; }
   .msgs { padding: 14px 20px; }
-  .mw { max-width: 75%; } /* 小螢幕容許對話框寬一點 */
+  .mw { max-width: 75%; }
   .set-card { padding: 20px 18px; }
   .set-item { margin-bottom: 12px; }
   .av-btn { width: 80px; height: 80px; }
 }
 
-/* 📱 手機版：懸浮按鈕改為在氣泡上方出現 */
+/* 📱 手機版：懸浮按鈕聰明地跑到氣泡上方 */
 @media(max-width: 768px) {
   .mw { max-width: 86%; }
   .inp-area { padding: 8px 14px 12px; }
   .msgs { padding: 14px 14px; }
   
-  .hvr-actions {
-    top: auto;
-    bottom: calc(100% + 2px);
-  }
-  .mw.self .hvr-actions { right: 35px; margin-right: 0; transform: translateY(6px); }
-  .mw.other .hvr-actions { left: 35px; margin-left: 0; transform: translateY(6px); }
+  .hvr-actions { top: auto; bottom: calc(100% + 4px); }
+  .hvr-actions::before { display: none; } /* 手機不需要護城河 */
+  .mw.self .hvr-actions { right: 35px; transform: translateY(10px); }
+  .mw.other .hvr-actions { left: 35px; transform: translateY(10px); }
   .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ transform: translateY(0); }
+  .action-btn { padding: 6px 12px; font-size: 12px; }
 }
 </style>
 </head>
@@ -278,6 +321,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -304,11 +348,13 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
+<!-- 主畫面大廳 -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天列表</div>
@@ -343,6 +389,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
+<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -360,6 +407,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -372,12 +420,14 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div>
 </div>
 
+<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -609,6 +659,7 @@ function startListen(){
   });
 }
 
+// 🚀 100% 同步資料庫引擎：從根源解決無法收回的 Bug
 function pushMsg(obj){ 
   if(!db)return;
   var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
@@ -624,9 +675,9 @@ function sysMsg(t){
 function initReply(msgKey, name, snippet) {
   replyTargetId = msgKey; replyTargetName = name; replyTargetSnippet = snippet;
   var bar = document.getElementById('reply-bar'); var info = document.getElementById('reply-bar-info');
-  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」'; bar.style.display = 'flex'; document.getElementById('msg-ta').focus();
+  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」'; document.getElementById('reply-bar').classList.add('show'); document.getElementById('msg-ta').focus();
 }
-function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').style.display='none'; }
+function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').classList.remove('show'); }
 
 function rclMsg(btn) {
   var mw = btn.closest('.mw'); if(!mw) return; var key = mw.getAttribute('data-key');
@@ -672,9 +723,14 @@ document.getElementById('fi2').addEventListener('change',function(e){
   };reader.readAsDataURL(file);
 });
 
+// 🌟 點擊回覆小卡：專屬高光呼吸跳轉動畫
 function jumpToMessage(key) {
   var target = document.querySelector('[data-key="'+key+'"]');
-  if(target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); target.style.outline = '2px dashed var(--gold)'; setTimeout(function(){ target.style.outline='none'; }, 2000); }
+  if(target) { 
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+    target.classList.add('highlight-anim');
+    setTimeout(function(){ target.classList.remove('highlight-anim'); }, 1200); 
+  }
 }
 
 function handleMenuAction(e, callback) { e.preventDefault(); e.stopPropagation(); var mw = e.target.closest('.mw'); if(mw) mw.classList.remove('show-menu'); callback(); }
