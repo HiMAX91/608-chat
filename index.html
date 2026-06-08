@@ -37,7 +37,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:var(--cream);opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:transparent;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
 .scr.off{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:scale(0.97) translateY(10px)!important;}
 
 .pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt { transition:all .25s var(--ease-smooth); }
@@ -230,7 +230,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
 .reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
 
-/* 🚀 GIF 貼圖面板 */
+/* 🚀 GIF 貼圖面板：優雅從底部浮現 */
 .gif-panel {
   position: absolute; bottom: 100%; left: 0; right: 0; background: var(--bg-hdr); backdrop-filter: blur(16px);
   border-top: 1px solid rgba(212,160,23,.15); padding: 12px 16px; display: flex; gap: 12px; overflow-x: auto;
@@ -308,7 +308,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   .av-btn { width: 80px; height: 80px; }
 }
 
-/* 📱 手機版 */
+/* 📱 手機版：懸浮按鈕聰明地跑到氣泡上方 */
 @media(max-width: 768px) {
   .mw { max-width: 86%; }
   .inp-area { padding: 8px 14px 12px; }
@@ -330,6 +330,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -356,11 +357,13 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
+<!-- 主畫面大廳 -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天列表</div>
@@ -395,6 +398,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
+<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -402,6 +406,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="msgs" id="msgs"></div>
   
   <div class="inp-area">
+    <!-- 🚀 全新海量 GIF 貼圖抽屜 -->
     <div id="gif-panel" class="gif-panel"></div>
 
     <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
@@ -416,6 +421,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -428,12 +434,14 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div>
 </div>
 
+<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -591,7 +599,7 @@ function openRoom(type, targetName) {
   document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='group'?'🌻':'🤫')+'</span>歡迎來到'+(type==='group'?'群組':'私密')+'聊天室<br><span style="color:#C8A882;font-size:12px">'+(type==='group'?'在這裡，你可以和全班說說話':'只有你和 '+esc(targetName)+' 能看到這裡的訊息')+'</span></div>';
   if (type === 'group') { document.getElementById('chat-title').textContent = '608 群組'; } 
   else { document.getElementById('chat-title').textContent = targetName; }
-  show('s-chat'); startListen(); cancelReply();
+  show('s-chat'); startListen(); cancelReply(); toggleGif(false);
 }
 
 function backToMain() { if (currentChatRef) { currentChatRef.off(); } show('s-main'); }
@@ -713,15 +721,37 @@ function sendTxt(){
 document.getElementById('snd-btn').addEventListener('click', sendTxt);
 document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
 
-// 🚀 GIF 貼圖引擎與免壓縮上傳機制
+// 🚀 擴大 GIF 資料庫
 function initGifPanel() {
   var urls = [
+    // 🐱 貓咪與毛小孩系列
     "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
     "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
     "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
     "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif",
+    "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif",
+    "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+    // 😂 爆笑與超有戲反應
     "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif",
-    "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif"
+    "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif",
+    "https://media.giphy.com/media/3o7btLwOaOENz8c1qw/giphy.gif",
+    "https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif",
+    "https://media.giphy.com/media/tHIRLHtNwxpjIFqPdV/giphy.gif",
+    "https://media.giphy.com/media/PUBexcJiRu0py/giphy.gif",
+    // 💬 實用文字與日常動作
+    "https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif",
+    "https://media.giphy.com/media/3oKIPnAiaE6s411Vwk/giphy.gif",
+    "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif",
+    "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif",
+    "https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
+    "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif",
+    // 🎮 復古像素與迷因感
+    "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
+    "https://media.giphy.com/media/3o7aCRZYNerX4ovPwI/giphy.gif",
+    "https://media.giphy.com/media/5wWf7H0qoWaNnkZBucU/giphy.gif",
+    "https://media.giphy.com/media/YRtLgsajXrz1FNJ6oy/giphy.gif",
+    "https://media.giphy.com/media/f31DK1KpGsyMU/giphy.gif",
+    "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
   ];
   var gp = document.getElementById('gif-panel');
   urls.forEach(function(u){
@@ -752,13 +782,15 @@ document.addEventListener('click', function(e) {
 document.getElementById('fi2').addEventListener('change',function(e){
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
   var isImg=/^image\//i.test(file.type);
+  
+  // 🚀 防呆機制：動圖限制 2MB，其他圖片與檔案會自動處理
   if(file.size>2*1024*1024 && file.type === 'image/gif'){alert('動圖請勿超過 2MB！');return;}
   if(file.size>900*1024 && !isImg && file.type !== 'image/gif'){alert('檔案太大！');return;}
   
   var reader=new FileReader();
   reader.onload=function(ev){
     if(file.type === 'image/gif') {
-      // 🚀 直通通道：保證 GIF 會動，不壓縮
+      // 🚀 直通通道：保證 GIF 上傳後依然會動，絕不壓縮破壞
       var m={name:me,type:'image',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
       if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       pushMsg(m); cancelReply();
