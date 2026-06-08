@@ -19,7 +19,6 @@
   --bg-card:rgba(255,255,255,.9);--bg-input:rgba(255,248,220,.3);
   --bg-input-f:rgba(255,248,220,.7);--bg-hdr:rgba(255,255,255,.88);
   --bbl-other:#fff;--bbl-self:#FFF8DC;
-  /* 🌟 加入 iOS 原生質感的全局動畫曲線 */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -34,16 +33,13 @@
 
 html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .4s var(--ease-smooth), color .4s var(--ease-smooth)}
 
-/* 🌼 釋放蒲公英種子！確保在最底層透明飄浮 */
 #seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-/* 🌟 畫面切換底板：改為 background: transparent 讓種子可以透出來！ */
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:transparent;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:var(--cream);opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
 .scr.off{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:scale(0.97) translateY(10px)!important;}
 
-/* 🌟 全局物理微回饋：所有互動元件點擊時 Q彈縮小 */
 .pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt { transition:all .25s var(--ease-smooth); }
 .pill:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active { transform: scale(0.94) !important; opacity: 0.85; transition: transform 0.1s, opacity 0.1s; }
 
@@ -145,7 +141,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   100% { opacity: 1; transform: translateY(0) scale(1); transform-origin: bottom center; }
 }
 
-/* 🌟 動態高亮跳轉訊息動畫 */
 @keyframes highlightPulse {
   0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
   50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(212,160,23,0.3); }
@@ -185,7 +180,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box:hover{background:rgba(212,160,23,.15)}
 .quote-box:active{transform:scale(0.97);}
 
-/* 🚀 電腦版懸浮按鈕：超級防手震感應區！ */
+/* 電腦版防手震懸浮按鈕 */
 .hvr-actions{
   position: absolute;
   top: 50%;
@@ -227,18 +222,33 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px;animation:popInMessage .4s ease;}
 .sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
 
-/* 輸入區域動畫 */
-.inp-area{flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px}
-.reply-bar{display:flex;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;
+/* 輸入區域與 GIF 抽屜 */
+.inp-area{position:relative;flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px;z-index:60;}
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;
   opacity:0;visibility:hidden;transform:translateY(10px);transition:all .35s var(--ease-spring);}
-.reply-bar.show { opacity:1;visibility:visible;transform:translateY(0); }
+.reply-bar.show { display:flex; opacity:1;visibility:visible;transform:translateY(0); }
 .reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
 .reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
+
+/* 🚀 GIF 貼圖面板 */
+.gif-panel {
+  position: absolute; bottom: 100%; left: 0; right: 0; background: var(--bg-hdr); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(212,160,23,.15); padding: 12px 16px; display: flex; gap: 12px; overflow-x: auto;
+  opacity: 0; visibility: hidden; transform: translateY(10px); transition: all .35s var(--ease-spring); z-index: 40;
+}
+.gif-panel.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.gif-panel::-webkit-scrollbar { height: 4px; }
+.gif-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+.g-item { height: 75px; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: transform .2s; box-shadow: 0 2px 8px var(--sh); }
+.g-item:active { transform: scale(0.92); }
+
 .inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:all .3s var(--ease-smooth)}
 .inp-row:focus-within{border-color:var(--gold); box-shadow:0 6px 18px rgba(212,160,23,.25); transform:translateY(-1px);}
-.att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+
+.att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;color:var(--gold);font-weight:700;}
 .att-btn:hover{background:var(--gold-p)}
 .att-btn svg{width:20px;height:20px;stroke:var(--bl);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
 #fi2{display:none}
 .msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--brown);background:transparent;resize:none;max-height:100px;line-height:1.5;padding:5px 0}
 .msg-ta::placeholder{color:var(--bl)}
@@ -280,7 +290,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb img{max-width:92vw;max-height:92vh;border-radius:12px;transform:scale(0.85);transition:transform .4s var(--ease-spring);box-shadow:0 10px 40px rgba(0,0,0,.6);}
 #lb.show img{transform:scale(1);}
 
-/* 💻 小電腦/筆電版專屬螢幕優化 (螢幕高度低於 800px) */
+/* 💻 小電腦/筆電版專屬螢幕優化 */
 @media(max-height: 800px), (max-width: 900px) {
   #s-home { padding: 15px; gap: 15px; }
   .big-title { font-size: 40px; }
@@ -298,7 +308,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   .av-btn { width: 80px; height: 80px; }
 }
 
-/* 📱 手機版：懸浮按鈕聰明地跑到氣泡上方 */
+/* 📱 手機版 */
 @media(max-width: 768px) {
   .mw { max-width: 86%; }
   .inp-area { padding: 8px 14px 12px; }
@@ -310,6 +320,8 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   .mw.other .hvr-actions { left: 35px; transform: translateY(10px); }
   .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ transform: translateY(0); }
   .action-btn { padding: 6px 12px; font-size: 12px; }
+  .gif-panel { padding: 10px; }
+  .g-item { height: 60px; }
 }
 </style>
 </head>
@@ -318,7 +330,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -345,13 +356,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 主畫面大廳 -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天列表</div>
@@ -386,7 +395,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -394,9 +402,13 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="msgs" id="msgs"></div>
   
   <div class="inp-area">
+    <div id="gif-panel" class="gif-panel"></div>
+
     <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
     <div class="inp-row">
-      <button class="att-btn" onclick="document.getElementById('fi2').click()"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案 / 本地動圖"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+      <button class="att-btn" id="btn-gif" style="font-size:12px; letter-spacing:1px;" title="內建 GIF 貼圖" onclick="toggleGif()">GIF</button>
+      
       <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
       <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
       <button class="snd-btn" id="snd-btn"><svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>
@@ -404,7 +416,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -417,14 +428,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div>
 </div>
 
-<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -466,6 +475,7 @@ function closeSetting(e) { if(e.target.id === 'setting-overlay') document.getEle
 window.addEventListener('DOMContentLoaded', function(){
   setTheme(localStorage.getItem('dandelion_theme') || 'light'); document.getElementById('m-on').classList.add('active');
   window.addEventListener('touchstart', function autoPlay() { toggleMusic(true); window.removeEventListener('touchstart', autoPlay); }, {passive: true});
+  
   var c=document.getElementById('seeds');
   for(var i=0;i<16;i++){
     var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
@@ -474,12 +484,15 @@ window.addEventListener('DOMContentLoaded', function(){
     c.appendChild(s);
   }
   
-  var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
-  if(autoName && autoId && db){
-    db.ref('users/'+autoName).once('value', function(snap){
-      var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterApp(autoName, autoId, rAv); }
-    });
-  }
+  try {
+    var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
+    if(autoName && autoId && db){
+      db.ref('users/'+autoName).once('value', function(snap){
+        try{ var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterApp(autoName, autoId, rAv); } }catch(err){}
+      });
+    }
+  } catch(e) {}
+  initGifPanel();
 });
 
 function handleHomeFlow(targetFlow) { toggleMusic(true); startFlow(targetFlow); }
@@ -700,12 +713,56 @@ function sendTxt(){
 document.getElementById('snd-btn').addEventListener('click', sendTxt);
 document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
 
+// 🚀 GIF 貼圖引擎與免壓縮上傳機制
+function initGifPanel() {
+  var urls = [
+    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+    "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
+    "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+    "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif",
+    "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif",
+    "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif"
+  ];
+  var gp = document.getElementById('gif-panel');
+  urls.forEach(function(u){
+    var img = document.createElement('img'); img.src = u; img.className = 'g-item';
+    img.onclick = function() {
+      var m={name:me,type:'image',fileData:u,fileName:'gif',avatar:myAv,deviceId:myId}; 
+      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      pushMsg(m); cancelReply(); toggleGif(false);
+    };
+    gp.appendChild(img);
+  });
+}
+
+function toggleGif(forceClose) {
+  var gp = document.getElementById('gif-panel');
+  if(forceClose === false) { gp.classList.remove('show'); return; }
+  gp.classList.toggle('show');
+}
+
+// 點擊空白處自動關閉 GIF 面板
+document.addEventListener('click', function(e) {
+  var gp = document.getElementById('gif-panel');
+  if (gp && gp.classList.contains('show') && !e.target.closest('#gif-panel') && !e.target.closest('#btn-gif')) {
+    gp.classList.remove('show');
+  }
+});
+
 document.getElementById('fi2').addEventListener('change',function(e){
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
-  var isImg=/^image\//i.test(file.type); if(file.size>900*1024&&!isImg){alert('檔案太大！');return;}
+  var isImg=/^image\//i.test(file.type);
+  if(file.size>2*1024*1024 && file.type === 'image/gif'){alert('動圖請勿超過 2MB！');return;}
+  if(file.size>900*1024 && !isImg && file.type !== 'image/gif'){alert('檔案太大！');return;}
+  
   var reader=new FileReader();
   reader.onload=function(ev){
-    if(isImg){
+    if(file.type === 'image/gif') {
+      // 🚀 直通通道：保證 GIF 會動，不壓縮
+      var m={name:me,type:'image',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
+      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      pushMsg(m); cancelReply();
+    } else if(isImg) {
       var img=new Image();img.onload=function(){
         var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
         cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.78);
