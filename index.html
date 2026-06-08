@@ -12,42 +12,749 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ... [保持之前的 CSS 設定以維持絲滑動畫] ... */
-/* 🚀 擴充後的 GIF 面板樣式 */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FDFAF2;--gold:#D4A017;--gold-l:#E8B84B;--gold-p:#FBF5DC;
+  --brown:#3D2C1A;--bm:#7A5C3A;--bl:#C8A882;--sh:rgba(61,44,26,.10);
+  --bg-card:rgba(255,255,255,.9);--bg-input:rgba(255,248,220,.3);
+  --bg-input-f:rgba(255,248,220,.7);--bg-hdr:rgba(255,255,255,.88);
+  --bbl-other:#fff;--bbl-self:#FFF8DC;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+[data-theme="dark"] {
+  --cream:#1F160E;--gold:#E8B84B;--gold-l:#F5D382;--gold-p:#362719;
+  --brown:#F5EFEB;--bm:#D1BAA3;--bl:#A38563;--sh:rgba(0,0,0,.4);
+  --bg-card:rgba(43,31,20,.95);--bg-input:rgba(61,44,26,.5);
+  --bg-input-f:rgba(77,56,34,.8);--bg-hdr:rgba(31,22,14,.92);
+  --bbl-other:#2D1F14;--bbl-self:#4A3622;
+}
+
+html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .4s var(--ease-smooth), color .4s var(--ease-smooth)}
+
+#seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
+
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:transparent;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth), visibility .35s;}
+.scr.off{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:scale(0.97) translateY(10px)!important;}
+
+.pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt { transition:all .25s var(--ease-smooth); }
+.pill:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active { transform: scale(0.94) !important; opacity: 0.85; transition: transform 0.1s, opacity 0.1s; }
+
+/* ══ 首頁 ══ */
+#s-home{gap:28px;padding:24px;z-index:20}
+.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center;transition:transform .4s var(--ease-spring);}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px;transition:font-size .4s;}
+.big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
+.home-btns{display:flex;gap:14px;margin-top:4px;z-index:30;pointer-events:auto;}
+.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;border:none;letter-spacing:2px;user-select:none;-webkit-user-select:none;}
+.pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 4px 18px rgba(212,160,23,.4)}
+.pill.pri:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(212,160,23,.5)}
+.pill.sec{background:var(--bg-card);color:var(--bm);border:1.5px solid rgba(212,160,23,.4)}
+.pill.sec:hover{background:var(--gold-p)}
+
+/* ══ 步驟頁 ══ */
+#s-steps{justify-content:flex-start;padding:0;z-index:30}
+.stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
+.bk-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);}
+.bk-btn:hover{background:var(--gold-p)}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(212,160,23,.25);transition:all .3s}
+.dot.on{background:var(--gold);width:20px}
+.stp-body{flex:1;width:100%;max-width:480px;padding:14px 22px 22px;overflow:hidden}
+.card{background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:28px;padding:36px 30px 28px;box-shadow:0 6px 36px var(--sh);animation:cIn .4s var(--ease-spring);width:100%}
+.card.rev{animation:cInR .4s var(--ease-spring);}
+@keyframes cIn {from{opacity:0;transform:translateX(40px) scale(0.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes cInR{from{opacity:0;transform:translateX(-40px) scale(0.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+.c-lbl{font-size:11px;font-weight:500;letter-spacing:2px;color:var(--bl);margin-bottom:8px}
+.c-ttl{font-family:'Noto Serif TC',serif;font-size:22px;margin-bottom:6px}
+.c-hint{font-size:12px;color:var(--bl);line-height:1.8;margin-bottom:22px}
+.av-zone{display:flex;justify-content:center;margin:4px 0 18px}
+.av-btn{width:96px;height:96px;border-radius:50%;background:var(--gold-p);border:2.5px dashed rgba(212,160,23,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;overflow:hidden}
+.av-btn:hover{border-color:var(--gold);transform:scale(1.04)}
+.av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
+.av-cam{font-size:28px}.av-lbl{font-size:11px;color:var(--bl)}
+#av-file{display:none}
+
+.fi{width:100%;padding:14px 18px;border:1.5px solid rgba(212,160,23,.3);border-radius:16px;font-family:inherit;font-size:16px;color:var(--brown);background:var(--bg-input);outline:none;transition:all .3s var(--ease-smooth)}
+.fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 4px rgba(212,160,23,.15); transform:scale(1.01);}
+.fi::placeholder{color:var(--bl)}
+.ferr{font-size:12px;color:#C0392B;margin-top:10px;min-height:16px}
+.nr{display:flex;justify-content:flex-end;margin-top:22px}
+.nb{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(212,160,23,.4);}
+.nb:hover{transform:scale(1.1)}
+.nb svg{width:22px;height:22px;fill:#fff}
+.nb:disabled{opacity:.5;cursor:default}
+
+/* ══ 主畫面 (大廳) ══ */
+#s-main{flex-direction:column;justify-content:flex-start;padding:0;z-index:40}
+.m-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.m-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:2px;font-weight:700}
+.my-chip{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none;background:rgba(212,160,23,.05);padding:4px 10px;border-radius:30px;border:1px solid rgba(212,160,23,.15);z-index:90;position:relative;}
+.my-chip > * { pointer-events: none !important; }
+.hav{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;position:relative;border:1px solid rgba(212,160,23,.2)}
+.hav img{width:100%;height:100%;object-fit:cover}
+.hname-box{display:flex;flex-direction:column}
+.hname{font-size:13px;color:var(--brown);font-weight:500;line-height:1.2}
+.hbio-sub{font-size:10px;color:var(--bl);max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.main-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px 10px;flex-shrink:0;animation:popInMessage .5s var(--ease-spring);}
+.main-hero-t{font-family:'Noto Serif TC',serif;font-size:22px;color:var(--brown);letter-spacing:6px;font-weight:700;margin-top:14px;}
+.main-hero-s{font-size:11px;color:var(--bl);letter-spacing:3px;margin-top:4px;}
+
+.usr-list-wrap{flex:1;width:100%;overflow-y:auto;padding:10px 20px 20px;display:flex;flex-direction:column;gap:12px;max-width:600px;align-self:center;transition:gap .3s;}
+.usr-list-wrap::-webkit-scrollbar{width:3px}
+.usr-list-wrap::-webkit-scrollbar-thumb{background:rgba(212,160,23,.3);border-radius:2px}
+.usr-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card);border-radius:18px;border:1px solid rgba(212,160,23,.15);cursor:pointer;box-shadow:0 2px 10px var(--sh);animation:popInMessage .4s var(--ease-spring) both;}
+.usr-row:nth-child(1) { animation-delay: 0.05s; }
+.usr-row:nth-child(2) { animation-delay: 0.1s; }
+.usr-row:nth-child(3) { animation-delay: 0.15s; }
+.usr-row:nth-child(n+4) { animation-delay: 0.2s; }
+
+.usr-row:hover{background:var(--gold-p);border-color:var(--gold);transform:translateY(-2px);}
+.usr-row.grp{background:linear-gradient(135deg,rgba(245,230,163,.3),rgba(212,160,23,.1)); border-color:var(--gold-l);}
+.usr-info{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.usr-name{font-size:16px;font-weight:700;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.usr-sub{font-size:12px;color:var(--bl);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.usr-arrow{color:var(--gold);font-weight:700;opacity:0.6;font-size:18px;}
+.usr-div{font-size:11px;color:var(--bl);letter-spacing:2px;font-weight:500;margin:10px 0 2px;padding-left:10px;}
+
+/* ══ 聊天室 ══ */
+#s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:50}
+.c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.c-hdr-l{display:flex;align-items:center;gap:12px;padding-left:4px;}
+.c-bk{font-size:24px;cursor:pointer;color:var(--gold);padding-right:6px;font-weight:700;transition:transform .2s;}
+.c-bk:active{transform:translateX(-4px) scale(0.9);}
+.c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:2px;}
+
+.msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:rgba(212,160,23,.3);border-radius:2px}
+.wlc{text-align:center;padding:20px;color:var(--bl);font-size:13px;line-height:2}
+.wlc span{font-size:30px;display:block;margin-bottom:8px}
+
+@keyframes popInMessage {
+  0% { opacity: 0; transform: translateY(12px) scale(0.9); transform-origin: bottom center; }
+  100% { opacity: 1; transform: translateY(0) scale(1); transform-origin: bottom center; }
+}
+
+@keyframes highlightPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(212,160,23,0.3); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
+}
+.highlight-anim .bbl { animation: highlightPulse 1.2s var(--ease-spring); border-color:var(--gold)!important; }
+
+.mw{position:relative;display:flex;flex-direction:column;max-width:68%;animation:popInMessage .45s var(--ease-spring);}
+.mw.self{align-self:flex-end;align-items:flex-end;transform-origin:bottom right;}
+.mw.other{align-self:flex-start;align-items:flex-start;transform-origin:bottom left;}
+.mw-nm{font-size:11px;color:var(--bl);margin-bottom:3px;padding:0 4px}
+
+.mw-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;position:relative;}
+.mw.self .mw-row{flex-direction:row-reverse}
+.mav{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
+.mav img{width:100%;height:100%;object-fit:cover}
+
+.bbl{padding:10px 15px;border-radius:20px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;min-width:0;overflow:hidden;transition:all 0.3s var(--ease-smooth);}
+.mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:5px}
+.mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:5px;box-shadow:0 2px 8px var(--sh)}
+.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.4)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important;display:block;}
+.bbl img{max-width:100%;max-height:220px;border-radius:12px;display:block;cursor:zoom-in;transition:transform .2s;}
+.bbl img:active{transform:scale(0.98);}
+.flink{display:flex;align-items:center;gap:7px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:500}
+.mw-t{font-size:10px;color:var(--bl);margin-top:3px;padding:0 4px}
+
+.file-box{display:flex;align-items:center;gap:10px;background:var(--bg-hdr);padding:8px 12px;border-radius:14px;border:1px solid rgba(212,160,23,.25);text-decoration:none;color:var(--brown);width:100%;max-width:260px;margin-top:2px;box-shadow:0 2px 8px var(--sh);}
+.file-box:hover{border-color:var(--gold);background:var(--gold-p);}
+.file-icon{font-size:26px;}
+.file-info{flex:1;overflow:hidden;}
+.file-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-sub{font-size:11px;color:var(--bl);margin-top:2px;}
+.file-dl{width:28px;height:28px;border-radius:50%;background:var(--cream);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid rgba(212,160,23,.2);transition:all .2s;}
+.file-box:hover .file-dl{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+.quote-box{background:rgba(212,160,23,.08);border-left:3px solid var(--gold);padding:4px 8px;border-radius:6px;font-size:12px;color:var(--bm);margin-bottom:6px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:all .2s var(--ease-smooth);}
+.quote-box:hover{background:rgba(212,160,23,.15)}
+.quote-box:active{transform:scale(0.97);}
+
+/* 電腦版防手震懸浮按鈕 */
+.hvr-actions{
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s var(--ease-smooth), transform .3s var(--ease-smooth);
+  z-index: 50;
+}
+.hvr-actions::before {
+  content: '';
+  position: absolute;
+  top: -30px; bottom: -30px; left: -30px; right: -30px;
+  z-index: -1;
+}
+.mw.self .hvr-actions { right: 100%; transform: translateY(-50%) translateX(15px); }
+.mw.other .hvr-actions { left: 100%; transform: translateY(-50%) translateX(-15px); }
+.mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ opacity:1; pointer-events:auto; transform: translateY(-50%) translateX(0); }
+
+.action-btn{
+  background: var(--bg-hdr);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(212,160,23,.4);
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--bm);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(61,44,26,.15);
+}
+.action-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 20px rgba(212,160,23,.3); }
+
+.sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:3px 16px;animation:popInMessage .4s ease;}
+.sysmsg span{background:rgba(245,230,163,.25);padding:3px 12px;border-radius:20px}
+
+/* 輸入區域與 GIF 抽屜 */
+.inp-area{position:relative;flex-shrink:0;padding:12px 28px 20px;background:var(--bg-hdr);border-top:1px solid rgba(212,160,23,.12);display:flex;flex-direction:column;gap:8px;z-index:60;}
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.2);border-radius:12px;padding:6px 14px;align-items:center;justify-content:space-between;font-size:13px;
+  opacity:0;visibility:hidden;transform:translateY(10px);transition:all .35s var(--ease-spring);}
+.reply-bar.show { display:flex; opacity:1;visibility:visible;transform:translateY(0); }
+.reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm)}
+.reply-bar-close{background:none;border:none;font-size:16px;color:var(--bl);cursor:pointer;margin-left:10px}
+
+/* 🚀 GIF 貼圖面板：優雅從底部浮現 */
 .gif-panel {
   position: absolute; bottom: 100%; left: 0; right: 0; background: var(--bg-hdr); backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(212,160,23,.15); padding: 15px; display: flex; gap: 10px; overflow-x: auto;
+  border-top: 1px solid rgba(212,160,23,.15); padding: 12px 16px; display: flex; gap: 12px; overflow-x: auto;
   opacity: 0; visibility: hidden; transform: translateY(10px); transition: all .35s var(--ease-spring); z-index: 40;
 }
 .gif-panel.show { opacity: 1; visibility: visible; transform: translateY(0); }
-.gif-panel::-webkit-scrollbar { height: 6px; }
-.gif-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
-.g-item { height: 90px; border-radius: 12px; cursor: pointer; flex-shrink: 0; transition: transform .2s; border: 1px solid rgba(212,160,23,.2); }
-.g-item:hover { transform: scale(1.05); }
-.g-item:active { transform: scale(0.9); }
+.gif-panel::-webkit-scrollbar { height: 4px; }
+.gif-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+.g-item { height: 75px; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: transform .2s; box-shadow: 0 2px 8px var(--sh); }
+.g-item:active { transform: scale(0.92); }
+
+.inp-row{display:flex;gap:8px;align-items:flex-end;background:var(--bg-card);border:1.5px solid rgba(212,160,23,.3);border-radius:26px;padding:8px 8px 8px 12px;box-shadow:0 2px 10px var(--sh);transition:all .3s var(--ease-smooth)}
+.inp-row:focus-within{border-color:var(--gold); box-shadow:0 6px 18px rgba(212,160,23,.25); transform:translateY(-1px);}
+
+.att-btn{width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;color:var(--gold);font-weight:700;}
+.att-btn:hover{background:var(--gold-p)}
+.att-btn svg{width:20px;height:20px;stroke:var(--bl);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+#fi2{display:none}
+.msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--brown);background:transparent;resize:none;max-height:100px;line-height:1.5;padding:5px 0}
+.msg-ta::placeholder{color:var(--bl)}
+.snd-btn{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-l));cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(212,160,23,.4);}
+.snd-btn:hover{box-shadow:0 4px 14px rgba(212,160,23,.6);}
+.snd-btn svg{width:17px;height:17px;fill:#fff}
+
+/* 🌟 各類選單與燈箱滑順過場 */
+.modal-overlay {
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(5px);
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s var(--ease-smooth), visibility .35s;
+}
+.modal-overlay.show { opacity:1;visibility:visible;pointer-events:auto; }
+
+.set-card{width:90%;max-width:380px;background:var(--bg-card);border:1px solid rgba(212,160,23,.25);border-radius:24px;padding:28px 24px;box-shadow:0 10px 40px var(--sh); transform:scale(0.9) translateY(10px); transition:transform .4s var(--ease-spring);}
+.modal-overlay.show .set-card { transform:scale(1) translateY(0); }
+.set-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.set-t{font-family:'Noto Serif TC',serif;font-size:20px}
+.set-close{background:none;border:none;font-size:22px;color:var(--bl);cursor:pointer;transition:transform .2s;}
+.set-close:active{transform:scale(0.8);}
+.set-item{margin-bottom:16px}
+.set-lbl{font-size:12px;font-weight:500;color:var(--bl);margin-bottom:6px;letter-spacing:1px}
+.theme-options{display:flex;gap:10px}
+.t-opt{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(212,160,23,.3);background:transparent;color:var(--brown);cursor:pointer;font-family:inherit;font-size:13px;text-align:center}
+.t-opt.active{background:var(--gold-p);border-color:var(--gold);font-weight:500}
+
+/* 裁切器燈箱 */
+#crop-overlay { z-index:300; background:rgba(0,0,0,.85); backdrop-filter:none; }
+.crop-box-wrap{position:relative;width:280px;height:280px;overflow:hidden;background:#111;border-radius:12px;touch-action:none; transform:scale(0.9); transition:transform .4s var(--ease-spring);}
+#crop-overlay.show .crop-box-wrap { transform:scale(1); }
+#crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none;}
+.crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.6);pointer-events:none;border:2px solid var(--gold)}
+.crop-tips{color:#fff;font-size:12px;margin:14px 0 20px;opacity:.7;letter-spacing:1px; transform:translateY(10px); transition:transform .4s var(--ease-spring);}
+#crop-overlay.show .crop-tips { transform:translateY(0); }
+.crop-btns{display:flex;gap:12px;width:100%;max-width:280px;}
+
+/* 🌟 圖片預覽燈箱 */
+#lb{z-index:999; background:rgba(0,0,0,.9); cursor:zoom-out; backdrop-filter:blur(8px);}
+#lb img{max-width:92vw;max-height:92vh;border-radius:12px;transform:scale(0.85);transition:transform .4s var(--ease-spring);box-shadow:0 10px 40px rgba(0,0,0,.6);}
+#lb.show img{transform:scale(1);}
+
+/* 💻 小電腦/筆電版專屬螢幕優化 */
+@media(max-height: 800px), (max-width: 900px) {
+  #s-home { padding: 15px; gap: 15px; }
+  .big-title { font-size: 40px; }
+  .logo-wrap { transform: scale(0.85); }
+  .main-hero { padding: 15px 20px 5px; }
+  .main-hero .logo-wrap { transform: scale(0.9); }
+  .main-hero-t { font-size: 18px; margin-top: 8px; }
+  .usr-list-wrap { gap: 10px; padding-bottom: 10px; }
+  .c-hdr { padding: 10px 16px; }
+  .inp-area { padding: 10px 20px 14px; }
+  .msgs { padding: 14px 20px; }
+  .mw { max-width: 75%; }
+  .set-card { padding: 20px 18px; }
+  .set-item { margin-bottom: 12px; }
+  .av-btn { width: 80px; height: 80px; }
+}
+
+/* 📱 手機版：懸浮按鈕聰明地跑到氣泡上方 */
+@media(max-width: 768px) {
+  .mw { max-width: 86%; }
+  .inp-area { padding: 8px 14px 12px; }
+  .msgs { padding: 14px 14px; }
+  
+  .hvr-actions { top: auto; bottom: calc(100% + 4px); }
+  .hvr-actions::before { display: none; }
+  .mw.self .hvr-actions { right: 35px; transform: translateY(10px); }
+  .mw.other .hvr-actions { left: 35px; transform: translateY(10px); }
+  .mw:hover .hvr-actions, .mw.show-menu .hvr-actions{ transform: translateY(0); }
+  .action-btn { padding: 6px 12px; font-size: 12px; }
+  .gif-panel { padding: 10px; }
+  .g-item { height: 60px; }
+}
 </style>
 </head>
 <body>
-<!-- ... (中間結構保持不變) ... -->
+<div id="seeds"></div>
 
-<script>
-// 🚀 海量 GIF 資料庫：透過 JavaScript 動態載入，不拖慢網頁讀取
-function initGifPanel() {
-  var gifUrls = [
-    // 🐱 貓咪系列
-    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif", "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif", "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif", "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif", "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif", "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif", "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif", "https://media.giphy.com/media/f31DK1KpGsyMU/giphy.gif",
-    // 😂 爆笑與反應
-    "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif", "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif", "https://media.giphy.com/media/3o7btLwOaOENz8c1qw/giphy.gif", "https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif", "https://media.giphy.com/media/tHIRLHtNwxpjIFqPdV/giphy.gif", "https://media.giphy.com/media/PUBexcJiRu0py/giphy.gif", "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif", "https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
-    // 🎨 動漫/迷因/ㄎㄧㄤ圖
-    "https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif", "https://media.giphy.com/media/3oKIPnAiaE6s411Vwk/giphy.gif", "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif", "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif", "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif", "https://media.giphy.com/media/3o7aCRZYNerX4ovPwI/giphy.gif", "https://media.giphy.com/media/5wWf7H0qoWaNnkZBucU/giphy.gif", "https://media.giphy.com/media/YRtLgsajXrz1FNJ6oy/giphy.gif",
-    // 🏃‍♂️ 動作系列
-    "https://media.giphy.com/media/26n6WywJyh39nLpBu/giphy.gif", "https://media.giphy.com/media/26n6WywJyh39nLpBu/giphy.gif", "https://media.giphy.com/media/26BRuo26Gg7oWzXJ6/giphy.gif", "https://media.giphy.com/media/l4FGBOiHtpxxFocSY/giphy.gif", "https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif", "https://media.giphy.com/media/3o7TKMGpxxHOGTdzJC/giphy.gif", "https://media.giphy.com/media/3o7TKMGpxxHOGTdzJC/giphy.gif", "https://media.giphy.com/media/l4FGvjN1X2bL3J5pC/giphy.gif",
-    // ✨ 節慶與裝飾
-    "https://media.giphy.com/media/3o7TKMGpxxHOGTdzJC/giphy.gif", "https://media.giphy.com/media/12hAvIfFLpmzhm/giphy.gif", "https://media.giphy.com/media/f1ohcPEu3xR1K/giphy.gif", "https://media.giphy.com/media/3o7TKMGpxxHOGTdzJC/giphy.gif", "https://media.giphy.com/media/cALkoMTW55wY8/giphy.gif", "https://media.giphy.com/media/l41lTjJp9gK2t261W/giphy.gif", "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif", "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif"
-  ];
+<audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
+
+<!-- 首頁 -->
+<div class="scr" id="s-home">
+  <div class="logo-wrap">
+    <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
+      <path d="M45 98 Q43 70 45 50" stroke="#5C8A3C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <g transform="translate(45,34)">
+        <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="16" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-22" cy="0" r="3" fill="#E8B84B"/>
+        <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
+        <circle cx="0" cy="0" r="6" fill="#D4A017"/><circle cx="0" cy="0" r="3.5" fill="#E8B84B"/>
+      </g>
+    </svg>
+  </div>
+  <div class="big-title">蒲公英</div>
+  <div class="big-sub">我們的故事，隨風飄揚</div>
+  <div class="home-btns">
+    <button class="pill pri" id="btn-reg">註 冊</button>
+    <button class="pill sec" id="btn-log">登 入</button>
+  </div>
+</div>
+
+<!-- 步驟頁 -->
+<div class="scr off" id="s-steps">
+  <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
+  <div class="stp-body" id="stp-body"></div>
+</div>
+
+<!-- 主畫面大廳 -->
+<div class="scr off" id="s-main">
+  <div class="m-hdr">
+    <div class="m-hdr-t">聊天列表</div>
+    <div class="my-chip" id="btn-open-set">
+      <div class="hav" id="hav"><img id="hav-img" alt="" style="display:none"></div>
+      <div class="hname-box"><span class="hname" id="hname"></span><span class="hbio-sub" id="hbio-sub">查看設置...</span></div>
+    </div>
+  </div>
   
+  <div class="main-hero">
+    <div class="logo-wrap" style="transform: scale(1.15);">
+      <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
+        <path d="M45 98 Q43 70 45 50" stroke="#5C8A3C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M45 75 Q35 68 28 62" stroke="#5C8A3C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <g transform="translate(45,34)">
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="-22" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="-16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="22" cy="0" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="16" cy="16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="0" y2="22" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="0" cy="22" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-16" y2="16" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-16" cy="16" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-22" y2="0" stroke="#D4A017" stroke-width="1" opacity=".8"/><circle cx="-22" cy="0" r="3" fill="#E8B84B"/>
+          <line x1="0" y1="0" x2="-16" y2="-16" stroke="#D4A017" stroke-width="1" opacity=".6"/><circle cx="-16" cy="-16" r="3" fill="#E8B84B"/>
+          <circle cx="0" cy="0" r="6" fill="#D4A017"/><circle cx="0" cy="0" r="3.5" fill="#E8B84B"/>
+        </g>
+      </svg>
+    </div>
+    <div class="main-hero-t">蒲公英</div>
+    <div class="main-hero-s">608 我們的故事</div>
+  </div>
+
+  <div class="usr-list-wrap" id="user-list"></div>
+</div>
+
+<!-- 聊天室 -->
+<div class="scr off" id="s-chat">
+  <div class="c-hdr">
+    <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  
+  <div class="inp-area">
+    <!-- 🚀 全新海量 GIF 貼圖抽屜 -->
+    <div id="gif-panel" class="gif-panel"></div>
+
+    <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
+    <div class="inp-row">
+      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案 / 本地動圖"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+      <button class="att-btn" id="btn-gif" style="font-size:12px; letter-spacing:1px;" title="內建 GIF 貼圖" onclick="toggleGif()">GIF</button>
+      
+      <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
+      <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
+      <button class="snd-btn" id="snd-btn"><svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- 設置面板遮罩 -->
+<div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
+  <div class="set-card" onclick="event.stopPropagation()">
+    <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
+    <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
+    <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
+    <div class="set-item"><div class="set-lbl">個人密碼變更</div><input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼"></div>
+    <div class="set-item"><div class="set-lbl">介面主題</div><div class="theme-options"><button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button><button class="t-opt" id="t-dark" onclick="setTheme('dark')">深度模式</button></div></div>
+    <div class="set-item"><div class="set-lbl">背景音樂</div><div class="theme-options"><button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button><button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button></div></div>
+    <div style="display:flex; gap:12px; margin-top:24px;"><button class="pill sec" style="padding:10px 20px; flex:1;" onclick="doLogout()">登 出</button><button class="pill pri" style="padding:10px 20px; flex:1;" onclick="saveSettings()">保 存</button></div>
+  </div>
+</div>
+
+<!-- 裁切器燈箱 -->
+<div class="modal-overlay" id="crop-overlay">
+  <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
+  <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
+  <div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div>
+</div>
+
+<!-- 圖片預覽燈箱 -->
+<div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
+var CLASS_CODE="608";
+var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
+var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
+var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
+var currentRoom = 'group', currentTarget = '', currentChatRef = null;
+var isMusicEnabled=true;
+var cropSourceSrc='', cropTargetHandler=null;
+var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
+
+try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
+
+function toggleMusic(play) {
+  isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
+  if(play) { audio.volume = 0.7; var p = audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>{});} }
+  else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
+}
+
+document.addEventListener('visibilitychange', function() { var audio = document.getElementById('bg-music'); if (!audio) return; if (document.hidden) { audio.pause(); } else { if (isMusicEnabled) audio.play().catch(e=>{}); }});
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t); localStorage.setItem('dandelion_theme',t);
+  if(t === 'light') { document.getElementById('t-light').classList.add('active'); document.getElementById('t-dark').classList.remove('active'); } 
+  else { document.getElementById('t-light').classList.remove('active'); document.getElementById('t-dark').classList.add('active'); }
+}
+
+function openSetting() {
+  document.getElementById('set-bio').value = myBio || ''; document.getElementById('set-pwd').value = '';
+  if(myAv) { document.getElementById('set-av-img').src = myAv; document.getElementById('set-av-img').style.display='block'; }
+  document.getElementById('setting-overlay').classList.add('show');
+}
+function closeSetting(e) { if(e.target.id === 'setting-overlay') document.getElementById('setting-overlay').classList.remove('show'); }
+
+window.addEventListener('DOMContentLoaded', function(){
+  setTheme(localStorage.getItem('dandelion_theme') || 'light'); document.getElementById('m-on').classList.add('active');
+  window.addEventListener('touchstart', function autoPlay() { toggleMusic(true); window.removeEventListener('touchstart', autoPlay); }, {passive: true});
+  
+  var c=document.getElementById('seeds');
+  for(var i=0;i<16;i++){
+    var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;
+    s.style.cssText='left:'+(Math.random()*100)+'%;--dx:'+((Math.random()-.5)*120)+'px;animation-duration:'+(Math.random()*12+10)+'s;animation-delay:'+(Math.random()*18)+'s;';
+    s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" stroke-width=".8" opacity=".7"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" stroke-width=".5" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';
+    c.appendChild(s);
+  }
+  
+  try {
+    var autoName = localStorage.getItem('dandelion_me'), autoId = localStorage.getItem('dandelion_id');
+    if(autoName && autoId && db){
+      db.ref('users/'+autoName).once('value', function(snap){
+        try{ var d = snap.val(); if(d && d.identity === autoId){ myBio = d.bio || ''; rAv = d.avatar || ''; myPwdRaw = d.rawPwd || ''; enterApp(autoName, autoId, rAv); } }catch(err){}
+      });
+    }
+  } catch(e) {}
+  initGifPanel();
+});
+
+function handleHomeFlow(targetFlow) { toggleMusic(true); startFlow(targetFlow); }
+document.getElementById('btn-reg').addEventListener('click', function(e){ e.preventDefault(); handleHomeFlow('register'); });
+document.getElementById('btn-reg').addEventListener('touchstart', function(e){ e.preventDefault(); handleHomeFlow('register'); });
+document.getElementById('btn-log').addEventListener('click', function(e){ e.preventDefault(); handleHomeFlow('login'); });
+document.getElementById('btn-log').addEventListener('touchstart', function(e){ e.preventDefault(); handleHomeFlow('login'); });
+
+var setBtn = document.getElementById('btn-open-set');
+setBtn.addEventListener('click', function(e){ e.preventDefault(); openSetting(); });
+setBtn.addEventListener('touchstart', function(e){ e.preventDefault(); openSetting(); }, {passive: false});
+
+function show(id){['s-home','s-steps','s-chat','s-main'].forEach(function(s){var el=document.getElementById(s);if(el)el.classList[s===id?'remove':'add']('off');});}
+
+var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱',hint:'請勿使用學校帳號',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
+var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
+function steps(){return flow==='register'?REG:LOG;}
+function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
+
+function renderStep(idx,back){
+  stepIdx=idx; var ss=steps(),s=ss[idx]; var d=document.getElementById('dots'); d.innerHTML='';
+  ss.forEach(function(_,i){var el=document.createElement('div');el.className='dot'+(i===idx?' on':'');d.appendChild(el);});
+  document.getElementById('bk-btn').style.visibility=idx===0?'hidden':'visible';
+  var body='';
+  if(s.type==='avatar'){ body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>'; }
+  else { var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||''; body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">'; }
+  body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
+  document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
+  if(s.type==='avatar'){
+    if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
+    document.getElementById('av-file').addEventListener('change',function(e){ var f=e.target.files[0]; this.value=''; if(!f)return; var r=new FileReader();r.onload=function(ev){ initCrop(ev.target.result, function(c){ rAv=c; var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none'; }); };r.readAsDataURL(f); });
+  } else { setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80); }
+}
+
+function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
+function goBack(){if(stepIdx===0){show('s-home');return;}renderStep(stepIdx-1,true);}
+function mkId(n,p){var s=n+'|'+p,h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);h=h>>>0;}return'id_'+h.toString(36);}
+
+function nextStep(){
+  var ss=steps(),s=ss[stepIdx];setErr('');
+  if(s.type==='avatar'){stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;}
+  var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
+  if(!v){setErr('⚠️ 欄位不能空白');return;}
+  if(s.id==='rn')rName=v; else if(s.id==='rg'){if(!v.endsWith('@gmail.com')){setErr('❌ 請使用 Gmail');return;}rGmail=v;} else if(s.id==='rp')rPwd=v; else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  else if(s.id==='ln')lName=v; else if(s.id==='lp')lPwd=v; else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
+}
+
+function doAuth(){
+  var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
+  if(flow==='register'){
+    var id=mkId(rName,rPwd);
+    db.ref('users/'+rName).once('value',function(snap){
+      if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 名字已被使用');},100);return;}
+      db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd}); myPwdRaw=rPwd; enterApp(rName,id,rAv,true);
+    });
+  } else {
+    var id2=mkId(lName,lPwd);
+    db.ref('users/'+lName).once('value',function(snap){
+      var d=snap.val();if(!d){setErr('❌ 帳號不存在');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.identity!==id2){setErr('❌ 密碼錯誤');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}
+      if(d.avatar){rAv=d.avatar;} myBio=d.bio||''; myPwdRaw=d.rawPwd||lPwd; enterApp(lName,id2,d.avatar||'',false);
+    });
+  }
+}
+
+function enterApp(name, id, av, isNew){
+  me=name; myId=id; myAv=av; 
+  localStorage.setItem('dandelion_me', name); localStorage.setItem('dandelion_id', id);
+  document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio||'查看設置...';
+  if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
+  
+  if (isNew && db) { db.ref('messages').push().set({name:'__system__',type:'system',text:name+' 加入了蒲公英 🌼',timestamp:firebase.database.ServerValue.TIMESTAMP}); }
+  show('s-main'); loadUserList();
+}
+
+function loadUserList() {
+  if(!db) return;
+  db.ref('users').on('value', function(snap){
+    var users = snap.val(); var html = '';
+    html += '<div class="usr-row grp" onclick="openRoom(\'group\',\'\')"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
+    html += '<div class="usr-div">私密聊天</div>';
+    for(var key in users) {
+      if(key === me) continue;
+      var u = users[key]; var avHtml = u.avatar ? '<img src="'+u.avatar+'">' : '🌼'; var bioText = u.bio || '來聊天吧！';
+      html += '<div class="usr-row" onclick="openRoom(\'pm\',\''+key+'\')"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
+    }
+    document.getElementById('user-list').innerHTML = html;
+  });
+}
+
+function getChatId(u1, u2) { return [u1, u2].sort().join('_'); }
+
+function openRoom(type, targetName) {
+  currentRoom = type; currentTarget = targetName; shownKeys = {}; lastDate = null;
+  document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='group'?'🌻':'🤫')+'</span>歡迎來到'+(type==='group'?'群組':'私密')+'聊天室<br><span style="color:#C8A882;font-size:12px">'+(type==='group'?'在這裡，你可以和全班說說話':'只有你和 '+esc(targetName)+' 能看到這裡的訊息')+'</span></div>';
+  if (type === 'group') { document.getElementById('chat-title').textContent = '608 群組'; } 
+  else { document.getElementById('chat-title').textContent = targetName; }
+  show('s-chat'); startListen(); cancelReply(); toggleGif(false);
+}
+
+function backToMain() { if (currentChatRef) { currentChatRef.off(); } show('s-main'); }
+
+function saveSettings(){
+  var nb=document.getElementById('set-bio').value.trim(); var np=document.getElementById('set-pwd').value.trim(); myBio=nb;
+  document.getElementById('hbio-sub').textContent=myBio?myBio:'查看設置...'; var upData={bio:myBio,avatar:myAv};
+  if(np){ var newId=mkId(me,np); myId=newId;myPwdRaw=np; localStorage.setItem('dandelion_id',newId); upData.identity=newId;upData.rawPwd=np; }
+  if(db && me) db.ref('users/'+me).update(upData); document.getElementById('setting-overlay').classList.remove('show');
+}
+function doLogout(){ if(!confirm('確定要登出嗎？'))return; localStorage.clear(); location.reload(); }
+
+(function(){
+  var overlay=document.getElementById('crop-overlay');
+  function start(x,y,dist){ isDragging=true;startX=x-imgX;startY=y-imgY;startDist=dist; }
+  function move(x,y,dist){
+    if(!isDragging)return; imgX=x-startX;imgY=y-startY;
+    if(dist>0 && startDist>0){ var sc=dist/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=dist; } updateCropTransform();
+  }
+  overlay.addEventListener('mousedown',function(e){if(e.target.closest('.crop-btns'))return; e.preventDefault(); start(e.clientX,e.clientY,0);});
+  window.addEventListener('mousemove',function(e){if(isDragging){e.preventDefault(); move(e.clientX,e.clientY,0);}}, {passive:false});
+  window.addEventListener('mouseup',function(){isDragging=false;});
+  overlay.addEventListener('touchstart',function(e){
+    if(e.target.closest('.crop-btns')) return; e.preventDefault();
+    if(e.touches.length===1){ start(e.touches[0].clientX,e.touches[0].clientY,0); }
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); start((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: false});
+  overlay.addEventListener('touchmove',function(e){
+    if(e.target.closest('.crop-btns')) return; e.preventDefault();
+    if(!isDragging)return; if(e.touches.length===1){ move(e.touches[0].clientX,e.touches[0].clientY,0); }
+    else if(e.touches.length===2){ var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); move((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d); }
+  }, {passive: false});
+  overlay.addEventListener('touchcancel',function(){isDragging=false;});
+  overlay.addEventListener('touchend',function(){isDragging=false;});
+})();
+
+document.getElementById('set-av-file').addEventListener('change', function(e){
+  var f=e.target.files[0]; this.value=''; if(!f)return;
+  var r=new FileReader(); r.onload=function(ev){
+    initCrop(ev.target.result, function(cData){
+      myAv=cData; document.getElementById('set-av-img').src=myAv; document.getElementById('set-av-img').style.display='block';
+      var hImg=document.getElementById('hav-img'); hImg.src=myAv; hImg.style.display='block';
+    });
+  }; r.readAsDataURL(f);
+});
+
+function initCrop(src, callback){
+  cropSourceSrc=src;cropTargetHandler=callback; var cimg=document.getElementById('crop-img'); cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;
+  cimg.style.transform='translate(0px, 0px) scale(1)';
+  cimg.onload=function(){
+    var wrap=280; if(cimg.naturalWidth>cimg.naturalHeight){imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;}else{imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;} updateCropTransform();
+  };
+  document.getElementById('crop-overlay').classList.add('show');
+}
+function updateCropTransform(){ document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')'; }
+
+function closeCrop(){document.getElementById('crop-overlay').classList.remove('show');}
+function saveCrop(){
+  var cimg=document.getElementById('crop-img'); var cv=document.createElement('canvas');cv.width=100;cv.height=100;
+  cv.getContext('2d').drawImage(cimg, (-imgX)/imgScale, (-imgY)/imgScale, 280/imgScale, 280/imgScale, 0, 0, 100, 100);
+  var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
+}
+
+function startListen(){
+  if(!db) return;
+  if(currentChatRef) { currentChatRef.off(); }
+  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  currentChatRef = db.ref(path);
+  currentChatRef.on('child_added', function(snap){ 
+    var k=snap.key; if(shownKeys[k])return; shownKeys[k]=true; 
+    var d=snap.val(); if(!d)return; d.name==='__system__'?addSys(d.text):addBubble(d,k); 
+  });
+  currentChatRef.on('child_changed', function(snap){ 
+    var d=snap.val(); if(!d||!d.recalled)return; var w=document.querySelector('[data-key="'+snap.key+'"]'); if(w)markRcl(w); 
+  });
+}
+
+function pushMsg(obj){ 
+  if(!db)return;
+  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  var nr = db.ref(path).push(); 
+  obj.timestamp=firebase.database.ServerValue.TIMESTAMP; nr.set(obj); 
+}
+function sysMsg(t){ 
+  if(!db)return;
+  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  var nr=db.ref(path).push(); nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});
+}
+
+function initReply(msgKey, name, snippet) {
+  replyTargetId = msgKey; replyTargetName = name; replyTargetSnippet = snippet;
+  var bar = document.getElementById('reply-bar'); var info = document.getElementById('reply-bar-info');
+  info.textContent = '↩️ 回覆 ' + name + '：「' + snippet + '」'; document.getElementById('reply-bar').classList.add('show'); document.getElementById('msg-ta').focus();
+}
+function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').classList.remove('show'); }
+
+function rclMsg(btn) {
+  var mw = btn.closest('.mw'); if(!mw) return; var key = mw.getAttribute('data-key');
+  if(key && db && confirm('確定要收回這條訊息嗎？')) {
+    var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+    db.ref(path + '/' + key).update({recalled: true}); 
+  }
+}
+function markRcl(mw) {
+  var bbl = mw.querySelector('.bbl'); if(!bbl) return;
+  bbl.style.transform = 'scale(0.95)';
+  setTimeout(function(){
+    bbl.className = 'bbl recalled'; bbl.innerHTML = '🌬️ 此訊息已收回';
+    bbl.style.transform = 'scale(1)';
+    var qa = mw.querySelector('.hvr-actions'); if(qa) qa.remove();
+  }, 150);
+}
+
+function sendTxt(){
+  var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
+  var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
+  pushMsg(m); cancelReply();
+}
+document.getElementById('snd-btn').addEventListener('click', sendTxt);
+document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
+
+// 🚀 擴大 GIF 資料庫
+function initGifPanel() {
+  var urls = [
+    // 🐱 貓咪與毛小孩系列
+    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+    "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
+    "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+    "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif",
+    "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif",
+    "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+    // 😂 爆笑與超有戲反應
+    "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif",
+    "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif",
+    "https://media.giphy.com/media/3o7btLwOaOENz8c1qw/giphy.gif",
+    "https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif",
+    "https://media.giphy.com/media/tHIRLHtNwxpjIFqPdV/giphy.gif",
+    "https://media.giphy.com/media/PUBexcJiRu0py/giphy.gif",
+    // 💬 實用文字與日常動作
+    "https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif",
+    "https://media.giphy.com/media/3oKIPnAiaE6s411Vwk/giphy.gif",
+    "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif",
+    "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif",
+    "https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
+    "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif",
+    // 🎮 復古像素與迷因感
+    "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
+    "https://media.giphy.com/media/3o7aCRZYNerX4ovPwI/giphy.gif",
+    "https://media.giphy.com/media/5wWf7H0qoWaNnkZBucU/giphy.gif",
+    "https://media.giphy.com/media/YRtLgsajXrz1FNJ6oy/giphy.gif",
+    "https://media.giphy.com/media/f31DK1KpGsyMU/giphy.gif",
+    "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+  ];
   var gp = document.getElementById('gif-panel');
-  gifUrls.forEach(function(u){
+  urls.forEach(function(u){
     var img = document.createElement('img'); img.src = u; img.className = 'g-item';
     img.onclick = function() {
       var m={name:me,type:'image',fileData:u,fileName:'gif',avatar:myAv,deviceId:myId}; 
@@ -57,7 +764,123 @@ function initGifPanel() {
     gp.appendChild(img);
   });
 }
-// ... (其餘邏輯與之前完全一致) ...
+
+function toggleGif(forceClose) {
+  var gp = document.getElementById('gif-panel');
+  if(forceClose === false) { gp.classList.remove('show'); return; }
+  gp.classList.toggle('show');
+}
+
+// 點擊空白處自動關閉 GIF 面板
+document.addEventListener('click', function(e) {
+  var gp = document.getElementById('gif-panel');
+  if (gp && gp.classList.contains('show') && !e.target.closest('#gif-panel') && !e.target.closest('#btn-gif')) {
+    gp.classList.remove('show');
+  }
+});
+
+document.getElementById('fi2').addEventListener('change',function(e){
+  var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
+  var isImg=/^image\//i.test(file.type);
+  
+  // 🚀 防呆機制：動圖限制 2MB，其他圖片與檔案會自動處理
+  if(file.size>2*1024*1024 && file.type === 'image/gif'){alert('動圖請勿超過 2MB！');return;}
+  if(file.size>900*1024 && !isImg && file.type !== 'image/gif'){alert('檔案太大！');return;}
+  
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    if(file.type === 'image/gif') {
+      // 🚀 直通通道：保證 GIF 上傳後依然會動，絕不壓縮破壞
+      var m={name:me,type:'image',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
+      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      pushMsg(m); cancelReply();
+    } else if(isImg) {
+      var img=new Image();img.onload=function(){
+        var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
+        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.78);
+        var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+        pushMsg(m); cancelReply();
+      };img.src=ev.target.result;
+    } else {
+      var m={name:me,type:'file',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      pushMsg(m); cancelReply();
+    }
+  };reader.readAsDataURL(file);
+});
+
+function jumpToMessage(key) {
+  var target = document.querySelector('[data-key="'+key+'"]');
+  if(target) { 
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+    target.classList.add('highlight-anim');
+    setTimeout(function(){ target.classList.remove('highlight-anim'); }, 1200); 
+  }
+}
+
+function handleMenuAction(e, callback) { e.preventDefault(); e.stopPropagation(); var mw = e.target.closest('.mw'); if(mw) mw.classList.remove('show-menu'); callback(); }
+
+function openLb(src){ document.getElementById('lb-img').src = src; document.getElementById('lb').classList.add('show'); }
+function closeLb(){ document.getElementById('lb').classList.remove('show'); }
+
+function addBubble(d,key){
+  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
+  var rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||''; var date=fmtD(ts);
+  if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
+  
+  var w=document.createElement('div');w.className='mw '+(self?'self':'other'); if(key)w.setAttribute('data-key',key);
+  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
+  var quoteHtml = ''; if(!rcld && d.replyId){ quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>'; }
+
+  var bb='';
+  if(rcld){
+    bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
+  } else if(d.type==='image'){
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
+  } else if(d.type==='file'){
+    var fn = esc(d.fileName || '檔案');
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<a class="file-box" href="'+d.fileData+'" download="'+fn+'"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">'+fn+'</div><div class="file-sub">點擊下載檔案</div></div><div class="file-dl">⬇</div></a></div>';
+  } else {
+    bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
+  }
+  
+  var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
+  if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
+  var escapedSnippet = snippetText.replace(/'/g, "\\'");
+
+  var actionButtonsHtml = '';
+  if(!rcld && key){
+    actionButtonsHtml = '<div class="hvr-actions">';
+    actionButtonsHtml += '<button class="action-btn rpl-act">回覆</button>';
+    if(self){ actionButtonsHtml += '<button class="action-btn rcl-act">收回</button>'; }
+    actionButtonsHtml += '</div>';
+  }
+
+  var row=self?'<div class="mw-row">'+actionButtonsHtml+avH+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+actionButtonsHtml+'</div>';
+  w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
+  
+  if(!rcld && key){
+    var pressTimer; var bblBox = w.querySelector('.bbl');
+    var startPress = function(e) { pressTimer = setTimeout(function() { if('vibrate' in navigator) navigator.vibrate(40); w.classList.add('show-menu'); }, 600); };
+    var cancelPress = function() { clearTimeout(pressTimer); };
+    bblBox.addEventListener('touchstart', startPress, {passive: true}); bblBox.addEventListener('touchend', cancelPress); bblBox.addEventListener('touchmove', cancelPress);
+    bblBox.addEventListener('mousedown', startPress); bblBox.addEventListener('mouseup', cancelPress); bblBox.addEventListener('mouseleave', cancelPress);
+
+    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); }
+    var cBtn = w.querySelector('.rcl-act'); if(cBtn){ cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); }
+  }
+
+  document.getElementById('msgs').appendChild(w);
+  requestAnimationFrame(function(){
+    var m=document.getElementById('msgs');
+    m.scrollTo({ top: m.scrollHeight, behavior: 'smooth' });
+  });
+  return w;
+}
+
+function addSys(t){var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(sep);var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
 </script>
 </body>
 </html>
