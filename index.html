@@ -122,6 +122,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .usr-arrow{color:var(--gold);font-weight:700;opacity:0.6;font-size:18px;}
 .usr-div{font-size:11px;color:var(--bl);letter-spacing:2px;font-weight:500;margin:10px 0 2px;padding-left:10px;}
 
+/* 管理員列表卡片樣式 */
+.admin-card { background: var(--bg-card); border: 1px solid rgba(212,160,23,.3); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px var(--sh); }
+.admin-info { flex: 1; overflow: hidden; }
+.admin-name { font-size: 15px; font-weight: 700; color: var(--brown); margin-bottom: 4px; }
+.admin-detail { font-size: 12px; color: var(--bm); font-family: monospace; background: var(--bg-input); padding: 4px 8px; border-radius: 6px; display: inline-block; }
+
 /* ══ 聊天室 ══ */
 #s-chat{flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;align-items:stretch;z-index:50}
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,160,23,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -395,7 +401,25 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="main-hero-s">608 我們的故事</div>
   </div>
 
+  <div id="admin-btn-wrap" style="display:none; width:100%; max-width:600px; align-self:center; padding: 0 20px 10px;">
+    <button class="pill sec" style="width:100%; padding: 10px; font-size: 13px; border-color: #C0392B; color: #C0392B;" onclick="openAdminPanel()">進入系統管理員後台</button>
+  </div>
+
   <div class="usr-list-wrap" id="user-list"></div>
+</div>
+
+<!-- 管理員後台 -->
+<div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
+  <div class="m-hdr">
+    <div class="c-hdr-l">
+      <span class="c-bk" onclick="show('s-main')">❮</span>
+      <span class="m-hdr-t">管理員專屬後台</span>
+    </div>
+  </div>
+  <div style="flex:1; width:100%; max-width:600px; padding:20px; overflow-y:auto; align-self:center;">
+    <div style="font-size:13px; color:var(--bl); margin-bottom:16px;">全站使用者列表 (機密資料請妥善保管)</div>
+    <div id="admin-user-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+  </div>
 </div>
 
 <!-- 聊天室 -->
@@ -449,6 +473,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <script>
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
+var ADMIN_NAME="你的名字"; // 記得修改成你註冊的管理員名稱
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
@@ -513,7 +538,7 @@ var setBtn = document.getElementById('btn-open-set');
 setBtn.addEventListener('click', function(e){ e.preventDefault(); openSetting(); });
 setBtn.addEventListener('touchstart', function(e){ e.preventDefault(); openSetting(); }, {passive: false});
 
-function show(id){['s-home','s-steps','s-chat','s-main'].forEach(function(s){var el=document.getElementById(s);if(el)el.classList[s===id?'remove':'add']('off');});}
+function show(id){['s-home','s-steps','s-chat','s-main','s-admin'].forEach(function(s){var el=document.getElementById(s);if(el)el.classList[s===id?'remove':'add']('off');});}
 
 var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱',hint:'請勿使用學校帳號',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
 var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
@@ -573,8 +598,45 @@ function enterApp(name, id, av, isNew){
   document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio||'查看設置...';
   if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
   
+  if (name === ADMIN_NAME) {
+    document.getElementById('admin-btn-wrap').style.display = 'block';
+  } else {
+    document.getElementById('admin-btn-wrap').style.display = 'none';
+  }
+  
   if (isNew && db) { db.ref('messages').push().set({name:'__system__',type:'system',text:name+' 加入了蒲公英 🌼',timestamp:firebase.database.ServerValue.TIMESTAMP}); }
   show('s-main'); loadUserList();
+}
+
+function openAdminPanel() {
+  if (me !== ADMIN_NAME) { alert('你沒有權限進入！'); return; }
+  
+  show('s-admin');
+  var listContainer = document.getElementById('admin-user-list');
+  listContainer.innerHTML = '<div style="text-align:center; padding:20px;">讀取中...</div>';
+
+  db.ref('users').once('value', function(snap){
+    var users = snap.val();
+    var html = '';
+    
+    for(var key in users) {
+      var u = users[key];
+      var avHtml = u.avatar ? '<img src="'+u.avatar+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' : '<div style="width:40px;height:40px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
+      
+      var emailText = u.gmail ? esc(u.gmail) : '未設定信箱';
+      
+      html += `
+        <div class="admin-card">
+          ${avHtml}
+          <div class="admin-info">
+            <div class="admin-name">${esc(key)}</div>
+            <div class="admin-detail">📧 ${emailText}</div>
+          </div>
+        </div>
+      `;
+    }
+    listContainer.innerHTML = html;
+  });
 }
 
 function loadUserList() {
