@@ -336,7 +336,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="78" height="90" viewBox="0 0 90 100" fill="none">
@@ -363,13 +362,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 主畫面大廳 -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天列表</div>
@@ -408,7 +405,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 管理員後台 -->
 <div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
   <div class="m-hdr">
     <div class="c-hdr-l">
@@ -417,20 +413,23 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     </div>
   </div>
   <div style="flex:1; width:100%; max-width:600px; padding:20px; overflow-y:auto; align-self:center;">
+    <button class="pill sec" style="width:100%; padding: 12px; font-size: 14px; border-color: #C0392B; color: #C0392B; margin-bottom: 20px; font-weight: 700;" onclick="resetAllChats()">⚠️ 一鍵清空所有對話紀錄</button>
+
     <div style="font-size:13px; color:var(--bl); margin-bottom:16px;">全站使用者列表 (機密資料請妥善保管)</div>
     <div id="admin-user-list" style="display:flex; flex-direction:column; gap:12px;"></div>
   </div>
 </div>
 
-<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
+    <div id="cg-del-btn" style="display:none; padding-right: 10px;">
+      <button class="pill sec" style="padding: 6px 12px; font-size: 12px; border-color: #C0392B; color: #C0392B; font-weight: 700;" onclick="deleteCustomGroup()">解散群組</button>
+    </div>
   </div>
   <div class="msgs" id="msgs"></div>
   
   <div class="inp-area">
-    <!-- 🚀 全新海量 GIF 貼圖抽屜 -->
     <div id="gif-panel" class="gif-panel"></div>
 
     <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
@@ -445,7 +444,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -458,7 +456,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 🚀 新增：建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
   <div class="set-card" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
@@ -470,14 +467,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn cancel" onclick="closeCrop()">取消</button><button class="c-btn save" onclick="saveCrop()">裁切</button></div>
 </div>
 
-<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -485,7 +480,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <script>
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
-var ADMIN_NAME="洪祥祐"; // 設定你為系統管理員
+var ADMIN_NAME="洪祥祐"; // 設定為系統管理員
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
@@ -637,7 +632,7 @@ function openAdminPanel() {
       var u = users[key];
       var avHtml = u.avatar ? '<img src="'+u.avatar+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' : '<div style="width:40px;height:40px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱';
-      var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; // 管理員看密碼功能保留
+      var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
       
       html += `
         <div class="admin-card">
@@ -657,13 +652,11 @@ function openAdminPanel() {
 function loadUserList() {
   if(!db) return;
   
-  // 監聽所有使用者
   db.ref('users').on('value', function(snap){
     allUsers = snap.val() || {};
     renderUserListUI();
   });
   
-  // 監聽所有自訂群組
   db.ref('groups').on('value', function(snap){
     allGroups = snap.val() || {};
     renderUserListUI();
@@ -696,7 +689,6 @@ function renderUserListUI() {
   document.getElementById('user-list').innerHTML = html;
 }
 
-// 🚀 新增：開啟建立群組燈箱
 function openCg() {
   document.getElementById('cg-name').value = '';
   var html = '';
@@ -710,7 +702,6 @@ function openCg() {
 }
 function closeCg(e) { if(e.target.id === 'cg-overlay') document.getElementById('cg-overlay').classList.remove('show'); }
 
-// 🚀 新增：執行建立群組寫入資料庫
 function doCreateGroup() {
   var name = document.getElementById('cg-name').value.trim();
   if(!name) { alert('請輸入群組名稱！'); return; }
@@ -718,8 +709,8 @@ function doCreateGroup() {
   if(cbs.length === 0) { alert('請至少選擇一位成員！'); return; }
   
   var members = {};
-  members[me] = true; // 把自己加進去
-  cbs.forEach(function(cb){ members[cb.value] = true; }); // 把選中的人加進去
+  members[me] = true; 
+  cbs.forEach(function(cb){ members[cb.value] = true; }); 
   
   var gRef = db.ref('groups').push();
   gRef.set({ name: name, members: members, createdAt: firebase.database.ServerValue.TIMESTAMP });
@@ -728,7 +719,6 @@ function doCreateGroup() {
 
 function getChatId(u1, u2) { return [u1, u2].sort().join('_'); }
 
-// 更新：支援自訂群組房間切換
 function openRoom(type, targetName, groupId) {
   currentRoom = type; currentTarget = targetName; currentGroupId = groupId; shownKeys = {}; lastDate = null;
   var welcomeText = '';
@@ -738,6 +728,12 @@ function openRoom(type, targetName, groupId) {
 
   document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='pm'?'🤫':(type==='custom_group'?'🌿':'🌻'))+'</span>歡迎來到'+(type==='pm'?'私密':'群組')+'聊天室<br><span style="color:#C8A882;font-size:12px">'+welcomeText+'</span></div>';
   document.getElementById('chat-title').textContent = targetName; 
+  
+  if (type === 'custom_group') {
+    document.getElementById('cg-del-btn').style.display = 'block';
+  } else {
+    document.getElementById('cg-del-btn').style.display = 'none';
+  }
   
   show('s-chat'); startListen(); cancelReply(); toggleGif(false);
 }
@@ -803,7 +799,6 @@ function saveCrop(){
   var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
 }
 
-// 更新：自動判斷當前要寫入哪個節點
 function getActiveChatPath() {
   if (currentRoom === 'group') return 'messages';
   if (currentRoom === 'custom_group') return 'custom_group_messages/' + currentGroupId;
@@ -868,37 +863,20 @@ function sendTxt(){
 document.getElementById('snd-btn').addEventListener('click', sendTxt);
 document.getElementById('msg-ta').addEventListener('input', function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
 
-// 🚀 擴大 GIF 資料庫
 function initGifPanel() {
   var urls = [
-    // 🐱 貓咪與毛小孩系列
-    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
-    "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
-    "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-    "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif",
-    "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif",
-    "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
-    // 😂 爆笑與超有戲反應
-    "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif",
-    "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif",
-    "https://media.giphy.com/media/3o7btLwOaOENz8c1qw/giphy.gif",
-    "https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif",
-    "https://media.giphy.com/media/tHIRLHtNwxpjIFqPdV/giphy.gif",
-    "https://media.giphy.com/media/PUBexcJiRu0py/giphy.gif",
-    // 💬 實用文字與日常動作
-    "https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif",
-    "https://media.giphy.com/media/3oKIPnAiaE6s411Vwk/giphy.gif",
-    "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif",
-    "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif",
-    "https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif",
-    "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif",
-    // 🎮 復古像素與迷因感
-    "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
-    "https://media.giphy.com/media/3o7aCRZYNerX4ovPwI/giphy.gif",
-    "https://media.giphy.com/media/5wWf7H0qoWaNnkZBucU/giphy.gif",
-    "https://media.giphy.com/media/YRtLgsajXrz1FNJ6oy/giphy.gif",
-    "https://media.giphy.com/media/f31DK1KpGsyMU/giphy.gif",
-    "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+    "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif", "https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif",
+    "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif", "https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif",
+    "https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif", "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+    "https://media.giphy.com/media/26AHONQ79FdWZhAI0/giphy.gif", "https://media.giphy.com/media/xT0xeJpnrWC4XWblWQ/giphy.gif",
+    "https://media.giphy.com/media/3o7btLwOaOENz8c1qw/giphy.gif", "https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif",
+    "https://media.giphy.com/media/tHIRLHtNwxpjIFqPdV/giphy.gif", "https://media.giphy.com/media/PUBexcJiRu0py/giphy.gif",
+    "https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif", "https://media.giphy.com/media/3oKIPnAiaE6s411Vwk/giphy.gif",
+    "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif", "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif",
+    "https://media.giphy.com/media/10tIjpzIu8fe0/giphy.gif", "https://media.giphy.com/media/L0qTl8hl84xV735X3z/giphy.gif",
+    "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif", "https://media.giphy.com/media/3o7aCRZYNerX4ovPwI/giphy.gif",
+    "https://media.giphy.com/media/5wWf7H0qoWaNnkZBucU/giphy.gif", "https://media.giphy.com/media/YRtLgsajXrz1FNJ6oy/giphy.gif",
+    "https://media.giphy.com/media/f31DK1KpGsyMU/giphy.gif", "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
   ];
   var gp = document.getElementById('gif-panel');
   urls.forEach(function(u){
@@ -918,7 +896,6 @@ function toggleGif(forceClose) {
   gp.classList.toggle('show');
 }
 
-// 點擊空白處自動關閉 GIF 面板
 document.addEventListener('click', function(e) {
   var gp = document.getElementById('gif-panel');
   if (gp && gp.classList.contains('show') && !e.target.closest('#gif-panel') && !e.target.closest('#btn-gif')) {
@@ -930,14 +907,12 @@ document.getElementById('fi2').addEventListener('change',function(e){
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
   var isImg=/^image\//i.test(file.type);
   
-  // 🚀 防呆機制：動圖限制 2MB，其他圖片與檔案會自動處理
   if(file.size>2*1024*1024 && file.type === 'image/gif'){alert('動圖請勿超過 2MB！');return;}
   if(file.size>900*1024 && !isImg && file.type !== 'image/gif'){alert('檔案太大！');return;}
   
   var reader=new FileReader();
   reader.onload=function(ev){
     if(file.type === 'image/gif') {
-      // 🚀 直通通道：保證 GIF 上傳後依然會動，絕不壓縮破壞
       var m={name:me,type:'image',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
       if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       pushMsg(m); cancelReply();
@@ -1028,6 +1003,45 @@ function addSys(t){var sep=document.createElement('div');sep.className='sysmsg';
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
+
+// 🚀 新增：管理員一鍵清空所有對話紀錄
+function resetAllChats() {
+  if (me !== ADMIN_NAME) { 
+    alert('你沒有權限執行此操作！'); 
+    return; 
+  }
+
+  var confirm1 = confirm('⚠️ 警告：你確定要清空「所有」的對話紀錄嗎？\n\n這包含大群組、私訊、自訂群組的所有訊息。\n（不用擔心，大家的帳號和群組名單都會保留）');
+  if (!confirm1) return;
+
+  var confirm2 = prompt('此動作無法復原！\n請在下方輸入「確認清空」四個字來執行：');
+  if (confirm2 !== '確認清空') { 
+    alert('密語錯誤或已取消，對話紀錄安全無恙。'); 
+    return; 
+  }
+
+  if (db) {
+    db.ref('messages').remove();
+    db.ref('private_messages').remove();
+    db.ref('custom_group_messages').remove();
+    
+    alert('✅ 報告管理員！所有對話紀錄已經順利清空！');
+    location.reload();
+  }
+}
+
+// 🚀 新增：解散自訂群組
+function deleteCustomGroup() {
+  if (confirm('⚠️ 確定要解散這個群組嗎？\n\n一旦解散，群組會消失，裡面的對話紀錄也會一併被永久刪除！')) {
+    if (db && currentGroupId) {
+      db.ref('custom_group_messages/' + currentGroupId).remove();
+      db.ref('groups/' + currentGroupId).remove();
+      
+      alert('✅ 群組已成功解散！');
+      backToMain(); 
+    }
+  }
+}
 </script>
 </body>
 </html>
