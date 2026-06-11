@@ -458,6 +458,18 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 🚀 新增：建立自訂群組燈箱 -->
+<div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
+  <div class="set-card" onclick="event.stopPropagation()">
+    <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
+    <div class="set-item"><div class="set-lbl">群組名稱</div><input class="fi" id="cg-name" type="text" placeholder="輸入群組名稱..."></div>
+    <div class="set-item"><div class="set-lbl">選擇邀請成員</div>
+      <div id="cg-user-list" style="max-height:160px; overflow-y:auto; border:1.5px solid rgba(212,160,23,.3); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; background:var(--bg-input);"></div>
+    </div>
+    <button class="pill pri" style="width:100%; margin-top:14px;" onclick="doCreateGroup()">確 認 建 立</button>
+  </div>
+</div>
+
 <!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
@@ -473,14 +485,16 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <script>
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
-var ADMIN_NAME="你的名字"; // 記得修改成你註冊的管理員名稱
+var ADMIN_NAME="洪祥祐"; // 設定你為系統管理員
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
-var currentRoom = 'group', currentTarget = '', currentChatRef = null;
+var currentRoom = 'group', currentTarget = '', currentGroupId = null, currentChatRef = null;
 var isMusicEnabled=true;
 var cropSourceSrc='', cropTargetHandler=null;
 var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
+var allUsers = {};
+var allGroups = {};
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
@@ -622,15 +636,16 @@ function openAdminPanel() {
     for(var key in users) {
       var u = users[key];
       var avHtml = u.avatar ? '<img src="'+u.avatar+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' : '<div style="width:40px;height:40px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
-      
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱';
+      var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; // 管理員看密碼功能保留
       
       html += `
         <div class="admin-card">
           ${avHtml}
           <div class="admin-info">
             <div class="admin-name">${esc(key)}</div>
-            <div class="admin-detail">📧 ${emailText}</div>
+            <div class="admin-detail" style="margin-bottom:4px;">📧 ${emailText}</div>
+            <div class="admin-detail" style="color:#C0392B;">🔑 密碼: ${pwdText}</div>
           </div>
         </div>
       `;
@@ -641,26 +656,89 @@ function openAdminPanel() {
 
 function loadUserList() {
   if(!db) return;
+  
+  // 監聽所有使用者
   db.ref('users').on('value', function(snap){
-    var users = snap.val(); var html = '';
-    html += '<div class="usr-row grp" onclick="openRoom(\'group\',\'\')"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
-    html += '<div class="usr-div">私密聊天</div>';
-    for(var key in users) {
-      if(key === me) continue;
-      var u = users[key]; var avHtml = u.avatar ? '<img src="'+u.avatar+'">' : '🌼'; var bioText = u.bio || '來聊天吧！';
-      html += '<div class="usr-row" onclick="openRoom(\'pm\',\''+key+'\')"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
-    }
-    document.getElementById('user-list').innerHTML = html;
+    allUsers = snap.val() || {};
+    renderUserListUI();
   });
+  
+  // 監聽所有自訂群組
+  db.ref('groups').on('value', function(snap){
+    allGroups = snap.val() || {};
+    renderUserListUI();
+  });
+}
+
+function renderUserListUI() {
+  var html = '';
+  // 1. 班級大群組
+  html += '<div class="usr-row grp" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
+  
+  // 2. 自訂小群組標題與新增按鈕
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 2px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>';
+
+  // 3. 列出我有加入的自訂群組
+  for(var gKey in allGroups) {
+    var g = allGroups[gKey];
+    if(g.members && g.members[me]) {
+      html += '<div class="usr-row" style="border-color:var(--gold-l);" onclick="openRoom(\'custom_group\',\''+esc(g.name)+'\',\''+gKey+'\')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">'+esc(g.name)+'</div><div class="usr-sub">自訂小群組</div></div><div class="usr-arrow">❯</div></div>';
+    }
+  }
+
+  // 4. 私密聊天列表
+  html += '<div class="usr-div" style="margin-top:14px;">私密聊天</div>';
+  for(var key in allUsers) {
+    if(key === me) continue;
+    var u = allUsers[key]; var avHtml = u.avatar ? '<img src="'+u.avatar+'">' : '🌼'; var bioText = u.bio || '來聊天吧！';
+    html += '<div class="usr-row" onclick="openRoom(\'pm\',\''+key+'\', null)"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
+  }
+  document.getElementById('user-list').innerHTML = html;
+}
+
+// 🚀 新增：開啟建立群組燈箱
+function openCg() {
+  document.getElementById('cg-name').value = '';
+  var html = '';
+  for(var key in allUsers) {
+    if(key === me) continue;
+    html += '<label style="display:flex;align-items:center;gap:10px;font-size:15px;color:var(--brown);cursor:pointer;user-select:none;"><input type="checkbox" class="cg-cb" value="'+esc(key)+'" style="width:18px;height:18px;accent-color:var(--gold);"> '+esc(key)+'</label>';
+  }
+  if(html === '') html = '<div style="font-size:13px;color:var(--bl);">目前沒有其他使用者可以邀請</div>';
+  document.getElementById('cg-user-list').innerHTML = html;
+  document.getElementById('cg-overlay').classList.add('show');
+}
+function closeCg(e) { if(e.target.id === 'cg-overlay') document.getElementById('cg-overlay').classList.remove('show'); }
+
+// 🚀 新增：執行建立群組寫入資料庫
+function doCreateGroup() {
+  var name = document.getElementById('cg-name').value.trim();
+  if(!name) { alert('請輸入群組名稱！'); return; }
+  var cbs = document.querySelectorAll('.cg-cb:checked');
+  if(cbs.length === 0) { alert('請至少選擇一位成員！'); return; }
+  
+  var members = {};
+  members[me] = true; // 把自己加進去
+  cbs.forEach(function(cb){ members[cb.value] = true; }); // 把選中的人加進去
+  
+  var gRef = db.ref('groups').push();
+  gRef.set({ name: name, members: members, createdAt: firebase.database.ServerValue.TIMESTAMP });
+  document.getElementById('cg-overlay').classList.remove('show');
 }
 
 function getChatId(u1, u2) { return [u1, u2].sort().join('_'); }
 
-function openRoom(type, targetName) {
-  currentRoom = type; currentTarget = targetName; shownKeys = {}; lastDate = null;
-  document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='group'?'🌻':'🤫')+'</span>歡迎來到'+(type==='group'?'群組':'私密')+'聊天室<br><span style="color:#C8A882;font-size:12px">'+(type==='group'?'在這裡，你可以和全班說說話':'只有你和 '+esc(targetName)+' 能看到這裡的訊息')+'</span></div>';
-  if (type === 'group') { document.getElementById('chat-title').textContent = '608 群組'; } 
-  else { document.getElementById('chat-title').textContent = targetName; }
+// 更新：支援自訂群組房間切換
+function openRoom(type, targetName, groupId) {
+  currentRoom = type; currentTarget = targetName; currentGroupId = groupId; shownKeys = {}; lastDate = null;
+  var welcomeText = '';
+  if (type === 'group') welcomeText = '在這裡，你可以和全班說說話';
+  else if (type === 'pm') welcomeText = '只有你和 '+esc(targetName)+' 能看到這裡的訊息';
+  else if (type === 'custom_group') welcomeText = '只有被邀請的成員能看到這個小群組';
+
+  document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='pm'?'🤫':(type==='custom_group'?'🌿':'🌻'))+'</span>歡迎來到'+(type==='pm'?'私密':'群組')+'聊天室<br><span style="color:#C8A882;font-size:12px">'+welcomeText+'</span></div>';
+  document.getElementById('chat-title').textContent = targetName; 
+  
   show('s-chat'); startListen(); cancelReply(); toggleGif(false);
 }
 
@@ -725,10 +803,17 @@ function saveCrop(){
   var data=cv.toDataURL('image/jpeg',0.82); if(cropTargetHandler)cropTargetHandler(data); closeCrop();
 }
 
+// 更新：自動判斷當前要寫入哪個節點
+function getActiveChatPath() {
+  if (currentRoom === 'group') return 'messages';
+  if (currentRoom === 'custom_group') return 'custom_group_messages/' + currentGroupId;
+  return 'private_messages/' + getChatId(me, currentTarget);
+}
+
 function startListen(){
   if(!db) return;
   if(currentChatRef) { currentChatRef.off(); }
-  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  var path = getActiveChatPath();
   currentChatRef = db.ref(path);
   currentChatRef.on('child_added', function(snap){ 
     var k=snap.key; if(shownKeys[k])return; shownKeys[k]=true; 
@@ -741,13 +826,13 @@ function startListen(){
 
 function pushMsg(obj){ 
   if(!db)return;
-  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  var path = getActiveChatPath();
   var nr = db.ref(path).push(); 
   obj.timestamp=firebase.database.ServerValue.TIMESTAMP; nr.set(obj); 
 }
 function sysMsg(t){ 
   if(!db)return;
-  var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+  var path = getActiveChatPath();
   var nr=db.ref(path).push(); nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});
 }
 
@@ -761,7 +846,7 @@ function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar')
 function rclMsg(btn) {
   var mw = btn.closest('.mw'); if(!mw) return; var key = mw.getAttribute('data-key');
   if(key && db && confirm('確定要收回這條訊息嗎？')) {
-    var path = (currentRoom === 'group') ? 'messages' : 'private_messages/' + getChatId(me, currentTarget);
+    var path = getActiveChatPath();
     db.ref(path + '/' + key).update({recalled: true}); 
   }
 }
