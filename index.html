@@ -14,109 +14,111 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color: transparent;}
 :root{
-  /* Liquid Glass 專屬暖色調透光參數 */
+  /* 移除過度透光，提升底色不透明度以解決不開模糊時的閱讀問題 */
   --cream:#FDFAF2; --gold:#D4A017; --gold-l:#E8B84B; --gold-p:rgba(212,160,23,0.08);
-  --brown:#3D2C1A; --bm:#7A5C3A; --bl:#C8A882; --sh:rgba(61,44,26,0.08);
+  --brown:#3D2C1A; --bm:#7A5C3A; --bl:#C8A882; --sh:rgba(61,44,26,0.1);
   
-  --bg-card:rgba(255, 255, 255, 0.45); 
-  --bg-input:rgba(255, 255, 255, 0.5);
-  --bg-input-f:rgba(255, 255, 255, 0.8);
-  --bg-hdr:rgba(253, 250, 242, 0.65);
-  --bbl-other:rgba(255, 255, 255, 0.85); 
-  --bbl-self:rgba(255, 248, 220, 0.85);
+  --bg-card:rgba(255, 255, 255, 0.85); 
+  --bg-input:rgba(255, 255, 255, 0.7);
+  --bg-input-f:rgba(255, 255, 255, 0.95);
+  --bg-hdr:rgba(253, 250, 242, 0.85);
+  --bbl-other:#FFFFFF; 
+  --bbl-self:#FFF8DC;
   --glass-border: 1px solid rgba(255, 255, 255, 0.6);
-  --glass-blur: blur(24px);
+  --glass-blur: blur(16px); /* 降低全域模糊半徑減輕效能負擔 */
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 [data-theme="dark"] {
-  --cream:#1F160E; --gold:#E8B84B; --gold-l:#F5D382; --gold-p:rgba(212,160,23,0.12);
-  --brown:#F5EFEB; --bm:#D1BAA3; --bl:#A38563; --sh:rgba(0,0,0,0.3);
+  --cream:#1F160E; --gold:#E8B84B; --gold-l:#F5D382; --gold-p:rgba(212,160,23,0.15);
+  --brown:#F5EFEB; --bm:#D1BAA3; --bl:#A38563; --sh:rgba(0,0,0,0.4);
   
-  --bg-card:rgba(43, 31, 20, 0.45); 
-  --bg-input:rgba(61, 44, 26, 0.4);
-  --bg-input-f:rgba(77, 56, 34, 0.6); 
-  --bg-hdr:rgba(31, 22, 14, 0.7);
-  --bbl-other:rgba(45, 31, 20, 0.85); 
-  --bbl-self:rgba(74, 54, 34, 0.85);
+  --bg-card:rgba(43, 31, 20, 0.85); 
+  --bg-input:rgba(61, 44, 26, 0.6);
+  --bg-input-f:rgba(77, 56, 34, 0.8); 
+  --bg-hdr:rgba(31, 22, 14, 0.85);
+  --bbl-other:#2D1F14; 
+  --bbl-self:#4A3622;
   --glass-border: 1px solid rgba(212, 160, 23, 0.15);
 }
 
-html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .5s var(--ease-smooth), color .5s var(--ease-smooth)}
+html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto Sans TC',sans-serif;color:var(--brown);transition:background .3s var(--ease-smooth), color .3s var(--ease-smooth)}
 
-/* 玻璃擬態核心 Class */
-.liquid-glass {
+/* 減少毛玻璃的濫用，僅在彈出視窗與頂底導覽列使用 */
+.liquid-glass-modal {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
-  box-shadow: 0 8px 32px var(--sh);
+  box-shadow: 0 12px 40px var(--sh);
+  border-radius: 24px; /* 統一修飾圓角 */
+  overflow: hidden;
 }
 
 #seeds{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .seed{position:absolute;bottom:-20px;opacity:0;animation:floatUp linear infinite}
 @keyframes floatUp{0%{bottom:-20px;opacity:0;transform:translateX(0) rotate(0deg)}10%{opacity:.6}90%{opacity:.4}100%{bottom:110vh;opacity:0;transform:translateX(var(--dx)) rotate(400deg)}}
 
-.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;z-index:10;background:transparent;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .4s var(--ease-smooth), transform .4s var(--ease-smooth), visibility .4s;}
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;z-index:10;background:transparent;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .3s var(--ease-smooth), transform .3s var(--ease-smooth), visibility .3s; will-change: transform, opacity;}
 .scr.off{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:scale(0.97) translateY(15px)!important;}
 
-/* 全域動畫滑順度提升 */
-.pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt, .post-card, .tab-btn { transition:all .3s var(--ease-smooth); }
-.pill:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active, .tab-btn:active { transform: scale(0.93) !important; opacity: 0.8; transition: transform 0.1s var(--ease-spring); }
+/* 按鈕動畫加上 will-change 優化效能 */
+.pill, .action-btn, .c-btn, .nb, .bk-btn, .snd-btn, .att-btn, .usr-row, .my-chip, .file-box, .t-opt, .post-card, .tab-btn { transition:all .2s var(--ease-smooth); will-change: transform; }
+.pill:active, .c-btn:active, .nb:active, .bk-btn:active, .snd-btn:active, .att-btn:active, .usr-row:active, .my-chip:active, .file-box:active, .t-opt:active, .tab-btn:active { transform: scale(0.93) !important; opacity: 0.8; transition: transform 0.1s; }
 
 /* ══ 首頁 ══ */
 #s-home{gap:28px;padding:24px;z-index:20; justify-content:center;}
-.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center;transition:transform .5s var(--ease-spring);}
+.logo-wrap{animation:sway 4s ease-in-out infinite;transform-origin:bottom center;}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px;transition:font-size .4s;}
+.big-title{font-family:'Noto Serif TC',serif;font-size:52px;letter-spacing:10px;}
 .big-sub{font-size:13px;color:var(--bl);letter-spacing:3px}
 .home-btns{display:flex;gap:14px;margin-top:4px;z-index:30;pointer-events:auto;}
-.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;border:none;letter-spacing:2px;user-select:none;backdrop-filter:blur(10px);}
-.pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 6px 20px rgba(212,160,23,.3); border:1px solid rgba(255,255,255,0.2);}
-.pill.pri:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(212,160,23,.4)}
+.pill{padding:14px 42px;border-radius:50px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;border:none;letter-spacing:2px;user-select:none;}
+.pill.pri{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 6px 18px rgba(212,160,23,.25); border:1px solid rgba(255,255,255,0.2);}
+.pill.pri:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(212,160,23,.35)}
 .pill.sec{background:var(--bg-input);color:var(--bm);border:1px solid rgba(212,160,23,.3);}
 .pill.sec:hover{background:var(--gold-p)}
 
 /* ══ 步驟頁 ══ */
 #s-steps{padding:0;z-index:30}
 .stp-bar{width:100%;max-width:480px;display:flex;align-items:center;padding:20px 20px 0;flex-shrink:0}
-.bk-btn{width:40px;height:40px;border-radius:50%;background:var(--bg-card);border:1px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm); backdrop-filter:var(--glass-blur);}
+.bk-btn{width:40px;height:40px;border-radius:50%;background:var(--bg-card);border:1px solid rgba(212,160,23,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--bm);}
 .bk-btn:hover{background:var(--gold-p)}
 .dots{display:flex;gap:6px;margin-left:auto}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(212,160,23,.25);transition:all .4s var(--ease-spring)}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(212,160,23,.25);transition:all .3s var(--ease-spring)}
 .dot.on{background:var(--gold);width:22px}
 .stp-body{flex:1;width:100%;max-width:480px;padding:14px 22px 22px;overflow:hidden}
-.card{border-radius:28px;padding:36px 30px 28px;animation:cIn .5s var(--ease-spring);width:100%}
-.card.rev{animation:cInR .5s var(--ease-spring);}
-@keyframes cIn {from{opacity:0;transform:translateX(50px) scale(0.95)}to{opacity:1;transform:translateX(0) scale(1)}}
-@keyframes cInR{from{opacity:0;transform:translateX(-50px) scale(0.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+.card{border-radius:28px;padding:36px 30px 28px;animation:cIn .4s var(--ease-spring);width:100%; background:var(--bg-card); box-shadow:0 8px 30px var(--sh); border:var(--glass-border);}
+.card.rev{animation:cInR .4s var(--ease-spring);}
+@keyframes cIn {from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes cInR{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
 .c-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--bl);margin-bottom:8px}
 .c-ttl{font-family:'Noto Serif TC',serif;font-size:24px;margin-bottom:6px}
 .c-hint{font-size:13px;color:var(--bl);line-height:1.8;margin-bottom:24px}
 .av-zone{display:flex;justify-content:center;margin:4px 0 18px}
-.av-btn{width:100px;height:100px;border-radius:50%;background:var(--gold-p);border:2px dashed rgba(212,160,23,.4);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .3s var(--ease-spring);overflow:hidden}
-.av-btn:hover{border-color:var(--gold);transform:scale(1.05)}
+.av-btn{width:100px;height:100px;border-radius:50%;background:var(--gold-p);border:2px dashed rgba(212,160,23,.4);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden}
+.av-btn:hover{border-color:var(--gold);transform:scale(1.03)}
 .av-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
 .av-cam{font-size:30px}.av-lbl{font-size:12px;color:var(--bl)}
 
-.fi{width:100%;padding:15px 20px;border:1px solid rgba(212,160,23,.2);border-radius:18px;font-family:inherit;font-size:16px;color:var(--brown);background:var(--bg-input);outline:none;transition:all .4s var(--ease-spring); backdrop-filter: blur(8px);}
-.fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 4px rgba(212,160,23,.15); transform:scale(1.02) translateY(-2px);}
+.fi{width:100%;padding:14px 18px;border:1px solid rgba(212,160,23,.2);border-radius:18px;font-family:inherit;font-size:16px;color:var(--brown);background:var(--bg-input);outline:none;}
+.fi:focus{border-color:var(--gold);background:var(--bg-input-f);box-shadow:0 0 0 4px rgba(212,160,23,.15); transform:translateY(-1px);}
 .fi::placeholder{color:var(--bl)}
 .ferr{font-size:12px;color:#C0392B;margin-top:10px;min-height:16px; font-weight:500;}
 .nr{display:flex;justify-content:flex-end;margin-top:24px}
-.nb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(212,160,23,.3);}
-.nb:hover{transform:scale(1.1) translateY(-2px); box-shadow:0 8px 25px rgba(212,160,23,.4);}
+.nb{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(212,160,23,.25);}
+.nb:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(212,160,23,.35);}
 .nb svg{width:24px;height:24px;fill:#fff}
 
 /* ══ 主畫面 / 動態牆 共用 Header & 底部導覽列 ══ */
 .m-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid rgba(212,160,23,.1);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:70;}
 .m-hdr-t{font-family:'Noto Serif TC',serif;font-size:22px;letter-spacing:2px;font-weight:700}
-.my-chip{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;background:var(--gold-p);padding:5px 12px 5px 5px;border-radius:30px;border:1px solid rgba(212,160,23,.15);z-index:90; transition:all .3s var(--ease-spring);}
+.my-chip{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;background:var(--gold-p);padding:5px 12px 5px 5px;border-radius:30px;border:1px solid rgba(212,160,23,.15);z-index:90;}
 .my-chip:hover{transform:scale(1.03); background:rgba(212,160,23,0.15);}
 .hav{width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid rgba(212,160,23,.2)}
-.hav img{width:100%;height:100%;object-fit:cover}
+.hav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .hname-box{display:flex;flex-direction:column; pointer-events:none;}
 .hname{font-size:14px;color:var(--brown);font-weight:700;line-height:1.2}
 .hbio-sub{font-size:11px;color:var(--bl);max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -125,33 +127,33 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
   background: var(--bg-hdr); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-  border-top: 1px solid rgba(212,160,23,.15); display: flex; z-index: 80;
-  transition: transform 0.4s var(--ease-spring);
+  border-top: 1px solid rgba(212,160,23,.15); border-radius: 24px 24px 0 0; display: flex; z-index: 80;
+  transition: transform 0.3s var(--ease-smooth); will-change: transform;
 }
 .bottom-nav.off { transform: translateY(100%); }
 .tab-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   font-size: 11px; font-weight: 500; color: var(--bl); cursor: pointer; user-select: none;
 }
-.tab-btn span.icon { font-size: 20px; transition: transform 0.4s var(--ease-spring); }
+.tab-btn span.icon { font-size: 20px; transition: transform 0.3s var(--ease-spring); }
 .tab-btn.active { color: var(--gold); }
 .tab-btn.active span.icon { transform: translateY(-3px) scale(1.15); }
 
 /* ══ 聊天列表 (大廳) ══ */
 #s-main, #s-feed { padding-bottom: 75px; } /* 留空間給底部導覽列 */
-.main-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px 10px;flex-shrink:0;animation:popInMessage .6s var(--ease-spring);}
+.main-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px 10px;flex-shrink:0;animation:popInMessage .5s var(--ease-spring);}
 .main-hero-t{font-family:'Noto Serif TC',serif;font-size:24px;color:var(--brown);letter-spacing:6px;font-weight:700;margin-top:14px;}
 .main-hero-s{font-size:12px;color:var(--bl);letter-spacing:4px;margin-top:4px;}
 
 .usr-list-wrap{flex:1;width:100%;overflow-y:auto;padding:10px 20px 20px;display:flex;flex-direction:column;gap:12px;max-width:600px;align-self:center; scroll-behavior:smooth;}
 .usr-list-wrap::-webkit-scrollbar{width:0px}
-.usr-row{display:flex;align-items:center;gap:14px;padding:14px 18px; border-radius:18px;cursor:pointer;animation:popInMessage .5s var(--ease-spring) both;}
+.usr-row{display:flex;align-items:center;gap:14px;padding:14px 18px; border-radius:20px;cursor:pointer;animation:popInMessage .4s var(--ease-spring) both; background: var(--bg-card); border: 1px solid rgba(212,160,23,.15); box-shadow: 0 4px 15px var(--sh);}
 .usr-row:nth-child(1) { animation-delay: 0.05s; }
 .usr-row:nth-child(2) { animation-delay: 0.1s; }
 .usr-row:nth-child(n+3) { animation-delay: 0.15s; }
 
-.usr-row:hover{background:var(--bg-input-f); border-color:var(--gold); transform:translateY(-2px) scale(1.01);}
-.usr-row.grp{background:linear-gradient(135deg, rgba(245,230,163,0.4), rgba(212,160,23,0.15)); border-color:var(--gold-l);}
+.usr-row:hover{background:var(--bg-input-f); border-color:var(--gold); transform:translateY(-2px);}
+.usr-row.grp{background:linear-gradient(135deg, rgba(245,230,163,0.3), rgba(212,160,23,0.1)); border-color:var(--gold-l);}
 .usr-info{display:flex;flex-direction:column;flex:1;overflow:hidden;}
 .usr-name{font-size:16px;font-weight:700;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .usr-sub{font-size:12px;color:var(--bl);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -161,56 +163,57 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 /* ══ 動態牆 (Feed) ══ */
 .feed-list { flex:1; width:100%; overflow-y:auto; padding:16px 20px; display:flex; flex-direction:column; gap:20px; max-width:600px; align-self:center; }
 .feed-list::-webkit-scrollbar{width:0px}
-.post-card { border-radius: 20px; padding: 18px; animation: popInMessage .6s var(--ease-spring) both; }
+.post-card { border-radius: 24px; padding: 18px; animation: popInMessage .5s var(--ease-spring) both; background: var(--bg-card); border: 1px solid rgba(212,160,23,.15); box-shadow: 0 6px 20px var(--sh); overflow: hidden; }
 .post-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .post-av { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(212,160,23,.2); background:var(--gold-p); }
 .post-info { flex: 1; }
 .post-name { font-size: 15px; font-weight: 700; color: var(--brown); }
 .post-time { font-size: 11px; color: var(--bl); margin-top: 2px; }
 .post-text { font-size: 15px; line-height: 1.6; color: var(--brown); margin-bottom: 12px; word-break: break-word; }
-.post-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 14px; margin-bottom: 12px; border: 1px solid rgba(212,160,23,.1); cursor:zoom-in; transition: transform .3s var(--ease-spring); }
+.post-media { width: 100%; max-height: 350px; object-fit: cover; border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(212,160,23,.1); background:#000; }
+.post-img { cursor:zoom-in; transition: transform .2s; }
 .post-img:active { transform: scale(0.98); }
 .post-ftr { display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(212,160,23,.2); padding-top: 12px; }
-.like-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; font-size: 14px; font-family: inherit; font-weight: 500; color: var(--bm); cursor: pointer; transition: all .3s var(--ease-spring); padding: 6px 12px; border-radius: 20px; }
+.like-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; font-size: 14px; font-family: inherit; font-weight: 500; color: var(--bm); cursor: pointer; padding: 6px 12px; border-radius: 20px; }
 .like-btn:hover { background: var(--gold-p); transform: scale(1.05); }
 .like-btn.liked { color: #E74C3C; }
-.like-btn.liked span.heart { animation: heartBeat .5s var(--ease-spring); }
+.like-btn.liked span.heart { animation: heartBeat .4s var(--ease-spring); }
 @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
-.del-post-btn { color: #C0392B; background: rgba(192, 57, 43, 0.1); border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.del-post-btn { color: #C0392B; background: rgba(192, 57, 43, 0.1); border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .del-post-btn:active { transform: scale(0.9); }
 
 /* 管理員列表卡片樣式 */
-.admin-card { border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom:12px; }
+.admin-card { border-radius: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom:12px; background:var(--bg-card); box-shadow:0 4px 15px var(--sh); border:1px solid rgba(212,160,23,.15); }
 .admin-info { flex: 1; overflow: hidden; }
 .admin-name { font-size: 16px; font-weight: 700; color: var(--brown); margin-bottom: 6px; }
-.admin-detail { font-size: 12px; color: var(--bm); font-family: monospace; background: var(--bg-input); padding: 4px 8px; border-radius: 6px; display: inline-block; }
+.admin-detail { font-size: 12px; color: var(--bm); font-family: monospace; background: var(--bg-input); padding: 4px 8px; border-radius: 8px; display: inline-block; }
 
 /* ══ 聊天室 ══ */
 #s-chat{padding:0;z-index:90} /* 覆蓋到底部導覽列之上 */
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid rgba(212,160,23,.15);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr-l{display:flex;align-items:center;gap:12px;padding-left:4px;}
-.c-bk{font-size:24px;cursor:pointer;color:var(--gold);padding-right:6px;font-weight:700;transition:transform .3s var(--ease-spring);}
+.c-bk{font-size:24px;cursor:pointer;color:var(--gold);padding-right:6px;font-weight:700;}
 .c-bk:active{transform:translateX(-6px) scale(0.9);}
 .c-hdr-t{font-family:'Noto Serif TC',serif;font-size:20px;letter-spacing:2px; font-weight:700;}
 
-.msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth; will-change: transform;}
 .msgs::-webkit-scrollbar{width:0px}
-.wlc{text-align:center;padding:30px 20px;color:var(--bl);font-size:13px;line-height:2; animation: popInMessage .8s var(--ease-spring);}
+.wlc{text-align:center;padding:30px 20px;color:var(--bl);font-size:13px;line-height:2; animation: popInMessage .6s var(--ease-spring);}
 .wlc span{font-size:36px;display:block;margin-bottom:12px; animation: sway 4s infinite;}
 
 @keyframes popInMessage {
-  0% { opacity: 0; transform: translateY(16px) scale(0.92); transform-origin: bottom center; }
+  0% { opacity: 0; transform: translateY(16px) scale(0.95); transform-origin: bottom center; }
   100% { opacity: 1; transform: translateY(0) scale(1); transform-origin: bottom center; }
 }
 
 @keyframes highlightPulse {
   0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
-  50% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(212,160,23,0.25); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(212,160,23,0.3); }
   100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,160,23,0); }
 }
-.highlight-anim .bbl { animation: highlightPulse 1.2s var(--ease-spring); border-color:var(--gold)!important; }
+.highlight-anim .bbl { animation: highlightPulse 1s var(--ease-spring); border-color:var(--gold)!important; }
 
-.mw{position:relative;display:flex;flex-direction:column;max-width:72%;animation:popInMessage .5s var(--ease-spring);}
+.mw{position:relative;display:flex;flex-direction:column;max-width:75%;animation:popInMessage .4s cubic-bezier(0.25, 0.8, 0.25, 1); will-change: transform, opacity;}
 .mw.self{align-self:flex-end;align-items:flex-end;transform-origin:bottom right;}
 .mw.other{align-self:flex-start;align-items:flex-start;transform-origin:bottom left;}
 .mw-nm{font-size:11px;color:var(--bl);margin-bottom:4px;padding:0 6px; font-weight:500;}
@@ -218,42 +221,44 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mw-row{display:flex;align-items:flex-end;gap:8px;max-width:100%;position:relative;}
 .mw.self .mw-row{flex-direction:row-reverse}
 .mav{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--gold-p);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid rgba(212,160,23,.15)}
-.mav img{width:100%;height:100%;object-fit:cover}
+.mav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 
-/* 玻璃氣泡 */
-.bbl{padding:12px 16px;border-radius:22px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;display:flex;flex-direction:column;min-width:0;overflow:hidden; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition:all 0.3s var(--ease-spring);}
-.mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.3);border-bottom-right-radius:6px; box-shadow: 0 4px 15px rgba(212,160,23,.1);}
-.mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(255,255,255,.5);border-bottom-left-radius:6px;box-shadow:0 4px 15px var(--sh)}
-.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.5)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important;backdrop-filter:none;-webkit-backdrop-filter:none;}
-.bbl img{max-width:100%;max-height:220px;border-radius:14px;display:block;cursor:zoom-in;transition:transform .3s var(--ease-spring);}
-.bbl img:active{transform:scale(0.96);}
+/* 氣泡圓角與流暢度優化：移除 backdrop-filter 避免大量渲染卡頓 */
+.bbl{padding:12px 16px;border-radius:24px;font-size:15px;line-height:1.6;color:var(--brown);word-break:break-word;position:relative;display:flex;flex-direction:column;min-width:0; transition:all 0.2s; overflow:hidden;}
+.mw.self .bbl{background:var(--bbl-self);border:1px solid rgba(212,160,23,.25);border-bottom-right-radius:6px; box-shadow: 0 2px 10px rgba(212,160,23,.08);}
+.mw.other .bbl{background:var(--bbl-other);border:1px solid rgba(61,44,26,.08);border-bottom-left-radius:6px;box-shadow:0 2px 10px var(--sh)}
+.bbl.recalled{background:transparent!important;border:1px dashed rgba(200,168,130,.5)!important;color:var(--bl)!important;font-style:italic;box-shadow:none!important;}
+
+/* 嚴格控制氣泡內媒體圓角 */
+.bbl-media{max-width:100%;max-height:250px;border-radius:16px;display:block;object-fit:cover;background:#000;border:1px solid rgba(212,160,23,.1);}
+.bbl-img{cursor:zoom-in;}
+.bbl-img:active{transform:scale(0.96);}
 .mw-t{font-size:10px;color:var(--bl);margin-top:4px;padding:0 6px; letter-spacing:1px;}
 
-.file-box{display:flex;align-items:center;gap:12px;background:var(--bg-input);padding:10px 14px;border-radius:16px;border:1px solid rgba(212,160,23,.2);text-decoration:none;color:var(--brown);width:100%;max-width:260px;margin-top:4px; transition:all .3s var(--ease-spring);}
+.file-box{display:flex;align-items:center;gap:12px;background:var(--bg-input);padding:10px 14px;border-radius:18px;border:1px solid rgba(212,160,23,.2);text-decoration:none;color:var(--brown);width:100%;max-width:260px;margin-top:4px;}
 .file-box:hover{border-color:var(--gold);background:var(--gold-p); transform:translateY(-2px);}
 .file-icon{font-size:28px;}
 .file-info{flex:1;overflow:hidden;}
 .file-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .file-sub{font-size:11px;color:var(--bl);margin-top:2px;}
-.file-dl{width:32px;height:32px;border-radius:50%;background:var(--cream);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid rgba(212,160,23,.2);transition:all .3s var(--ease-spring);}
+.file-dl{width:32px;height:32px;border-radius:50%;background:var(--cream);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid rgba(212,160,23,.2);}
 .file-box:hover .file-dl{background:var(--gold);color:#fff;border-color:var(--gold);}
 
-.quote-box{background:var(--bg-input);border-left:4px solid var(--gold);padding:6px 10px;border-radius:8px;font-size:12px;color:var(--bm);margin-bottom:8px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;transition:all .3s var(--ease-spring); pointer-events:auto;}
+.quote-box{background:var(--bg-input);border-left:4px solid var(--gold);padding:6px 10px;border-radius:10px;font-size:12px;color:var(--bm);margin-bottom:8px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0; pointer-events:auto;}
 .quote-box:hover{background:var(--gold-p); transform:translateX(2px);}
 .quote-box:active{transform:scale(0.97);}
 
-/* 🚀 修正的：選項觸發按鈕 (手機上 100% 點得到) */
+/* 獨立的訊息操作選單按鈕 */
 .msg-opts-btn {
-  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
   border-radius: 50%; color: var(--bl); font-size: 16px; font-weight: 700; cursor: pointer;
-  opacity: 0.6; transition: all .3s var(--ease-spring); user-select: none;
-  background: var(--bg-input); margin-bottom: 6px;
+  opacity: 0.7; user-select: none; background: var(--bg-input); margin-bottom: 6px; flex-shrink:0;
 }
 .msg-opts-btn:hover, .msg-opts-btn:active { opacity: 1; background: var(--gold-p); color: var(--gold); transform:scale(1.1); }
 
 .hvr-actions{
   position: absolute; top: 50%; display: flex; align-items: center; gap: 8px;
-  opacity: 0; pointer-events: none; transition: all .4s var(--ease-spring); z-index: 50;
+  opacity: 0; pointer-events: none; transition: all .3s var(--ease-spring); z-index: 50;
 }
 .mw.self .hvr-actions { right: 100%; transform: translateY(-50%) translateX(10px) scale(0.9); }
 .mw.other .hvr-actions { left: 100%; transform: translateY(-50%) translateX(-10px) scale(0.9); }
@@ -263,82 +268,82 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .mw.other.show-menu .hvr-actions { transform: translateY(-50%) translateX(10px) scale(1); }
 
 .action-btn{
-  background: var(--bg-card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212,160,23,.3); border-radius: 14px; padding: 8px 16px;
+  background: var(--bg-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212,160,23,.3); border-radius: 16px; padding: 8px 16px;
   font-size: 13px; color: var(--bm); cursor: pointer; white-space: nowrap; font-family: inherit; font-weight: 700;
   box-shadow: 0 6px 16px rgba(61,44,26,.15);
 }
-.action-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(212,160,23,.3); }
+.action-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 20px rgba(212,160,23,.3); }
 
-.sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:4px 16px;animation:popInMessage .5s var(--ease-spring);}
-.sysmsg span{background:var(--bg-input); border:1px solid rgba(212,160,23,.1); padding:4px 14px; border-radius:20px; backdrop-filter:blur(4px);}
+.sysmsg{text-align:center;font-size:12px;color:var(--bl);padding:4px 16px;}
+.sysmsg span{background:var(--bg-input); border:1px solid rgba(212,160,23,.1); padding:4px 14px; border-radius:20px;}
 
 /* 輸入區域與 GIF 抽屜 */
 .inp-area{position:relative;flex-shrink:0;padding:12px 28px 24px;background:var(--bg-hdr);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-top:1px solid rgba(212,160,23,.15);display:flex;flex-direction:column;gap:10px;z-index:60;}
-.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:14px;padding:8px 16px;align-items:center;justify-content:space-between;font-size:13px;
-  opacity:0;visibility:hidden;transform:translateY(15px);transition:all .4s var(--ease-spring); backdrop-filter:blur(10px);}
+.reply-bar{display:none;background:var(--bg-card);border:1px solid rgba(212,160,23,.3);border-radius:16px;padding:8px 16px;align-items:center;justify-content:space-between;font-size:13px;
+  opacity:0;visibility:hidden;transform:translateY(15px); transition:all .3s var(--ease-spring);}
 .reply-bar.show { display:flex; opacity:1;visibility:visible;transform:translateY(0); }
 .reply-bar-info{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bm); font-weight:500;}
 .reply-bar-close{background:var(--bg-input);border:none;width:24px;height:24px;border-radius:50%;font-size:14px;color:var(--bl);cursor:pointer;margin-left:12px; display:flex;align-items:center;justify-content:center;}
 
 /* 🚀 GIF 貼圖面板 */
 .gif-panel {
-  position: absolute; bottom: 100%; left: 0; right: 0; background: var(--bg-hdr); backdrop-filter: blur(24px);
+  position: absolute; bottom: 100%; left: 0; right: 0; background: var(--bg-hdr); backdrop-filter: var(--glass-blur);
   border-top: 1px solid rgba(212,160,23,.15); padding: 14px 20px; display: flex; gap: 14px; overflow-x: auto;
-  opacity: 0; visibility: hidden; transform: translateY(15px); transition: all .4s var(--ease-spring); z-index: 40;
+  opacity: 0; visibility: hidden; transform: translateY(15px); transition: all .3s var(--ease-spring); z-index: 40;
 }
 .gif-panel.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .gif-panel::-webkit-scrollbar { height: 0px; }
-.g-item { height: 85px; border-radius: 12px; cursor: pointer; flex-shrink: 0; transition: all .3s var(--ease-spring); box-shadow: 0 4px 12px var(--sh); border:1px solid rgba(255,255,255,0.3);}
+.g-item { height: 85px; border-radius: 16px; cursor: pointer; flex-shrink: 0; box-shadow: 0 4px 12px var(--sh); border:1px solid rgba(255,255,255,0.3);}
 .g-item:active { transform: scale(0.9); }
 
-.inp-row{display:flex;gap:10px;align-items:flex-end;background:var(--bg-input);border:1.5px solid rgba(212,160,23,.3);border-radius:30px;padding:8px 10px 8px 14px; transition:all .4s var(--ease-spring)}
-.inp-row:focus-within{background:var(--bg-card); border-color:var(--gold); box-shadow:0 8px 24px rgba(212,160,23,.2); transform:translateY(-2px);}
+.inp-row{display:flex;gap:10px;align-items:flex-end;background:var(--bg-input);border:1.5px solid rgba(212,160,23,.3);border-radius:30px;padding:8px 10px 8px 14px; transition:all .3s}
+.inp-row:focus-within{background:var(--bg-card); border-color:var(--gold); box-shadow:0 8px 24px rgba(212,160,23,.15); transform:translateY(-2px);}
 
 .att-btn{width:38px;height:38px;border:none;background:var(--bg-input);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;color:var(--gold);font-weight:700;}
 .att-btn:hover{background:var(--gold-p); transform:scale(1.05);}
 .att-btn svg{width:20px;height:20px;stroke:var(--bm);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 #fi2{display:none}
-.msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:16px;color:var(--brown);background:transparent;resize:none;max-height:120px;line-height:1.5;padding:6px 0}
+.msg-ta{flex:1;border:none;outline:none;font-family:inherit;font-size:16px;color:var(--brown);background:transparent;resize:none;max-height:120px;line-height:1.5;padding:6px 0; border-radius: 16px;}
 .msg-ta::placeholder{color:var(--bl)}
-.snd-btn{width:42px;height:42px;flex-shrink:0;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-l));cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,160,23,.4);}
-.snd-btn:hover{box-shadow:0 6px 18px rgba(212,160,23,.5); transform:scale(1.08) rotate(-10deg);}
+.snd-btn{width:42px;height:42px;flex-shrink:0;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-l));cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,160,23,.3);}
+.snd-btn:hover{box-shadow:0 6px 18px rgba(212,160,23,.4); transform:scale(1.08) rotate(-10deg);}
 .snd-btn svg{width:18px;height:18px;fill:#fff; transform:translateX(1px);}
 
 /* 🌟 各類選單與燈箱滑順過場 */
 .modal-overlay {
-  position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  opacity:0;visibility:hidden;pointer-events:none;transition:all .4s var(--ease-smooth);
+  position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;pointer-events:none;transition:all .3s var(--ease-smooth);
 }
 .modal-overlay.show { opacity:1;visibility:visible;pointer-events:auto; }
 
-.set-card{width:90%;max-width:400px; padding:32px 28px; transform:scale(0.9) translateY(20px); transition:transform .5s var(--ease-spring);}
+.set-card{width:90%;max-width:400px; padding:32px 28px; transform:scale(0.95) translateY(20px); transition:transform .4s var(--ease-spring);}
 .modal-overlay.show .set-card { transform:scale(1) translateY(0); }
 .set-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .set-t{font-family:'Noto Serif TC',serif;font-size:22px; font-weight:700;}
-.set-close{background:var(--bg-input);border:none;width:32px;height:32px;border-radius:50%;font-size:20px;color:var(--bl);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s var(--ease-spring);}
+.set-close{background:var(--bg-input);border:none;width:32px;height:32px;border-radius:50%;font-size:20px;color:var(--bl);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .set-close:hover{background:var(--gold-p); color:var(--gold); transform:scale(1.1) rotate(90deg);}
 .set-item{margin-bottom:18px}
 .set-lbl{font-size:12px;font-weight:700;color:var(--bl);margin-bottom:8px;letter-spacing:1px}
 .theme-options{display:flex;gap:12px}
-.t-opt{flex:1;padding:12px;border-radius:14px;border:1px solid rgba(212,160,23,.3);background:var(--bg-input);color:var(--brown);cursor:pointer;font-family:inherit;font-size:14px;text-align:center; font-weight:500;}
+.t-opt{flex:1;padding:12px;border-radius:16px;border:1px solid rgba(212,160,23,.3);background:var(--bg-input);color:var(--brown);cursor:pointer;font-family:inherit;font-size:14px;text-align:center; font-weight:500;}
 .t-opt:hover{border-color:var(--gold); transform:translateY(-2px);}
 .t-opt.active{background:var(--gold);border-color:var(--gold);color:#fff; box-shadow:0 6px 16px rgba(212,160,23,.3);}
 
 /* 裁切器燈箱 */
-#crop-overlay { z-index:300; background:rgba(0,0,0,.85); backdrop-filter:none; }
-.crop-box-wrap{position:relative;width:300px;height:300px;overflow:hidden;background:#111;border-radius:20px;touch-action:none; transform:scale(0.85); transition:transform .5s var(--ease-spring); box-shadow:0 20px 50px rgba(0,0,0,.5);}
+#crop-overlay { z-index:300; background:rgba(0,0,0,.85); }
+.crop-box-wrap{position:relative;width:300px;height:300px;overflow:hidden;background:#111;border-radius:24px;touch-action:none; transform:scale(0.85); transition:transform .4s var(--ease-spring); box-shadow:0 20px 50px rgba(0,0,0,.5);}
 #crop-overlay.show .crop-box-wrap { transform:scale(1); }
 #crop-img{position:absolute;top:0;left:0;transform-origin:0 0;cursor:move;user-select:none;touch-action:none;}
 .crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.65);pointer-events:none;border:3px solid var(--gold)}
-.crop-tips{color:#fff;font-size:13px;margin:20px 0 24px;opacity:.8;letter-spacing:2px; transform:translateY(15px); transition:transform .5s var(--ease-spring);}
+.crop-tips{color:#fff;font-size:13px;margin:20px 0 24px;opacity:.8;letter-spacing:2px; transform:translateY(15px); transition:transform .4s var(--ease-spring);}
 #crop-overlay.show .crop-tips { transform:translateY(0); }
 .crop-btns{display:flex;gap:16px;width:100%;max-width:300px;}
 
 /* 🌟 圖片預覽燈箱 */
-#lb{z-index:999; background:rgba(0,0,0,.8); cursor:zoom-out;}
-#lb img{max-width:92vw;max-height:92vh;border-radius:16px;transform:scale(0.8);opacity:0;transition:all .5s var(--ease-spring);box-shadow:0 20px 60px rgba(0,0,0,.6);}
+#lb{z-index:999; background:rgba(0,0,0,.85); cursor:zoom-out;}
+#lb img{max-width:92vw;max-height:92vh;border-radius:20px;transform:scale(0.85);opacity:0;transition:all .4s var(--ease-spring);box-shadow:0 20px 60px rgba(0,0,0,.6);}
 #lb.show img{transform:scale(1);opacity:1;}
 
 /* 💻 小電腦/筆電版優化 */
@@ -411,7 +416,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 底部全域導覽列 (只有進入系統後顯示) -->
+<!-- 底部全域導覽列 -->
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
@@ -456,28 +461,30 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 新增：動態牆畫面 (Feed) -->
+<!-- 動態牆畫面 (Feed) -->
 <div class="scr off" id="s-feed">
   <div class="m-hdr">
     <div class="m-hdr-t">動態牆</div>
     <button class="pill pri" style="padding:8px 18px; font-size:13px; box-shadow:none;" onclick="openCreatePost()">+ 發布貼文</button>
   </div>
-  <div class="feed-list" id="feed-list">
-    <!-- 貼文會被動態插入這裡 -->
-  </div>
+  <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 新增：發布貼文燈箱 -->
+<!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
-  <div class="set-card liquid-glass" onclick="event.stopPropagation()">
+  <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新貼文</div><button class="set-close" onclick="document.getElementById('post-overlay').classList.remove('show')">×</button></div>
-    <textarea id="post-text" class="msg-ta" style="width:100%; height:120px; border:1.5px solid rgba(212,160,23,.3); border-radius:16px; padding:12px; margin-bottom:14px; background:var(--bg-input);" placeholder="分享你的心情或故事..."></textarea>
-    <img id="post-img-preview" style="width:100%; max-height:220px; object-fit:cover; border-radius:14px; display:none; margin-bottom:14px; border:1px solid rgba(212,160,23,.2);">
+    <textarea id="post-text" class="msg-ta" style="width:100%; height:120px; border:1px solid rgba(212,160,23,.2); padding:12px; margin-bottom:14px; background:var(--bg-input);" placeholder="分享你的心情或故事..."></textarea>
+    
+    <img id="post-img-preview" class="post-media" style="display:none;">
+    <video id="post-vid-preview" class="post-media" controls style="display:none;"></video>
+    
     <div style="display:flex; gap:12px;">
-      <button class="pill sec" style="flex:1; padding:12px;" onclick="document.getElementById('post-file').click()">📷 加照片</button>
+      <!-- 🚀 開放接受 video/* -->
+      <button class="pill sec" style="flex:1; padding:12px;" onclick="document.getElementById('post-file').click()">📷 加照片/影片</button>
       <button class="pill pri" style="flex:1; padding:12px;" onclick="submitPost()" id="post-submit-btn">發 佈</button>
     </div>
-    <input type="file" id="post-file" accept="image/*" style="display:none">
+    <input type="file" id="post-file" accept="image/*,video/*" style="display:none">
   </div>
 </div>
 
@@ -508,13 +515,13 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   
   <div class="inp-area">
     <div id="gif-panel" class="gif-panel"></div>
-
     <div class="reply-bar" id="reply-bar"><div class="reply-bar-info" id="reply-bar-info"></div><button class="reply-bar-close" onclick="cancelReply()">×</button></div>
     <div class="inp-row">
-      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案 / 本地動圖"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+      <button class="att-btn" onclick="document.getElementById('fi2').click()" title="傳送檔案 / 影片 / 本地動圖"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
       <button class="att-btn" id="btn-gif" style="font-size:13px; letter-spacing:1px;" title="內建 GIF 貼圖" onclick="toggleGif()">GIF</button>
       
-      <input type="file" id="fi2" accept="image/*,application/pdf,.doc,.docx,.txt">
+      <!-- 🚀 開放接受 video/* -->
+      <input type="file" id="fi2" accept="image/*,video/*,application/pdf,.doc,.docx,.txt">
       <textarea class="msg-ta" id="msg-ta" placeholder="說點什麼吧…" rows="1" maxlength="500"></textarea>
       <button class="snd-btn" id="snd-btn"><svg viewBox="0 0 24 24"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>
     </div>
@@ -523,7 +530,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
-  <div class="set-card liquid-glass" onclick="event.stopPropagation()">
+  <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
     <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
     <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
@@ -536,11 +543,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <!-- 建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
-  <div class="set-card liquid-glass" onclick="event.stopPropagation()">
+  <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
     <div class="set-item"><div class="set-lbl">群組名稱</div><input class="fi" id="cg-name" type="text" placeholder="輸入專屬群組名稱..."></div>
     <div class="set-item"><div class="set-lbl">選擇邀請成員</div>
-      <div id="cg-user-list" style="max-height:180px; overflow-y:auto; border:1.5px solid rgba(212,160,23,.2); border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:12px; background:var(--bg-input);"></div>
+      <div id="cg-user-list" style="max-height:180px; overflow-y:auto; border:1px solid rgba(212,160,23,.2); border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:12px; background:var(--bg-input);"></div>
     </div>
     <button class="pill pri" style="width:100%; margin-top:16px; padding:14px;" onclick="doCreateGroup()">確 認 建 立</button>
   </div>
@@ -561,7 +568,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <script>
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608";
-var ADMIN_NAME="洪祥祐"; // 系統管理員
+var ADMIN_NAME="洪祥祐"; 
 var flow='register',rAv='',rName='',rGmail='',rPwd='',lName='',lPwd='',stepIdx=0;
 var db=null,me=null,myId=null,myAv='',myBio='',myPwdRaw='',shownKeys={},lastDate=null;
 var replyTargetId=null, replyTargetName='', replyTargetSnippet='';
@@ -570,7 +577,10 @@ var isMusicEnabled=true;
 var cropSourceSrc='', cropTargetHandler=null;
 var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=false;
 var allUsers = {}, allGroups = {}, allPosts = {};
-var postImgData = null;
+
+// 用來儲存動態牆暫存檔案
+var postMediaData = null;
+var postMediaType = '';
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
@@ -630,13 +640,11 @@ function show(id){
     var el=document.getElementById(s);
     if(el)el.classList[s===id?'remove':'add']('off');
   });
-  // 控制底部導覽列顯示
   var bnav = document.getElementById('bottom-nav');
   if(id === 's-main' || id === 's-feed') { bnav.classList.remove('off'); } 
   else { bnav.classList.add('off'); }
 }
 
-// 🚀 切換導覽列 (聊天 / 動態)
 function switchTab(tab) {
   document.getElementById('tab-chat').classList.remove('active');
   document.getElementById('tab-feed').classList.remove('active');
@@ -658,7 +666,7 @@ function renderStep(idx,back){
   if(s.type==='avatar'){ body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>'; }
   else { var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||''; body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">'; }
   body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
-  document.getElementById('stp-body').innerHTML='<div class="card liquid-glass'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
+  document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
   if(s.type==='avatar'){
     if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
     document.getElementById('av-file').addEventListener('change',function(e){ var f=e.target.files[0]; this.value=''; if(!f)return; var r=new FileReader();r.onload=function(ev){ initCrop(ev.target.result, function(c){ rAv=c; var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none'; }); };r.readAsDataURL(f); });
@@ -712,7 +720,6 @@ function enterApp(name, id, av, isNew){
   loadData();
 }
 
-// 🌟 管理員後台
 function openAdminPanel() {
   if (me !== ADMIN_NAME) { alert('你沒有權限進入！'); return; }
   show('s-admin');
@@ -724,7 +731,7 @@ function openAdminPanel() {
       var u = users[key];
       var avHtml = u.avatar ? '<img src="'+u.avatar+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">' : '<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱'; var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
-      html += '<div class="admin-card liquid-glass">'+avHtml+'<div class="admin-info"><div class="admin-name">'+esc(key)+'</div><div class="admin-detail" style="margin-bottom:6px;">📧 '+emailText+'</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: '+pwdText+'</div></div></div>';
+      html += '<div class="admin-card">'+avHtml+'<div class="admin-info"><div class="admin-name">'+esc(key)+'</div><div class="admin-detail" style="margin-bottom:6px;">📧 '+emailText+'</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: '+pwdText+'</div></div></div>';
     }
     listContainer.innerHTML = html;
   });
@@ -739,50 +746,67 @@ function loadData() {
 
 function renderUserListUI() {
   var html = '';
-  html += '<div class="usr-row grp liquid-glass" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
-  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px; transition:transform .2s;" onmousedown="this.style.transform=\'scale(0.9)\'" onmouseup="this.style.transform=\'scale(1)\'" onclick="openCg()">+ 建立群組</button></div>';
+  html += '<div class="usr-row grp" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>';
   for(var gKey in allGroups) {
     var g = allGroups[gKey];
     if(g.members && g.members[me]) {
-      html += '<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" onclick="openRoom(\'custom_group\',\''+esc(g.name)+'\',\''+gKey+'\')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">'+esc(g.name)+'</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>';
+      html += '<div class="usr-row" style="border-color:var(--gold-l); margin-bottom:12px;" onclick="openRoom(\'custom_group\',\''+esc(g.name)+'\',\''+gKey+'\')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">'+esc(g.name)+'</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>';
     }
   }
   html += '<div class="usr-div" style="margin-top:16px;">私密聊天</div>';
   for(var key in allUsers) {
     if(key === me) continue;
     var u = allUsers[key]; var avHtml = u.avatar ? '<img src="'+u.avatar+'">' : '🌼'; var bioText = u.bio || '來聊天吧！';
-    html += '<div class="usr-row liquid-glass" style="margin-bottom:12px;" onclick="openRoom(\'pm\',\''+key+'\', null)"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
+    html += '<div class="usr-row" style="margin-bottom:12px;" onclick="openRoom(\'pm\',\''+key+'\', null)"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
   }
   document.getElementById('user-list').innerHTML = html;
 }
 
-// 🚀 動態牆功能 (Posts)
+// 🚀 貼文與影片支援
 function openCreatePost() {
   document.getElementById('post-text').value = '';
   document.getElementById('post-img-preview').src = '';
   document.getElementById('post-img-preview').style.display = 'none';
-  postImgData = null;
+  
+  var vidPreview = document.getElementById('post-vid-preview');
+  vidPreview.pause(); vidPreview.src = ''; vidPreview.style.display = 'none';
+  
+  postMediaData = null; postMediaType = '';
   document.getElementById('post-overlay').classList.add('show');
 }
 function closeCreatePost(e) { if(!e || e.target.id === 'post-overlay') document.getElementById('post-overlay').classList.remove('show'); }
 
 document.getElementById('post-file').addEventListener('change', function(e){
   var file = e.target.files[0]; this.value = ''; if(!file) return;
+  var isVid = /^video\//i.test(file.type);
   var isImg = /^image\//i.test(file.type);
-  if(!isImg) { alert('動態牆只能上傳照片喔！'); return; }
+  
+  if(!isImg && !isVid) { alert('動態牆只能上傳照片或影片喔！'); return; }
+  // 限制影片大小 8MB 避免 Firebase 崩潰
+  if(isVid && file.size > 8 * 1024 * 1024) { alert('為了系統流暢，影片請勿超過 8MB！'); return; }
+  
   var reader = new FileReader();
   reader.onload = function(ev){
-    if(file.type === 'image/gif') {
-      postImgData = ev.target.result;
-      document.getElementById('post-img-preview').src = postImgData;
+    if(isVid) {
+      postMediaType = 'video'; postMediaData = ev.target.result;
+      document.getElementById('post-img-preview').style.display = 'none';
+      var vidPreview = document.getElementById('post-vid-preview');
+      vidPreview.src = postMediaData; vidPreview.style.display = 'block';
+    }
+    else if(file.type === 'image/gif') {
+      postMediaType = 'image'; postMediaData = ev.target.result;
+      document.getElementById('post-vid-preview').style.display = 'none';
+      document.getElementById('post-img-preview').src = postMediaData;
       document.getElementById('post-img-preview').style.display = 'block';
     } else {
       var img=new Image(); img.onload = function() {
         var cv=document.createElement('canvas'); var MP=1080; var w=img.width, h=img.height;
         if(w>MP||h>MP){ if(w>h){h=Math.round(h*MP/w);w=MP;} else {w=Math.round(w*MP/h);h=MP;} }
         cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h);
-        postImgData = cv.toDataURL('image/jpeg', 0.85);
-        document.getElementById('post-img-preview').src = postImgData;
+        postMediaType = 'image'; postMediaData = cv.toDataURL('image/jpeg', 0.85);
+        document.getElementById('post-vid-preview').style.display = 'none';
+        document.getElementById('post-img-preview').src = postMediaData;
         document.getElementById('post-img-preview').style.display = 'block';
       }; img.src = ev.target.result;
     }
@@ -791,12 +815,12 @@ document.getElementById('post-file').addEventListener('change', function(e){
 
 function submitPost() {
   var txt = document.getElementById('post-text').value.trim();
-  if(!txt && !postImgData) { alert('請輸入一些文字或選擇照片！'); return; }
+  if(!txt && !postMediaData) { alert('請輸入一些文字或選擇照片/影片！'); return; }
   
   var btn = document.getElementById('post-submit-btn'); btn.disabled = true; btn.innerHTML = '發佈中...';
   var pRef = db.ref('posts').push();
   pRef.set({
-    author: me, avatar: myAv, text: txt, image: postImgData || '', timestamp: firebase.database.ServerValue.TIMESTAMP
+    author: me, avatar: myAv, text: txt, mediaType: postMediaType, mediaData: postMediaData || '', timestamp: firebase.database.ServerValue.TIMESTAMP
   }, function(error) {
     btn.disabled = false; btn.innerHTML = '發 佈';
     if(error) { alert('發佈失敗，請稍後再試！'); } 
@@ -819,7 +843,6 @@ function deletePost(postId) {
 function renderFeedUI() {
   var container = document.getElementById('feed-list');
   var html = '';
-  // 將貼文轉為陣列並按時間反序排序
   var postArray = [];
   for(var key in allPosts) { postArray.push({ id: key, data: allPosts[key] }); }
   postArray.sort(function(a, b){ return (b.data.timestamp || 0) - (a.data.timestamp || 0); });
@@ -831,21 +854,31 @@ function renderFeedUI() {
       var d = post.data; var id = post.id;
       var avHtml = d.avatar ? '<img src="'+d.avatar+'" class="post-av">' : '<div class="post-av" style="display:flex;align-items:center;justify-content:center;font-size:18px;">🌼</div>';
       var timeStr = fmtD(d.timestamp) + ' ' + fmtT(d.timestamp);
-      var imgHtml = d.image ? '<img src="'+d.image+'" class="post-img" onclick="openLb(this.src)">' : '';
       var textHtml = d.text ? '<div class="post-text">'+esc(d.text)+'</div>' : '';
+      
+      // 處理歷史貼文與新媒體欄位
+      var actualMediaData = d.mediaData || d.image || '';
+      var actualMediaType = d.mediaType || (d.image ? 'image' : '');
+      var mediaHtml = '';
+      if(actualMediaData) {
+        if(actualMediaType === 'video') {
+          mediaHtml = '<video src="'+actualMediaData+'" class="post-media" controls></video>';
+        } else {
+          mediaHtml = '<img src="'+actualMediaData+'" class="post-media post-img" onclick="openLb(this.src)">';
+        }
+      }
       
       var likesCount = d.likes ? Object.keys(d.likes).length : 0;
       var isLiked = d.likes && d.likes[me];
       var likeClass = isLiked ? 'like-btn liked' : 'like-btn';
       var likeIcon = isLiked ? '❤️' : '🤍';
-      
       var delHtml = (d.author === me || me === ADMIN_NAME) ? '<button class="del-post-btn" onclick="deletePost(\''+id+'\')">刪除</button>' : '<div></div>';
 
       html += `
-        <div class="post-card liquid-glass">
+        <div class="post-card">
           <div class="post-hdr">${avHtml}<div class="post-info"><div class="post-name">${esc(d.author)}</div><div class="post-time">${timeStr}</div></div></div>
           ${textHtml}
-          ${imgHtml}
+          ${mediaHtml}
           <div class="post-ftr">
             <button class="${likeClass}" onclick="toggleLike('${id}')"><span class="heart">${likeIcon}</span> ${likesCount > 0 ? likesCount : '讚'}</button>
             ${delHtml}
@@ -857,7 +890,6 @@ function renderFeedUI() {
   container.innerHTML = html;
 }
 
-// 🌟 群組與聊天功能
 function openCg() {
   document.getElementById('cg-name').value = '';
   var html = '';
@@ -1003,7 +1035,6 @@ function initReply(msgKey, name, snippet) {
 }
 function cancelReply(){ replyTargetId=null; document.getElementById('reply-bar').classList.remove('show'); }
 
-// 🚀 選單觸發修正機制
 function toggleMsgMenu(btn) {
   var mw = btn.closest('.mw');
   if(mw) mw.classList.toggle('show-menu');
@@ -1073,28 +1104,36 @@ document.addEventListener('click', function(e) {
   if (gp && gp.classList.contains('show') && !e.target.closest('#gif-panel') && !e.target.closest('#btn-gif')) {
     gp.classList.remove('show');
   }
-  // 點擊空白處關閉訊息選單
   if(!e.target.closest('.mw')) {
     document.querySelectorAll('.mw.show-menu').forEach(function(mw){ mw.classList.remove('show-menu'); });
   }
 });
 
+// 🚀 聊天室檔案上傳支援影片
 document.getElementById('fi2').addEventListener('change',function(e){
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
-  var isImg=/^image\//i.test(file.type);
+  var isImg = /^image\//i.test(file.type);
+  var isVid = /^video\//i.test(file.type);
+  
   if(file.size>2*1024*1024 && file.type === 'image/gif'){alert('動圖請勿超過 2MB！');return;}
-  if(file.size>900*1024 && !isImg && file.type !== 'image/gif'){alert('檔案太大！');return;}
+  if(isVid && file.size>8*1024*1024){alert('為了系統流暢，影片請勿超過 8MB！');return;}
+  if(file.size>900*1024 && !isImg && !isVid && file.type !== 'image/gif'){alert('檔案太大！');return;}
   
   var reader=new FileReader();
   reader.onload=function(ev){
-    if(file.type === 'image/gif') {
+    if(isVid) {
+      var m={name:me,type:'video',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
+      if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
+      pushMsg(m); cancelReply();
+    }
+    else if(file.type === 'image/gif') {
       var m={name:me,type:'image',fileData:ev.target.result,fileName:file.name,avatar:myAv,deviceId:myId}; 
       if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       pushMsg(m); cancelReply();
     } else if(isImg) {
       var img=new Image();img.onload=function(){
         var cv=document.createElement('canvas');var MP=960;var w=img.width,h=img.height; if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}
-        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',.85);
+        cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h); var data=cv.toDataURL('image/jpeg',0.85);
         var m={name:me,type:'image',fileData:data,fileName:file.name,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
         pushMsg(m); cancelReply();
       };img.src=ev.target.result;
@@ -1131,8 +1170,11 @@ function addBubble(d,key){
   var bb='';
   if(rcld){
     bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
+  } else if(d.type==='video'){
+    // 支援影片氣泡
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<video controls src="'+d.fileData+'" class="bbl-media"></video></div>';
   } else if(d.type==='image'){
-    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" onclick="openLb(this.src)" alt="圖片"></div>';
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" class="bbl-media bbl-img" onclick="openLb(this.src)" alt="圖片"></div>';
   } else if(d.type==='file'){
     var fn = esc(d.fileName || '檔案');
     bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<a class="file-box" href="'+d.fileData+'" download="'+fn+'"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">'+fn+'</div><div class="file-sub">點擊下載檔案</div></div><div class="file-dl">⬇</div></a></div>';
@@ -1140,12 +1182,11 @@ function addBubble(d,key){
     bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
   }
   
-  var snippetText = d.type==='text'? (d.text||'') : (d.type==='image'?'📷 圖片':'📎 檔案');
+  var snippetText = d.type==='text'? (d.text||'') : ((d.type==='image' || d.type==='video') ?'📷 媒體':'📎 檔案');
   if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
   var escapedSnippet = snippetText.replace(/'/g, "\\'");
 
   var actionButtonsHtml = '';
-  // 🚀 修正：加入獨立且明顯的選單按鈕，保證手機絕對能按到！
   var explicitMenuBtn = '';
   if(!rcld && key){
     explicitMenuBtn = '<div class="msg-opts-btn" onclick="toggleMsgMenu(this)">⋮</div>';
@@ -1187,7 +1228,7 @@ function resetAllChats() {
     db.ref('messages').remove();
     db.ref('private_messages').remove();
     db.ref('custom_group_messages').remove();
-    db.ref('posts').remove(); // 清空貼文
+    db.ref('posts').remove(); 
     alert('✅ 報告管理員！所有對話紀錄與貼文已經順利清空！');
     location.reload();
   }
