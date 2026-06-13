@@ -137,7 +137,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .tab-btn.active span.icon { transform: translateY(-3px) scale(1.15); }
 
 /* ══ 聊天列表 (大廳) ══ */
-#s-main, #s-feed { padding-bottom: 75px; } 
+#s-main, #s-feed, #s-board { padding-bottom: 75px; } 
 .main-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px 10px;flex-shrink:0;animation:popInMessage .5s var(--ease-spring);}
 .main-hero-t{font-family:'Noto Serif TC',serif;font-size:24px;color:var(--brown);letter-spacing:6px;font-weight:700;margin-top:14px;}
 .main-hero-s{font-size:12px;color:var(--bl);letter-spacing:4px;margin-top:4px;}
@@ -179,6 +179,11 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .del-post-btn { color: #C0392B; background: rgba(192, 57, 43, 0.1); border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .del-post-btn:active { transform: scale(0.9); }
 
+/* ══ 白板 (Board) ══ */
+.color-btn { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.color-btn:active { transform: scale(0.8); }
+.color-btn.active { border-color: rgba(255,255,255,0.9); box-shadow: 0 0 0 2px var(--gold); transform: scale(1.1); }
+
 /* 管理員列表卡片樣式 */
 .admin-card { border-radius: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom:12px; background:var(--bg-card); box-shadow:0 4px 15px var(--sh); border:1px solid rgba(212,160,23,.15); }
 .admin-info { flex: 1; overflow: hidden; }
@@ -186,7 +191,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .admin-detail { font-size: 12px; color: var(--bm); font-family: monospace; background: var(--bg-input); padding: 4px 8px; border-radius: 8px; display: inline-block; }
 
 /* ══ 聊天室 ══ */
-/* 🚀 修正排版：恢復 align-items: stretch，讓電腦版也能正常滿版顯示 */
 #s-chat{width:100%; align-items:stretch; padding:0; z-index:90} 
 .c-hdr{width:100%;background:var(--bg-hdr);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid rgba(212,160,23,.15);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr-l{display:flex;align-items:center;gap:12px;padding-left:4px;}
@@ -244,7 +248,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .quote-box:hover{background:var(--gold-p); transform:translateX(2px);}
 .quote-box:active{transform:scale(0.97);}
 
-/* 獨立的訊息操作選單按鈕 */
 .msg-opts-btn {
   width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
   border-radius: 50%; color: var(--bl); font-size: 16px; font-weight: 700; cursor: pointer;
@@ -407,6 +410,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
+  <div class="tab-btn" id="tab-board" onclick="switchTab('board')"><span class="icon">🎨</span>白板</div>
 </div>
 
 <!-- 主畫面大廳 (聊天列表) -->
@@ -457,6 +461,35 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
+<!-- 共用白板畫面 (Board) -->
+<div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
+  <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:12px; height:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="m-hdr-t">共用白板</div>
+      <!-- 👇 這裡設定了一個 id，等等會用 JavaScript 控制顯示與否 -->
+      <button id="btn-clear-wb" class="pill sec" style="display:none; padding:6px 14px; font-size:12px; border-color:#C0392B; color:#C0392B; font-weight:700;" onclick="clearBoard()">🗑️ 清空全班畫布</button>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; gap:8px;">
+        <button id="wb-pen-btn" class="pill sec" style="padding:6px 14px; font-size:12px; background:var(--gold); color:#fff; border-color:var(--gold);" onclick="setDrawMode('pen')">✏️ 畫筆</button>
+        <button id="wb-eraser-btn" class="pill sec" style="padding:6px 14px; font-size:12px;" onclick="setDrawMode('eraser')">🧽 橡皮擦</button>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <div id="cbtn-1" class="color-btn active" style="background:#3D2C1A;" onclick="setWbColor('#3D2C1A', 1)"></div>
+        <div id="cbtn-2" class="color-btn" style="background:#E74C3C;" onclick="setWbColor('#E74C3C', 2)"></div>
+        <div id="cbtn-3" class="color-btn" style="background:#3498DB;" onclick="setWbColor('#3498DB', 3)"></div>
+        <div id="cbtn-4" class="color-btn" style="background:#2ECC71;" onclick="setWbColor('#2ECC71', 4)"></div>
+        <div id="cbtn-5" class="color-btn" style="background:#D4A017;" onclick="setWbColor('#D4A017', 5)"></div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1; width:100%; max-width:800px; margin:0 auto; padding:16px; overflow:hidden;">
+    <div class="liquid-glass" style="width:100%; height:100%; position:relative; overflow:hidden; border-radius:24px;">
+      <canvas id="whiteboard" style="display:block; width:100%; height:100%; touch-action:none; cursor:crosshair;"></canvas>
+    </div>
+  </div>
+</div>
+
 <!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
@@ -474,7 +507,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 新增：動態牆留言燈箱 -->
+<!-- 動態牆留言燈箱 -->
 <div class="modal-overlay" id="cmt-overlay" onclick="closeComments(event)">
   <div class="set-card liquid-glass-modal" style="height:75vh; max-height:600px; display:flex; flex-direction:column; padding:24px 20px;" onclick="event.stopPropagation()">
     <div class="set-h" style="margin-bottom:16px;">
@@ -535,7 +568,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
     <div class="set-item" style="text-align:center;"><div class="av-zone"><div class="av-btn" onclick="document.getElementById('set-av-file').click()"><img id="set-av-img" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></div></div><input type="file" id="set-av-file" accept="image/*" style="display:none"><span style="font-size:12px; color:var(--bl);">點擊更換頭貼</span></div>
     <div class="set-item"><div class="set-lbl">我的介紹</div><input class="fi" id="set-bio" type="text" placeholder="寫點自我介紹吧…"></div>
     <div class="set-item"><div class="set-lbl">個人密碼變更</div><input class="fi" id="set-pwd" type="password" placeholder="留空代表不修改舊密碼"></div>
-    <!-- 修正深色模式錯字 -->
     <div class="set-item"><div class="set-lbl">介面主題</div><div class="theme-options"><button class="t-opt" id="t-light" onclick="setTheme('light')">淺色模式</button><button class="t-opt" id="t-dark" onclick="setTheme('dark')">深色模式</button></div></div>
     <div class="set-item"><div class="set-lbl">背景音樂</div><div class="theme-options"><button class="t-opt" id="m-on" onclick="toggleMusic(true)">播放音樂</button><button class="t-opt" id="m-off" onclick="toggleMusic(false)">靜音模式</button></div></div>
     <div style="display:flex; gap:14px; margin-top:28px;"><button class="pill sec" style="padding:14px; flex:1;" onclick="doLogout()">登 出</button><button class="pill pri" style="padding:14px; flex:1;" onclick="saveSettings()">保 存</button></div>
@@ -582,6 +614,15 @@ var allUsers = {}, allGroups = {}, allPosts = {};
 var postMediaData = null;
 var postMediaType = '';
 var currentCommentPostId = null;
+
+// 白板相關變數
+var wbCanvas = document.getElementById('whiteboard');
+var wbCtx = wbCanvas.getContext('2d');
+var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
+var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3;
+var WB_WIDTH = 1000, WB_HEIGHT = 1500; 
+wbCanvas.width = WB_WIDTH; wbCanvas.height = WB_HEIGHT;
+var wbRef = null;
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
@@ -637,21 +678,23 @@ var setBtn = document.getElementById('btn-open-set');
 setBtn.addEventListener('click', function(e){ e.preventDefault(); openSetting(); });
 
 function show(id){
-  ['s-home','s-steps','s-chat','s-main','s-admin','s-feed'].forEach(function(s){
+  ['s-home','s-steps','s-chat','s-main','s-admin','s-feed','s-board'].forEach(function(s){
     var el=document.getElementById(s);
     if(el)el.classList[s===id?'remove':'add']('off');
   });
   var bnav = document.getElementById('bottom-nav');
-  if(id === 's-main' || id === 's-feed') { bnav.classList.remove('off'); } 
+  if(id === 's-main' || id === 's-feed' || id === 's-board') { bnav.classList.remove('off'); } 
   else { bnav.classList.add('off'); }
 }
 
 function switchTab(tab) {
   document.getElementById('tab-chat').classList.remove('active');
   document.getElementById('tab-feed').classList.remove('active');
+  document.getElementById('tab-board').classList.remove('active');
   document.getElementById('tab-' + tab).classList.add('active');
   if(tab === 'chat') { show('s-main'); }
   else if(tab === 'feed') { show('s-feed'); }
+  else if(tab === 'board') { show('s-board'); }
 }
 
 var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱',hint:'請勿使用學校帳號',type:'text',id:'rg',ph:'yourname@gmail.com',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
@@ -712,8 +755,17 @@ function enterApp(name, id, av, isNew){
   document.getElementById('hname').textContent=name; document.getElementById('hbio-sub').textContent=myBio||'查看設置...';
   if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
   
-  if (name === ADMIN_NAME) { document.getElementById('admin-btn-wrap').style.display = 'block'; } 
-  else { document.getElementById('admin-btn-wrap').style.display = 'none'; }
+  // 👇 權限控管：這裡設定只有管理員才能看到各個後台與清空按鈕 👇
+  if (name === ADMIN_NAME) { 
+    document.getElementById('admin-btn-wrap').style.display = 'block'; 
+    var btnClearWb = document.getElementById('btn-clear-wb');
+    if(btnClearWb) btnClearWb.style.display = 'block'; // 顯示白板清空按鈕
+  } 
+  else { 
+    document.getElementById('admin-btn-wrap').style.display = 'none'; 
+    var btnClearWb = document.getElementById('btn-clear-wb');
+    if(btnClearWb) btnClearWb.style.display = 'none'; // 隱藏白板清空按鈕
+  }
   
   if (isNew && db) { db.ref('messages').push().set({name:'__system__',type:'system',text:name+' 加入了蒲公英 🌼',timestamp:firebase.database.ServerValue.TIMESTAMP}); }
   
@@ -743,6 +795,7 @@ function loadData() {
   db.ref('users').on('value', function(snap){ allUsers = snap.val() || {}; renderUserListUI(); });
   db.ref('groups').on('value', function(snap){ allGroups = snap.val() || {}; renderUserListUI(); });
   db.ref('posts').on('value', function(snap){ allPosts = snap.val() || {}; renderFeedUI(); });
+  initWhiteboardSync(); 
 }
 
 function renderUserListUI() {
@@ -764,7 +817,6 @@ function renderUserListUI() {
   document.getElementById('user-list').innerHTML = html;
 }
 
-// 🚀 貼文與影片支援
 function openCreatePost() {
   document.getElementById('post-text').value = '';
   document.getElementById('post-img-preview').src = '';
@@ -893,14 +945,9 @@ function renderFeedUI() {
     });
   }
   container.innerHTML = html;
-  
-  // 若留言視窗正開啟，同步更新留言列表
-  if(currentCommentPostId) {
-    renderComments();
-  }
+  if(currentCommentPostId) { renderComments(); }
 }
 
-// 🚀 動態牆留言功能
 function openComments(postId) {
   currentCommentPostId = postId;
   document.getElementById('cmt-input').value = '';
@@ -950,7 +997,6 @@ function delComment(cmtId) {
   if(confirm('確定要刪除這則留言？')) { db.ref('posts/' + currentCommentPostId + '/comments/' + cmtId).remove(); }
 }
 
-
 function openCg() {
   document.getElementById('cg-name').value = '';
   var html = '';
@@ -993,7 +1039,6 @@ function openRoom(type, targetName, groupId) {
   if (type === 'custom_group') { document.getElementById('cg-del-btn').style.display = 'block'; } 
   else { document.getElementById('cg-del-btn').style.display = 'none'; }
   
-  // 🚀 修正跨聊天室文字殘留問題：切換房間時清空輸入框
   var ta = document.getElementById('msg-ta');
   if(ta) { ta.value = ''; ta.style.height = 'auto'; }
   
@@ -1282,7 +1327,7 @@ function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+
 
 function resetAllChats() {
   if (me !== ADMIN_NAME) { alert('你沒有權限執行此操作！'); return; }
-  var confirm1 = confirm('⚠️ 警告：你確定要清空「所有」的對話紀錄與貼文嗎？\n\n這包含大群組、私訊、自訂群組與動態牆的所有內容。\n（大家的帳號和群組名單會保留）');
+  var confirm1 = confirm('⚠️ 警告：你確定要清空「所有」的對話紀錄、貼文與白板嗎？\n\n這包含大群組、私訊、自訂群組與動態牆的所有內容。\n（大家的帳號和群組名單會保留）');
   if (!confirm1) return;
   var confirm2 = prompt('此動作無法復原！\n請在下方輸入「確認清空」四個字來執行：');
   if (confirm2 !== '確認清空') { alert('密語錯誤或已取消，資料安全無恙。'); return; }
@@ -1292,7 +1337,8 @@ function resetAllChats() {
     db.ref('private_messages').remove();
     db.ref('custom_group_messages').remove();
     db.ref('posts').remove(); 
-    alert('✅ 報告管理員！所有對話紀錄與貼文已經順利清空！');
+    db.ref('whiteboard').remove(); 
+    alert('✅ 報告管理員！所有內容已經順利清空！');
     location.reload();
   }
 }
@@ -1306,6 +1352,111 @@ function deleteCustomGroup() {
       backToMain(); 
     }
   }
+}
+
+// 🚀 白板繪圖邏輯
+function getWbPos(e) {
+  var rect = wbCanvas.getBoundingClientRect();
+  var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  var x = (clientX - rect.left) * (WB_WIDTH / rect.width);
+  var y = (clientY - rect.top) * (WB_HEIGHT / rect.height);
+  return {x: x, y: y};
+}
+
+function startDrawWb(e) {
+  if(e.touches && e.touches.length > 1) return; 
+  e.preventDefault();
+  isDrawingWb = true;
+  var pos = getWbPos(e);
+  wbLastX = pos.x; wbLastY = pos.y;
+}
+
+function drawWb(e) {
+  if(!isDrawingWb) return;
+  e.preventDefault();
+  var pos = getWbPos(e);
+  if(db) {
+    db.ref('whiteboard').push({
+      x0: Math.round(wbLastX), y0: Math.round(wbLastY), x1: Math.round(pos.x), y1: Math.round(pos.y),
+      c: wbMode === 'eraser' ? 'eraser' : wbColor,
+      s: wbMode === 'eraser' ? 30 : wbSize
+    });
+  }
+  wbLastX = pos.x; wbLastY = pos.y;
+}
+
+function endDrawWb(e) { isDrawingWb = false; }
+
+wbCanvas.addEventListener('mousedown', startDrawWb);
+wbCanvas.addEventListener('mousemove', drawWb);
+wbCanvas.addEventListener('mouseup', endDrawWb);
+wbCanvas.addEventListener('mouseout', endDrawWb);
+
+wbCanvas.addEventListener('touchstart', startDrawWb, {passive: false});
+wbCanvas.addEventListener('touchmove', drawWb, {passive: false});
+wbCanvas.addEventListener('touchend', endDrawWb);
+wbCanvas.addEventListener('touchcancel', endDrawWb);
+
+function initWhiteboardSync() {
+  if(!db) return;
+  if(wbRef) wbRef.off();
+  wbRef = db.ref('whiteboard');
+  
+  wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
+  
+  wbRef.on('child_added', function(snap) {
+    var d = snap.val();
+    if(!d) return;
+    wbCtx.beginPath();
+    wbCtx.moveTo(d.x0, d.y0);
+    wbCtx.lineTo(d.x1, d.y1);
+    wbCtx.lineCap = 'round';
+    wbCtx.lineJoin = 'round';
+    if(d.c === 'eraser') {
+      wbCtx.globalCompositeOperation = 'destination-out';
+      wbCtx.lineWidth = d.s || 30;
+      wbCtx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+      wbCtx.globalCompositeOperation = 'source-over';
+      wbCtx.lineWidth = d.s || 3;
+      wbCtx.strokeStyle = d.c || '#3D2C1A';
+    }
+    wbCtx.stroke();
+  });
+
+  wbRef.on('child_removed', function() { wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT); });
+}
+
+// 👇 這裡就是被我們管制的核彈級按鈕執行點 👇
+function clearBoard() {
+  if (me !== ADMIN_NAME) {
+    alert('只有管理員可以清空全班畫布喔！');
+    return;
+  }
+  if(confirm('確定要清空全班共用的白板嗎？')) {
+    if(db) db.ref('whiteboard').remove();
+  }
+}
+
+function setDrawMode(mode) {
+  wbMode = mode;
+  var pBtn = document.getElementById('wb-pen-btn');
+  var eBtn = document.getElementById('wb-eraser-btn');
+  if(mode === 'pen') {
+    pBtn.style.background = 'var(--gold)'; pBtn.style.color = '#fff'; pBtn.style.borderColor = 'var(--gold)';
+    eBtn.style.background = 'transparent'; eBtn.style.color = 'var(--bm)'; eBtn.style.borderColor = 'var(--gold-p)';
+  } else {
+    eBtn.style.background = 'var(--gold)'; eBtn.style.color = '#fff'; eBtn.style.borderColor = 'var(--gold)';
+    pBtn.style.background = 'transparent'; pBtn.style.color = 'var(--bm)'; pBtn.style.borderColor = 'var(--gold-p)';
+  }
+}
+
+function setWbColor(color, btnIndex) {
+  wbColor = color;
+  setDrawMode('pen'); 
+  for(var i=1; i<=5; i++){ document.getElementById('cbtn-'+i).classList.remove('active'); }
+  document.getElementById('cbtn-'+btnIndex).classList.add('active');
 }
 </script>
 </body>
