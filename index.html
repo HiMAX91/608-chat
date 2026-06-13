@@ -373,7 +373,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="86" height="100" viewBox="0 0 90 100" fill="none">
@@ -400,20 +399,17 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 底部全域導覽列 -->
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
   <div class="tab-btn" id="tab-board" onclick="switchTab('board')"><span class="icon">🎨</span>白板</div>
 </div>
 
-<!-- 主畫面大廳 (聊天列表) -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天</div>
@@ -452,7 +448,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 動態牆畫面 (Feed) -->
 <div class="scr off" id="s-feed">
   <div class="m-hdr">
     <div class="m-hdr-t">動態牆</div>
@@ -461,7 +456,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 共用白板畫面 (Board) -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -491,7 +485,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新貼文</div><button class="set-close" onclick="document.getElementById('post-overlay').classList.remove('show')">×</button></div>
@@ -508,7 +501,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 動態牆留言燈箱 -->
 <div class="modal-overlay" id="cmt-overlay" onclick="closeComments(event)">
   <div class="set-card liquid-glass-modal" style="height:75vh; max-height:600px; display:flex; flex-direction:column; padding:24px 20px;" onclick="event.stopPropagation()">
     <div class="set-h" style="margin-bottom:16px;">
@@ -523,7 +515,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 管理員後台 -->
 <div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
   <div class="m-hdr">
     <div class="c-hdr-l">
@@ -538,7 +529,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -562,7 +552,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -575,7 +564,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
@@ -587,14 +575,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn pill sec" style="flex:1;" onclick="closeCrop()">取消</button><button class="c-btn pill pri" style="flex:1;" onclick="saveCrop()">裁切</button></div>
 </div>
 
-<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -616,14 +602,18 @@ var postMediaData = null;
 var postMediaType = '';
 var currentCommentPostId = null;
 
+// 🚀 向量筆跡系統變數
 var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
 var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
-var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3;
-var lastPenSize = 3; 
+var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3, lastPenSize = 3; 
 var WB_WIDTH = 1000, WB_HEIGHT = 1500; 
 wbCanvas.width = WB_WIDTH; wbCanvas.height = WB_HEIGHT;
 var wbRef = null;
+var allStrokes = {}; // 存放所有從 Firebase 載入的筆跡
+var currentPath = []; // 暫存自己當前正在畫的筆跡
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');}
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
@@ -735,7 +725,10 @@ function nextStep(){
   
   if(!v && s.id !== 'rg'){setErr('⚠️ 欄位不能空白');return;}
   
-  if(s.id==='rn')rName=v; 
+  if(s.id==='rn'){
+    if(/[.#$\[\]]/.test(v)) { setErr('❌ 名字不能包含 . # $ [ ] 等特殊符號'); return; }
+    rName=v; 
+  }
   else if(s.id==='rg'){
     if(v && !v.endsWith('@gmail.com')){setErr('❌ 請填寫正確的 Gmail');return;}
     rGmail=v;
@@ -799,7 +792,7 @@ function openAdminPanel() {
     var users = snap.val(); var html = '';
     for(var key in users) {
       var u = users[key];
-      var avHtml = u.avatar ? '<img src="'+u.avatar+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">' : '<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
+      var avHtml = u.avatar ? '<img src="'+esc(u.avatar)+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">' : '<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱'; var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
       html += '<div class="admin-card">'+avHtml+'<div class="admin-info"><div class="admin-name">'+esc(key)+'</div><div class="admin-detail" style="margin-bottom:6px;">📧 '+emailText+'</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: '+pwdText+'</div></div></div>';
     }
@@ -817,19 +810,19 @@ function loadData() {
 
 function renderUserListUI() {
   var html = '';
-  html += '<div class="usr-row grp" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
+  html += '<div class="usr-row grp liquid-glass" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>';
   for(var gKey in allGroups) {
     var g = allGroups[gKey];
     if(g.members && g.members[me]) {
-      html += '<div class="usr-row" style="border-color:var(--gold-l); margin-bottom:12px;" onclick="openRoom(\'custom_group\',\''+esc(g.name)+'\',\''+gKey+'\')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">'+esc(g.name)+'</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>';
+      html += `<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" onclick="openRoom('custom_group', decodeURIComponent('${encodeURIComponent(g.name)}'), '${gKey}')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;
     }
   }
   html += '<div class="usr-div" style="margin-top:16px;">私密聊天</div>';
   for(var key in allUsers) {
     if(key === me) continue;
-    var u = allUsers[key]; var avHtml = u.avatar ? '<img src="'+u.avatar+'">' : '🌼'; var bioText = u.bio || '來聊天吧！';
-    html += '<div class="usr-row" style="margin-bottom:12px;" onclick="openRoom(\'pm\',\''+key+'\', null)"><div class="mav">'+avHtml+'</div><div class="usr-info"><div class="usr-name">'+esc(key)+'</div><div class="usr-sub">'+esc(bioText)+'</div></div><div class="usr-arrow">❯</div></div>';
+    var u = allUsers[key]; var avHtml = u.avatar ? `<img src="${esc(u.avatar)}">` : `🌼`; var bioText = u.bio || '來聊天吧！';
+    html += `<div class="usr-row liquid-glass" style="margin-bottom:12px;" onclick="openRoom('pm', decodeURIComponent('${encodeURIComponent(key)}'), null)"><div class="mav">${avHtml}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;
   }
   document.getElementById('user-list').innerHTML = html;
 }
@@ -921,7 +914,7 @@ function renderFeedUI() {
   } else {
     postArray.forEach(function(post) {
       var d = post.data; var id = post.id;
-      var avHtml = d.avatar ? '<img src="'+d.avatar+'" class="post-av">' : '<div class="post-av" style="display:flex;align-items:center;justify-content:center;font-size:18px;">🌼</div>';
+      var avHtml = d.avatar ? '<img src="'+esc(d.avatar)+'" class="post-av">' : '<div class="post-av" style="display:flex;align-items:center;justify-content:center;font-size:18px;">🌼</div>';
       var timeStr = fmtD(d.timestamp) + ' ' + fmtT(d.timestamp);
       var textHtml = d.text ? '<div class="post-text">'+esc(d.text)+'</div>' : '';
       
@@ -930,9 +923,9 @@ function renderFeedUI() {
       var mediaHtml = '';
       if(actualMediaData) {
         if(actualMediaType === 'video') {
-          mediaHtml = '<video src="'+actualMediaData+'" class="post-media" controls></video>';
+          mediaHtml = '<video src="'+esc(actualMediaData)+'" class="post-media" controls></video>';
         } else {
-          mediaHtml = '<img src="'+actualMediaData+'" class="post-media post-img" onclick="openLb(this.src)">';
+          mediaHtml = '<img src="'+esc(actualMediaData)+'" class="post-media post-img" onclick="openLb(this.src)">';
         }
       }
       
@@ -940,10 +933,10 @@ function renderFeedUI() {
       var isLiked = d.likes && d.likes[me];
       var likeClass = isLiked ? 'like-btn liked' : 'like-btn';
       var likeIcon = isLiked ? '❤️' : '🤍';
-      var delHtml = (d.author === me || me === ADMIN_NAME) ? '<button class="del-post-btn" onclick="deletePost(\''+id+'\')">刪除</button>' : '<div></div>';
+      var delHtml = (d.author === me || me === ADMIN_NAME) ? `<button class="del-post-btn" onclick="deletePost('${id}')">刪除</button>` : '<div></div>';
       
       var commentsCount = d.comments ? Object.keys(d.comments).length : 0;
-      var commentBtn = '<button class="like-btn" onclick="openComments(\''+id+'\')">💬 '+(commentsCount > 0 ? commentsCount : '留言')+'</button>';
+      var commentBtn = `<button class="like-btn" onclick="openComments('${id}')">💬 ${commentsCount > 0 ? commentsCount : '留言'}</button>`;
 
       html += `
         <div class="post-card">
@@ -992,8 +985,8 @@ function renderComments() {
   } else {
     cArray.forEach(c => {
       var d = c.data;
-      var av = d.avatar ? '<img src="'+d.avatar+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">' : '<div style="width:28px;height:28px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:12px;">🌼</div>';
-      var delBtn = (d.author === me || me === ADMIN_NAME) ? '<span style="color:#C0392B;font-size:11px;cursor:pointer;margin-left:auto;" onclick="delComment(\''+c.id+'\')">刪除</span>' : '';
+      var av = d.avatar ? '<img src="'+esc(d.avatar)+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">' : '<div style="width:28px;height:28px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:12px;">🌼</div>';
+      var delBtn = (d.author === me || me === ADMIN_NAME) ? `<span style="color:#C0392B;font-size:11px;cursor:pointer;margin-left:auto;" onclick="delComment('${c.id}')">刪除</span>` : '';
       html += '<div style="display:flex; gap:10px; align-items:flex-start;">' + av + '<div style="flex:1; background:var(--bg-input); padding:10px 14px; border-radius:18px; border-top-left-radius:4px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;"><span style="font-size:13px; font-weight:700; color:var(--brown);">'+esc(d.author)+'</span><span style="font-size:10px; color:var(--bl);">'+fmtT(d.timestamp)+'</span>'+delBtn+'</div><div style="font-size:14px; color:var(--brown); word-break:break-word; line-height:1.5;">'+esc(d.text)+'</div></div></div>';
     });
   }
@@ -1290,26 +1283,25 @@ function addBubble(d,key){
   if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
   
   var w=document.createElement('div');w.className='mw '+(self?'self':'other'); if(key)w.setAttribute('data-key',key);
-  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+av+'" alt=""></div>':'<div class="mav">🌼</div>';
+  var avH=av&&av.startsWith('data:')?'<div class="mav"><img src="'+esc(av)+'" alt=""></div>':'<div class="mav">🌼</div>';
   var quoteHtml = ''; if(!rcld && d.replyId){ quoteHtml = '<div class="quote-box" onclick="jumpToMessage(\''+d.replyId+'\')">↳ 回覆 ' + esc(d.replyName) + '：' + esc(d.replySnippet) + '</div>'; }
 
   var bb='';
   if(rcld){
     bb='<div class="bbl recalled">🌬️ 此訊息已收回</div>';
   } else if(d.type==='video'){
-    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<video controls src="'+d.fileData+'" class="bbl-media"></video></div>';
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<video controls src="'+esc(d.fileData)+'" class="bbl-media"></video></div>';
   } else if(d.type==='image'){
-    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+d.fileData+'" class="bbl-media bbl-img" onclick="openLb(this.src)" alt="圖片"></div>';
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<img src="'+esc(d.fileData)+'" class="bbl-media bbl-img" onclick="openLb(this.src)" alt="圖片"></div>';
   } else if(d.type==='file'){
     var fn = esc(d.fileName || '檔案');
-    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<a class="file-box" href="'+d.fileData+'" download="'+fn+'"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">'+fn+'</div><div class="file-sub">點擊下載檔案</div></div><div class="file-dl">⬇</div></a></div>';
+    bb='<div class="bbl" style="padding:6px">'+quoteHtml+'<a class="file-box" href="'+esc(d.fileData)+'" download="'+fn+'"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">'+fn+'</div><div class="file-sub">點擊下載檔案</div></div><div class="file-dl">⬇</div></a></div>';
   } else {
     bb='<div class="bbl">'+quoteHtml+esc(d.text||'')+'</div>';
   }
   
   var snippetText = d.type==='text'? (d.text||'') : ((d.type==='image' || d.type==='video') ?'📷 媒體':'📎 檔案');
   if(snippetText.length>14) snippetText = snippetText.slice(0,14) + '...';
-  var escapedSnippet = snippetText.replace(/'/g, "\\'");
 
   var actionButtonsHtml = '';
   var explicitMenuBtn = '';
@@ -1325,7 +1317,7 @@ function addBubble(d,key){
   w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
   
   if(!rcld && key){
-    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, escapedSnippet); }); }, {passive: false}); }
+    var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, snippetText); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, snippetText); }); }, {passive: false}); }
     var cBtn = w.querySelector('.rcl-act'); if(cBtn){ cBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }); cBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ rclMsg(cBtn); }); }, {passive: false}); }
   }
 
@@ -1338,7 +1330,6 @@ function addBubble(d,key){
 }
 
 function addSys(t){var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(sep);var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
 function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
 
@@ -1354,7 +1345,7 @@ function resetAllChats() {
     db.ref('private_messages').remove();
     db.ref('custom_group_messages').remove();
     db.ref('posts').remove(); 
-    db.ref('whiteboard').remove(); 
+    db.ref('whiteboard/strokes').remove(); 
     alert('✅ 報告管理員！所有內容已經順利清空！');
     location.reload();
   }
@@ -1371,6 +1362,7 @@ function deleteCustomGroup() {
   }
 }
 
+// 🚀 向量筆跡引擎重寫 🚀
 function getWbPos(e) {
   var rect = wbCanvas.getBoundingClientRect();
   var clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1385,24 +1377,51 @@ function startDrawWb(e) {
   e.preventDefault();
   isDrawingWb = true;
   var pos = getWbPos(e);
-  wbLastX = pos.x; wbLastY = pos.y;
+  
+  if(wbMode === 'pen') {
+    currentPath = [Math.round(pos.x)+','+Math.round(pos.y)];
+    wbCtx.beginPath();
+    wbCtx.moveTo(pos.x, pos.y);
+    wbCtx.lineCap = 'round';
+    wbCtx.lineJoin = 'round';
+    wbCtx.lineWidth = wbSize;
+    wbCtx.strokeStyle = wbColor;
+    wbLastX = pos.x; wbLastY = pos.y;
+  } else {
+    // 橡皮擦模式：找尋並刪除自己的筆跡
+    eraseMyStrokes(pos.x, pos.y, 30);
+  }
 }
 
 function drawWb(e) {
   if(!isDrawingWb) return;
   e.preventDefault();
   var pos = getWbPos(e);
-  if(db) {
-    db.ref('whiteboard').push({
-      x0: Math.round(wbLastX), y0: Math.round(wbLastY), x1: Math.round(pos.x), y1: Math.round(pos.y),
-      c: wbMode === 'eraser' ? 'eraser' : wbColor,
-      s: wbSize 
-    });
+  
+  if(wbMode === 'pen') {
+    currentPath.push(Math.round(pos.x)+','+Math.round(pos.y));
+    wbCtx.lineTo(pos.x, pos.y);
+    wbCtx.stroke();
+  } else {
+    eraseMyStrokes(pos.x, pos.y, 30);
   }
-  wbLastX = pos.x; wbLastY = pos.y;
 }
 
-function endDrawWb(e) { isDrawingWb = false; }
+function endDrawWb(e) { 
+  if(!isDrawingWb) return;
+  isDrawingWb = false; 
+  if(wbMode === 'pen' && currentPath.length > 0) {
+     if(db) {
+       db.ref('whiteboard/strokes').push({
+          a: me, // 標記作者
+          c: wbColor,
+          s: wbSize,
+          p: currentPath.join('|')
+       });
+     }
+     currentPath = [];
+  }
+}
 
 wbCanvas.addEventListener('mousedown', startDrawWb);
 wbCanvas.addEventListener('mousemove', drawWb);
@@ -1414,34 +1433,84 @@ wbCanvas.addEventListener('touchmove', drawWb, {passive: false});
 wbCanvas.addEventListener('touchend', endDrawWb);
 wbCanvas.addEventListener('touchcancel', endDrawWb);
 
+// 渲染所有存在雲端的筆跡
+function renderWhiteboard() {
+  wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
+  for(var key in allStrokes) {
+    var s = allStrokes[key];
+    var pts = s.p.split('|');
+    if(!pts || pts.length === 0 || !pts[0]) continue;
+    
+    wbCtx.beginPath();
+    var start = pts[0].split(',');
+    wbCtx.moveTo(parseFloat(start[0]), parseFloat(start[1]));
+    for(var i=1; i<pts.length; i++) {
+      var pt = pts[i].split(',');
+      wbCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
+    }
+    // 處理只有一個點的情況
+    if(pts.length === 1) {
+      wbCtx.lineTo(parseFloat(start[0]) + 0.1, parseFloat(start[1]));
+    }
+    wbCtx.lineCap = 'round';
+    wbCtx.lineJoin = 'round';
+    wbCtx.lineWidth = s.s || 3;
+    wbCtx.strokeStyle = s.c || '#000';
+    wbCtx.stroke();
+  }
+  
+  // 將自己正在畫、還沒傳上雲端的筆跡補回去
+  if(isDrawingWb && wbMode === 'pen' && currentPath.length > 0) {
+    wbCtx.beginPath();
+    var start = currentPath[0].split(',');
+    wbCtx.moveTo(parseFloat(start[0]), parseFloat(start[1]));
+    for(var i=1; i<currentPath.length; i++) {
+      var pt = currentPath[i].split(',');
+      wbCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
+    }
+    wbCtx.lineCap = 'round';
+    wbCtx.lineJoin = 'round';
+    wbCtx.lineWidth = wbSize;
+    wbCtx.strokeStyle = wbColor;
+    wbCtx.stroke();
+  }
+}
+
+// 核心黑科技：偵測並擦除「自己」的筆跡
+function eraseMyStrokes(ex, ey, radius) {
+  var radiusSq = radius * radius;
+  for(var key in allStrokes) {
+    var s = allStrokes[key];
+    if(s.a === me) { // 關鍵：只找作者是自己的線條
+      var pts = s.p.split('|');
+      var hit = false;
+      for(var i=0; i<pts.length; i++) {
+        if(!pts[i]) continue;
+        var pt = pts[i].split(',');
+        var dx = parseFloat(pt[0]) - ex;
+        var dy = parseFloat(pt[1]) - ey;
+        if(dx*dx + dy*dy <= radiusSq) {
+          hit = true; break;
+        }
+      }
+      if(hit && db) {
+        db.ref('whiteboard/strokes/' + key).remove();
+        delete allStrokes[key]; // 避免重複呼叫
+        renderWhiteboard();
+      }
+    }
+  }
+}
+
 function initWhiteboardSync() {
   if(!db) return;
   if(wbRef) wbRef.off();
-  wbRef = db.ref('whiteboard');
+  wbRef = db.ref('whiteboard/strokes');
   
-  wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
-  
-  wbRef.on('child_added', function(snap) {
-    var d = snap.val();
-    if(!d) return;
-    wbCtx.beginPath();
-    wbCtx.moveTo(d.x0, d.y0);
-    wbCtx.lineTo(d.x1, d.y1);
-    wbCtx.lineCap = 'round';
-    wbCtx.lineJoin = 'round';
-    if(d.c === 'eraser') {
-      wbCtx.globalCompositeOperation = 'destination-out';
-      wbCtx.lineWidth = d.s || 30;
-      wbCtx.strokeStyle = 'rgba(0,0,0,1)';
-    } else {
-      wbCtx.globalCompositeOperation = 'source-over';
-      wbCtx.lineWidth = d.s || 3;
-      wbCtx.strokeStyle = d.c || '#3D2C1A';
-    }
-    wbCtx.stroke();
+  wbRef.on('value', function(snap) {
+    allStrokes = snap.val() || {};
+    renderWhiteboard();
   });
-
-  wbRef.on('child_removed', function() { wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT); });
 }
 
 function clearBoard() {
@@ -1450,7 +1519,7 @@ function clearBoard() {
     return;
   }
   if(confirm('確定要清空全班共用的白板嗎？')) {
-    if(db) db.ref('whiteboard').remove();
+    if(db) db.ref('whiteboard/strokes').remove();
   }
 }
 
@@ -1470,12 +1539,14 @@ function setDrawMode(mode) {
     eBtn.style.background = 'transparent'; eBtn.style.color = 'var(--bm)'; eBtn.style.borderColor = 'var(--gold-p)';
     wbSize = lastPenSize;
     slider.value = wbSize;
+    wbCanvas.style.cursor = 'crosshair';
   } else {
     lastPenSize = wbSize; 
     eBtn.style.background = 'var(--gold)'; eBtn.style.color = '#fff'; eBtn.style.borderColor = 'var(--gold)';
     pBtn.style.background = 'transparent'; pBtn.style.color = 'var(--bm)'; pBtn.style.borderColor = 'var(--gold-p)';
-    wbSize = 20; 
+    wbSize = 30; // 橡皮擦預設比較大
     slider.value = wbSize;
+    wbCanvas.style.cursor = 'cell';
   }
 }
 
