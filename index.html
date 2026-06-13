@@ -234,7 +234,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .bbl-img{cursor:zoom-in;}
 .bbl-img:active{transform:scale(0.96);}
 
-/* 🚀 新增：已讀狀態樣式 */
+/* 已讀狀態樣式 */
 .mw-t{font-size:10px;color:var(--bl);margin-top:4px;padding:0 6px; letter-spacing:1px; display:flex; align-items:center; gap:6px;}
 .read-status { color: var(--gold); font-weight: 700; font-size: 10px; }
 
@@ -464,7 +464,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 共用白板畫面 (Board) -->
+<!-- 共用白板畫面 (Board) 向量筆跡引擎版 -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -536,7 +536,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
   <div style="flex:1; width:100%; max-width:600px; padding:20px; overflow-y:auto; align-self:center;">
     <button class="pill sec" style="width:100%; padding: 14px; font-size: 15px; border-color: #C0392B; color: #C0392B; margin-bottom: 24px; font-weight: 700; background:rgba(192, 57, 43, 0.05);" onclick="resetAllChats()">⚠️ 一鍵清空所有對話與貼文</button>
-    <div style="font-size:13px; color:var(--bl); margin-bottom:16px; font-weight:700;">全站使用者列表 (機密資料請妥善保管)</div>
+    <div style="font-size:13px; color:var(--bl); margin-bottom:16px; font-weight:700;">全站使用者列表 (禁言後對方將無法傳送訊息/貼文/畫畫)</div>
     <div id="admin-user-list" style="display:flex; flex-direction:column; gap:14px;"></div>
   </div>
 </div>
@@ -618,6 +618,7 @@ var allUsers = {}, allGroups = {}, allPosts = {};
 var postMediaData = null;
 var postMediaType = '';
 var currentCommentPostId = null;
+var amIMuted = false; // 🚀 新增：全域禁言狀態變數
 
 var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
@@ -704,6 +705,14 @@ function switchTab(tab) {
   else if(tab === 'board') { show('s-board'); }
 }
 
+var REG=[
+  {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},
+  {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},
+  {lbl:'3 / 5',ttl:'Gmail 信箱 (選填)',hint:'沒有信箱可以直接按箭頭跳過喔！',type:'text',id:'rg',ph:'選填，可留空',it:'email'},
+  {lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},
+  {lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}
+];
+var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
 function steps(){return flow==='register'?REG:LOG;}
 function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
 
@@ -802,18 +811,64 @@ function openAdminPanel() {
       var u = users[key];
       var avHtml = u.avatar ? `<img src="${esc(u.avatar)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">` : `<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>`;
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱'; var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
-      html += `<div class="admin-card">${avHtml}<div class="admin-info"><div class="admin-name">${esc(key)}</div><div class="admin-detail" style="margin-bottom:6px;">📧 ${emailText}</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: ${pwdText}</div></div></div>`;
+      
+      // 🚀 新增：產生禁言按鈕
+      var muteBtn = '';
+      if (key !== ADMIN_NAME) {
+          if (u.isMuted) {
+              muteBtn = `<button class="pill" style="padding:4px 12px; font-size:11px; background:#C0392B; color:#fff; border:none; margin-top:6px;" onclick="toggleMute('${esc(key)}', false)">解除禁言</button>`;
+          } else {
+              muteBtn = `<button class="pill" style="padding:4px 12px; font-size:11px; background:transparent; border:1px solid #C0392B; color:#C0392B; margin-top:6px;" onclick="toggleMute('${esc(key)}', true)">🚫 禁言</button>`;
+          }
+      }
+
+      html += `<div class="admin-card">${avHtml}<div class="admin-info"><div class="admin-name">${esc(key)}</div><div class="admin-detail" style="margin-bottom:6px;">📧 ${emailText}</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: ${pwdText}</div><div style="text-align:right;">${muteBtn}</div></div></div>`;
     }
     listContainer.innerHTML = html;
   });
 }
 
+// 🚀 新增：管理員執行禁言功能
+function toggleMute(targetUser, muteState) {
+  if (me !== ADMIN_NAME) return;
+  var actionStr = muteState ? '禁言' : '解除禁言';
+  if (confirm(`確定要對 ${targetUser} 執行「${actionStr}」嗎？`)) {
+    db.ref('users/' + targetUser).update({ isMuted: muteState }, function() {
+       openAdminPanel(); // 更新後台列表畫面
+    });
+  }
+}
+
 function loadData() {
   if(!db) return;
-  db.ref('users').on('value', function(snap){ allUsers = snap.val() || {}; renderUserListUI(); });
+  db.ref('users').on('value', function(snap){ 
+      allUsers = snap.val() || {}; 
+      renderUserListUI(); 
+      checkMyMuteState(); // 🚀 即時檢查自己有沒有被禁言
+  });
   db.ref('groups').on('value', function(snap){ allGroups = snap.val() || {}; renderUserListUI(); });
   db.ref('posts').on('value', function(snap){ allPosts = snap.val() || {}; renderFeedUI(); });
   initWhiteboardSync(); 
+}
+
+// 🚀 新增：即時監聽與套用禁言狀態
+function checkMyMuteState() {
+  if (!me || !allUsers[me]) return;
+  amIMuted = !!allUsers[me].isMuted;
+  
+  var ta = document.getElementById('msg-ta');
+  var sndBtn = document.getElementById('snd-btn');
+  var gifBtn = document.getElementById('btn-gif');
+
+  if (amIMuted) {
+    if(ta) { ta.disabled = true; ta.placeholder = '🚫 您目前已被管理員禁言'; }
+    if(sndBtn) { sndBtn.style.opacity = '0.5'; sndBtn.style.pointerEvents = 'none'; }
+    if(gifBtn) { gifBtn.style.opacity = '0.5'; gifBtn.style.pointerEvents = 'none'; }
+  } else {
+    if(ta) { ta.disabled = false; ta.placeholder = '說點什麼吧…'; }
+    if(sndBtn) { sndBtn.style.opacity = '1'; sndBtn.style.pointerEvents = 'auto'; }
+    if(gifBtn) { gifBtn.style.opacity = '1'; gifBtn.style.pointerEvents = 'auto'; }
+  }
 }
 
 function renderUserListUI() {
@@ -886,6 +941,7 @@ document.getElementById('post-file').addEventListener('change', function(e){
 });
 
 function submitPost() {
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法發布貼文。'); return; } // 防護
   var txt = document.getElementById('post-text').value.trim();
   if(!txt && !postMediaData) { alert('請輸入一些文字或選擇照片/影片！'); return; }
   
@@ -1004,6 +1060,7 @@ function renderComments() {
   setTimeout(() => { cList.scrollTop = cList.scrollHeight; }, 50);
 }
 function submitComment() {
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法留言。'); return; } // 防護
   if(!currentCommentPostId) return;
   var input = document.getElementById('cmt-input');
   var txt = input.value.trim();
@@ -1132,12 +1189,11 @@ function getActiveChatPath() {
   return 'private_messages/' + getChatId(me, currentTarget);
 }
 
-// 🚀 新增：計算並更新已讀狀態介面
+// 更新已讀狀態
 function updateReadUI(key, d) {
   var el = document.getElementById('read-' + key);
   if (!el) return;
   var self = (d.name === me) && (!d.deviceId || d.deviceId === myId);
-  // 只顯示自己的已讀標記，且系統訊息或已收回的訊息不顯示
   if (!self || d.recalled || d.type === 'system' || d.name === '__system__') { 
     el.textContent = ''; return; 
   }
@@ -1145,14 +1201,13 @@ function updateReadUI(key, d) {
   var reads = d.reads || {};
   var readCount = 0;
   for (var user in reads) {
-    if (user !== d.name) readCount++; // 扣掉發送者自己
+    if (user !== d.name) readCount++; 
   }
 
   if (readCount === 0) {
     el.textContent = ''; return;
   }
 
-  // 根據當前房間計算「需要已讀的總人數」
   var totalExpected = 1;
   if (currentRoom === 'group') {
     totalExpected = Math.max(1, Object.keys(allUsers).length - 1);
@@ -1163,7 +1218,6 @@ function updateReadUI(key, d) {
     totalExpected = 1;
   }
 
-  // 判斷是否全員已讀
   if (readCount >= totalExpected) {
     el.textContent = (currentRoom === 'pm') ? '已讀' : '全部已讀';
   } else {
@@ -1181,13 +1235,12 @@ function startListen(){
     var k=snap.key; if(shownKeys[k])return; shownKeys[k]=true; 
     var d=snap.val(); if(!d)return; 
     
-    // 🚀 新增：若不是自己發的訊息，且還沒被自己標記為已讀，就寫入已讀
     if (d.name !== '__system__' && d.name !== me && (!d.reads || !d.reads[me])) {
       db.ref(path + '/' + k + '/reads/' + me).set(true);
     }
 
     d.name==='__system__'?addSys(d.text):addBubble(d,k); 
-    updateReadUI(k, d); // 渲染已讀狀態
+    updateReadUI(k, d); 
   });
   
   currentChatRef.on('child_changed', function(snap){ 
@@ -1196,7 +1249,7 @@ function startListen(){
     if(d.recalled) {
       var w=document.querySelector('[data-key="'+k+'"]'); if(w)markRcl(w); 
     }
-    updateReadUI(k, d); // 🚀 新增：有人讀取時，即時更新已讀數量
+    updateReadUI(k, d); 
   });
 }
 
@@ -1243,6 +1296,7 @@ function markRcl(mw) {
 }
 
 function sendTxt(){
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送訊息。'); return; } // 防護
   var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
   var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
   pushMsg(m); cancelReply();
@@ -1269,6 +1323,7 @@ function initGifPanel() {
   urls.forEach(function(u){
     var img = document.createElement('img'); img.src = u; img.className = 'g-item';
     img.onclick = function() {
+      if (amIMuted) { alert('🚫 您已被管理員禁言。'); return; }
       var m={name:me,type:'image',fileData:u,fileName:'gif',avatar:myAv,deviceId:myId}; 
       if(replyTargetId){ m.replyId=replyTargetId; m.replyName=replyTargetName; m.replySnippet=replyTargetSnippet; }
       pushMsg(m); cancelReply(); toggleGif(false);
@@ -1294,6 +1349,7 @@ document.addEventListener('click', function(e) {
 });
 
 document.getElementById('fi2').addEventListener('change',function(e){
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送檔案。'); this.value = ''; return; } // 防護
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
   var isImg = /^image\//i.test(file.type);
   var isVid = /^video\//i.test(file.type);
@@ -1377,7 +1433,6 @@ function addBubble(d,key){
     actionButtonsHtml += '</div>';
   }
 
-  // 🚀 新增：預先掛載已讀狀態的 <span> (僅限發送者自己可見)
   var readHtml = self ? `<span class="read-status" id="read-${key}"></span>` : '';
 
   var row=self?'<div class="mw-row">'+actionButtonsHtml+explicitMenuBtn+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+explicitMenuBtn+actionButtonsHtml+'</div>';
@@ -1439,6 +1494,7 @@ function getWbPos(e) {
 }
 
 function startDrawWb(e) {
+  if (amIMuted) return; // 🚫 防護：禁言者無法畫畫
   if(e.touches && e.touches.length > 1) return; 
   e.preventDefault();
   isDrawingWb = true;
