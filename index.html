@@ -233,7 +233,10 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .bbl-media{max-width:100%;max-height:250px;border-radius:16px;display:block;object-fit:cover;background:#000;border:1px solid rgba(212,160,23,.1);}
 .bbl-img{cursor:zoom-in;}
 .bbl-img:active{transform:scale(0.96);}
-.mw-t{font-size:10px;color:var(--bl);margin-top:4px;padding:0 6px; letter-spacing:1px;}
+
+/* 🚀 新增：已讀狀態樣式 */
+.mw-t{font-size:10px;color:var(--bl);margin-top:4px;padding:0 6px; letter-spacing:1px; display:flex; align-items:center; gap:6px;}
+.read-status { color: var(--gold); font-weight: 700; font-size: 10px; }
 
 .file-box{display:flex;align-items:center;gap:12px;background:var(--bg-input);padding:10px 14px;border-radius:18px;border:1px solid rgba(212,160,23,.2);text-decoration:none;color:var(--brown);width:100%;max-width:260px;margin-top:4px;}
 .file-box:hover{border-color:var(--gold);background:var(--gold-p); transform:translateY(-2px);}
@@ -461,7 +464,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 共用白板畫面 (Board) 向量筆跡引擎版 -->
+<!-- 共用白板畫面 (Board) -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -616,7 +619,6 @@ var postMediaData = null;
 var postMediaType = '';
 var currentCommentPostId = null;
 
-// 🚀 向量筆跡系統變數
 var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
 var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
@@ -627,7 +629,6 @@ var wbRef = null;
 var allStrokes = {}; 
 var currentPath = []; 
 
-// 🚀 安全跳脫函數：防止引號/特殊符號破壞 HTML 結構 (HTML Injection 修復核心)
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');}
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
@@ -703,14 +704,6 @@ function switchTab(tab) {
   else if(tab === 'board') { show('s-board'); }
 }
 
-var REG=[
-  {lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},
-  {lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},
-  {lbl:'3 / 5',ttl:'Gmail 信箱 (選填)',hint:'沒有信箱可以直接按箭頭跳過喔！',type:'text',id:'rg',ph:'選填，可留空',it:'email'},
-  {lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},
-  {lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}
-];
-var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
 function steps(){return flow==='register'?REG:LOG;}
 function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
 
@@ -741,7 +734,6 @@ function nextStep(){
   if(!v && s.id !== 'rg'){setErr('⚠️ 欄位不能空白');return;}
   
   if(s.id==='rn'){
-    // 防止特殊符號破壞 Firebase 節點鍵值
     if(/[.#$\[\]]/.test(v)) { setErr('❌ 名字不能包含 . # $ [ ] 等特殊符號'); return; }
     rName=v; 
   }
@@ -824,7 +816,6 @@ function loadData() {
   initWhiteboardSync(); 
 }
 
-// 🚀 安全修復：不再把名字塞進 onclick 裡面，改用 data-name 屬性安全打包
 function renderUserListUI() {
   var html = '';
   html += `<div class="usr-row grp liquid-glass" data-type="group" data-name="608 班級群組" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>`;
@@ -1141,17 +1132,71 @@ function getActiveChatPath() {
   return 'private_messages/' + getChatId(me, currentTarget);
 }
 
+// 🚀 新增：計算並更新已讀狀態介面
+function updateReadUI(key, d) {
+  var el = document.getElementById('read-' + key);
+  if (!el) return;
+  var self = (d.name === me) && (!d.deviceId || d.deviceId === myId);
+  // 只顯示自己的已讀標記，且系統訊息或已收回的訊息不顯示
+  if (!self || d.recalled || d.type === 'system' || d.name === '__system__') { 
+    el.textContent = ''; return; 
+  }
+
+  var reads = d.reads || {};
+  var readCount = 0;
+  for (var user in reads) {
+    if (user !== d.name) readCount++; // 扣掉發送者自己
+  }
+
+  if (readCount === 0) {
+    el.textContent = ''; return;
+  }
+
+  // 根據當前房間計算「需要已讀的總人數」
+  var totalExpected = 1;
+  if (currentRoom === 'group') {
+    totalExpected = Math.max(1, Object.keys(allUsers).length - 1);
+  } else if (currentRoom === 'custom_group') {
+    var g = allGroups[currentGroupId];
+    totalExpected = g ? Math.max(1, Object.keys(g.members).length - 1) : 1;
+  } else if (currentRoom === 'pm') {
+    totalExpected = 1;
+  }
+
+  // 判斷是否全員已讀
+  if (readCount >= totalExpected) {
+    el.textContent = (currentRoom === 'pm') ? '已讀' : '全部已讀';
+  } else {
+    el.textContent = readCount + ' 人已讀';
+  }
+}
+
 function startListen(){
   if(!db) return;
   if(currentChatRef) { currentChatRef.off(); }
   var path = getActiveChatPath();
   currentChatRef = db.ref(path);
+  
   currentChatRef.on('child_added', function(snap){ 
     var k=snap.key; if(shownKeys[k])return; shownKeys[k]=true; 
-    var d=snap.val(); if(!d)return; d.name==='__system__'?addSys(d.text):addBubble(d,k); 
+    var d=snap.val(); if(!d)return; 
+    
+    // 🚀 新增：若不是自己發的訊息，且還沒被自己標記為已讀，就寫入已讀
+    if (d.name !== '__system__' && d.name !== me && (!d.reads || !d.reads[me])) {
+      db.ref(path + '/' + k + '/reads/' + me).set(true);
+    }
+
+    d.name==='__system__'?addSys(d.text):addBubble(d,k); 
+    updateReadUI(k, d); // 渲染已讀狀態
   });
+  
   currentChatRef.on('child_changed', function(snap){ 
-    var d=snap.val(); if(!d||!d.recalled)return; var w=document.querySelector('[data-key="'+snap.key+'"]'); if(w)markRcl(w); 
+    var d=snap.val(); var k=snap.key;
+    if(!d)return; 
+    if(d.recalled) {
+      var w=document.querySelector('[data-key="'+k+'"]'); if(w)markRcl(w); 
+    }
+    updateReadUI(k, d); // 🚀 新增：有人讀取時，即時更新已讀數量
   });
 }
 
@@ -1332,8 +1377,11 @@ function addBubble(d,key){
     actionButtonsHtml += '</div>';
   }
 
+  // 🚀 新增：預先掛載已讀狀態的 <span> (僅限發送者自己可見)
+  var readHtml = self ? `<span class="read-status" id="read-${key}"></span>` : '';
+
   var row=self?'<div class="mw-row">'+actionButtonsHtml+explicitMenuBtn+bb+'</div>':'<div class="mw-nm">'+esc(d.name)+'</div><div class="mw-row">'+avH+bb+explicitMenuBtn+actionButtonsHtml+'</div>';
-  w.innerHTML=row+'<div class="mw-t">'+fmtT(ts)+'</div>';
+  w.innerHTML=row+'<div class="mw-t">'+readHtml+'<span>'+fmtT(ts)+'</span></div>';
   
   if(!rcld && key){
     var rBtn = w.querySelector('.rpl-act'); if(rBtn){ rBtn.addEventListener('click', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, snippetText); }); }); rBtn.addEventListener('touchstart', function(e){ handleMenuAction(e, function(){ initReply(key, d.name, snippetText); }); }, {passive: false}); }
@@ -1381,7 +1429,6 @@ function deleteCustomGroup() {
   }
 }
 
-// 🚀 向量筆跡引擎重寫 🚀
 function getWbPos(e) {
   var rect = wbCanvas.getBoundingClientRect();
   var clientX = e.touches ? e.touches[0].clientX : e.clientX;
