@@ -180,9 +180,9 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .del-post-btn:active { transform: scale(0.9); }
 
 /* ══ 白板 (Board) ══ */
-.color-btn { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.color-btn { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 .color-btn:active { transform: scale(0.8); }
-.color-btn.active { border-color: rgba(255,255,255,0.9); box-shadow: 0 0 0 2px var(--gold); transform: scale(1.1); }
+.color-btn.active { border-color: rgba(255,255,255,0.9); box-shadow: 0 0 0 2px var(--gold); transform: scale(1.15); }
 
 /* 管理員列表卡片樣式 */
 .admin-card { border-radius: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom:12px; background:var(--bg-card); box-shadow:0 4px 15px var(--sh); border:1px solid rgba(212,160,23,.15); }
@@ -346,7 +346,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   .main-hero { padding: 15px 20px 5px; }
   .main-hero-t { font-size: 20px; margin-top: 8px; }
   .usr-list-wrap, .feed-list { gap: 14px; padding-bottom: 10px; }
-  .c-hdr { padding: 10px 16px; }
+  .c-hdr { padding: 12px 18px; }
   .inp-area { padding: 10px 20px 18px; }
   .msgs { padding: 16px 20px; }
 }
@@ -373,7 +373,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="86" height="100" viewBox="0 0 90 100" fill="none">
@@ -400,20 +399,17 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 底部全域導覽列 -->
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
   <div class="tab-btn" id="tab-board" onclick="switchTab('board')"><span class="icon">🎨</span>白板</div>
 </div>
 
-<!-- 主畫面大廳 (聊天列表) -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天</div>
@@ -452,7 +448,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 動態牆畫面 (Feed) -->
 <div class="scr off" id="s-feed">
   <div class="m-hdr">
     <div class="m-hdr-t">動態牆</div>
@@ -461,34 +456,37 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 共用白板畫面 (Board) -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <div class="m-hdr-t" style="font-size: 18px;">🎨 共用白板</div>
       <button id="btn-clear-wb" class="pill sec" style="display:none; padding:4px 10px; font-size:11px; border-color:#C0392B; color:#C0392B; font-weight:700;" onclick="clearBoard()">🗑️ 清空全班畫布</button>
     </div>
+    
     <div style="display:flex; justify-content:space-between; align-items:center;">
       <div style="display:flex; gap:6px;">
         <button id="wb-pen-btn" class="pill sec" style="padding:4px 12px; font-size:12px; background:var(--gold); color:#fff; border-color:var(--gold);" onclick="setDrawMode('pen')">✏️ 畫筆</button>
         <button id="wb-eraser-btn" class="pill sec" style="padding:4px 12px; font-size:12px;" onclick="setDrawMode('eraser')">🧽 橡皮擦</button>
       </div>
-      <div style="display:flex; gap:6px;">
-        <div id="cbtn-1" class="color-btn active" style="background:#3D2C1A;" onclick="setWbColor('#3D2C1A', 1)"></div>
-        <div id="cbtn-2" class="color-btn" style="background:#E74C3C;" onclick="setWbColor('#E74C3C', 2)"></div>
-        <div id="cbtn-3" class="color-btn" style="background:#3498DB;" onclick="setWbColor('#3498DB', 3)"></div>
-        <div id="cbtn-4" class="color-btn" style="background:#2ECC71;" onclick="setWbColor('#2ECC71', 4)"></div>
-        <div id="cbtn-5" class="color-btn" style="background:#D4A017;" onclick="setWbColor('#D4A017', 5)"></div>
+      <div style="display:flex; align-items:center; gap:6px; background:var(--bg-input); padding:4px 10px; border-radius:14px; border:1px solid rgba(212,160,23,.15);">
+        <span style="font-size:11px; color:var(--bm); font-weight:700;">粗細</span>
+        <input type="range" id="wb-size-slider" min="1" max="40" value="3" style="width:70px; accent-color:var(--gold);" oninput="updateWbSize(this.value)">
       </div>
     </div>
+    
+    <div style="display:flex; gap:6px;">
+      <div id="cbtn-1" class="color-btn active" style="background:#3D2C1A;" onclick="setWbColor('#3D2C1A', 1)"></div>
+      <div id="cbtn-2" class="color-btn" style="background:#E74C3C;" onclick="setWbColor('#E74C3C', 2)"></div>
+      <div id="cbtn-3" class="color-btn" style="background:#3498DB;" onclick="setWbColor('#3498DB', 3)"></div>
+      <div id="cbtn-4" class="color-btn" style="background:#2ECC71;" onclick="setWbColor('#2ECC71', 4)"></div>
+      <div id="cbtn-5" class="color-btn" style="background:#D4A017;" onclick="setWbColor('#D4A017', 5)"></div>
+    </div>
   </div>
-  <!-- 白板繪圖區 (移除 padding 與 圓角，做到真正的滿版邊緣) -->
   <div style="flex:1; width:100%; position:relative; overflow:hidden; background: var(--bg-card);">
     <canvas id="whiteboard" style="display:block; width:100%; height:100%; touch-action:none; cursor:crosshair;"></canvas>
   </div>
 </div>
 
-<!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新貼文</div><button class="set-close" onclick="document.getElementById('post-overlay').classList.remove('show')">×</button></div>
@@ -505,7 +503,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 動態牆留言燈箱 -->
 <div class="modal-overlay" id="cmt-overlay" onclick="closeComments(event)">
   <div class="set-card liquid-glass-modal" style="height:75vh; max-height:600px; display:flex; flex-direction:column; padding:24px 20px;" onclick="event.stopPropagation()">
     <div class="set-h" style="margin-bottom:16px;">
@@ -520,7 +517,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 管理員後台 -->
 <div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
   <div class="m-hdr">
     <div class="c-hdr-l">
@@ -535,7 +531,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -559,7 +554,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -572,7 +566,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
@@ -584,14 +577,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn pill sec" style="flex:1;" onclick="closeCrop()">取消</button><button class="c-btn pill pri" style="flex:1;" onclick="saveCrop()">裁切</button></div>
 </div>
 
-<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -617,6 +608,7 @@ var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
 var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
 var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3;
+var lastPenSize = 3; // 🚀 新增：記憶畫筆的粗細
 var WB_WIDTH = 1000, WB_HEIGHT = 1500; 
 wbCanvas.width = WB_WIDTH; wbCanvas.height = WB_HEIGHT;
 var wbRef = null;
@@ -1350,6 +1342,7 @@ function deleteCustomGroup() {
   }
 }
 
+// 🚀 白板繪圖邏輯
 function getWbPos(e) {
   var rect = wbCanvas.getBoundingClientRect();
   var clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1375,7 +1368,7 @@ function drawWb(e) {
     db.ref('whiteboard').push({
       x0: Math.round(wbLastX), y0: Math.round(wbLastY), x1: Math.round(pos.x), y1: Math.round(pos.y),
       c: wbMode === 'eraser' ? 'eraser' : wbColor,
-      s: wbMode === 'eraser' ? 30 : wbSize
+      s: wbSize 
     });
   }
   wbLastX = pos.x; wbLastY = pos.y;
@@ -1433,16 +1426,29 @@ function clearBoard() {
   }
 }
 
+// 🚀 新增：記憶畫筆的粗細、更新滑桿
+function updateWbSize(val) {
+  wbSize = parseInt(val);
+  if(wbMode === 'pen') { lastPenSize = wbSize; }
+}
+
 function setDrawMode(mode) {
   wbMode = mode;
   var pBtn = document.getElementById('wb-pen-btn');
   var eBtn = document.getElementById('wb-eraser-btn');
+  var slider = document.getElementById('wb-size-slider');
+  
   if(mode === 'pen') {
     pBtn.style.background = 'var(--gold)'; pBtn.style.color = '#fff'; pBtn.style.borderColor = 'var(--gold)';
     eBtn.style.background = 'transparent'; eBtn.style.color = 'var(--bm)'; eBtn.style.borderColor = 'var(--gold-p)';
+    wbSize = lastPenSize;
+    slider.value = wbSize;
   } else {
+    lastPenSize = wbSize; // 切換前先記憶畫筆粗細
     eBtn.style.background = 'var(--gold)'; eBtn.style.color = '#fff'; eBtn.style.borderColor = 'var(--gold)';
     pBtn.style.background = 'transparent'; pBtn.style.color = 'var(--bm)'; pBtn.style.borderColor = 'var(--gold-p)';
+    wbSize = 20; // 橡皮擦預設比較粗
+    slider.value = wbSize;
   }
 }
 
