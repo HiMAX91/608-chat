@@ -376,7 +376,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
-<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="86" height="100" viewBox="0 0 90 100" fill="none">
@@ -403,20 +402,17 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
-<!-- 底部全域導覽列 -->
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
   <div class="tab-btn" id="tab-board" onclick="switchTab('board')"><span class="icon">🎨</span>白板</div>
 </div>
 
-<!-- 主畫面大廳 (聊天列表) -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天</div>
@@ -455,7 +451,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
-<!-- 動態牆畫面 (Feed) -->
 <div class="scr off" id="s-feed">
   <div class="m-hdr">
     <div class="m-hdr-t">動態牆</div>
@@ -464,7 +459,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
-<!-- 共用白板畫面 (Board) 向量筆跡引擎版 -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -494,7 +488,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新貼文</div><button class="set-close" onclick="document.getElementById('post-overlay').classList.remove('show')">×</button></div>
@@ -511,7 +504,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 動態牆留言燈箱 -->
 <div class="modal-overlay" id="cmt-overlay" onclick="closeComments(event)">
   <div class="set-card liquid-glass-modal" style="height:75vh; max-height:600px; display:flex; flex-direction:column; padding:24px 20px;" onclick="event.stopPropagation()">
     <div class="set-h" style="margin-bottom:16px;">
@@ -526,7 +518,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 管理員後台 -->
 <div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
   <div class="m-hdr">
     <div class="c-hdr-l">
@@ -541,7 +532,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -565,7 +555,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -578,7 +567,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
@@ -590,14 +578,12 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
-<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn pill sec" style="flex:1;" onclick="closeCrop()">取消</button><button class="c-btn pill pri" style="flex:1;" onclick="saveCrop()">裁切</button></div>
 </div>
 
-<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -618,14 +604,18 @@ var allUsers = {}, allGroups = {}, allPosts = {};
 var postMediaData = null;
 var postMediaType = '';
 var currentCommentPostId = null;
-var amIMuted = false; // 🚀 新增：全域禁言狀態變數
+var amIMuted = false; 
 
+// 🚀 向量筆跡引擎變數 (包含離線畫布)
 var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
+var tempCanvas = document.createElement('canvas'); // 隱藏畫布
+var tempCtx = tempCanvas.getContext('2d');
 var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
 var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3, lastPenSize = 3; 
 var WB_WIDTH = 1000, WB_HEIGHT = 1500; 
 wbCanvas.width = WB_WIDTH; wbCanvas.height = WB_HEIGHT;
+tempCanvas.width = WB_WIDTH; tempCanvas.height = WB_HEIGHT;
 var wbRef = null;
 var allStrokes = {}; 
 var currentPath = []; 
@@ -812,7 +802,6 @@ function openAdminPanel() {
       var avHtml = u.avatar ? `<img src="${esc(u.avatar)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">` : `<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>`;
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱'; var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
       
-      // 🚀 新增：產生禁言按鈕
       var muteBtn = '';
       if (key !== ADMIN_NAME) {
           if (u.isMuted) {
@@ -828,13 +817,12 @@ function openAdminPanel() {
   });
 }
 
-// 🚀 新增：管理員執行禁言功能
 function toggleMute(targetUser, muteState) {
   if (me !== ADMIN_NAME) return;
   var actionStr = muteState ? '禁言' : '解除禁言';
   if (confirm(`確定要對 ${targetUser} 執行「${actionStr}」嗎？`)) {
     db.ref('users/' + targetUser).update({ isMuted: muteState }, function() {
-       openAdminPanel(); // 更新後台列表畫面
+       openAdminPanel(); 
     });
   }
 }
@@ -844,14 +832,13 @@ function loadData() {
   db.ref('users').on('value', function(snap){ 
       allUsers = snap.val() || {}; 
       renderUserListUI(); 
-      checkMyMuteState(); // 🚀 即時檢查自己有沒有被禁言
+      checkMyMuteState(); 
   });
   db.ref('groups').on('value', function(snap){ allGroups = snap.val() || {}; renderUserListUI(); });
   db.ref('posts').on('value', function(snap){ allPosts = snap.val() || {}; renderFeedUI(); });
   initWhiteboardSync(); 
 }
 
-// 🚀 新增：即時監聽與套用禁言狀態
 function checkMyMuteState() {
   if (!me || !allUsers[me]) return;
   amIMuted = !!allUsers[me].isMuted;
@@ -941,7 +928,7 @@ document.getElementById('post-file').addEventListener('change', function(e){
 });
 
 function submitPost() {
-  if (amIMuted) { alert('🚫 您已被管理員禁言，無法發布貼文。'); return; } // 防護
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法發布貼文。'); return; } 
   var txt = document.getElementById('post-text').value.trim();
   if(!txt && !postMediaData) { alert('請輸入一些文字或選擇照片/影片！'); return; }
   
@@ -1060,7 +1047,7 @@ function renderComments() {
   setTimeout(() => { cList.scrollTop = cList.scrollHeight; }, 50);
 }
 function submitComment() {
-  if (amIMuted) { alert('🚫 您已被管理員禁言，無法留言。'); return; } // 防護
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法留言。'); return; }
   if(!currentCommentPostId) return;
   var input = document.getElementById('cmt-input');
   var txt = input.value.trim();
@@ -1189,7 +1176,6 @@ function getActiveChatPath() {
   return 'private_messages/' + getChatId(me, currentTarget);
 }
 
-// 更新已讀狀態
 function updateReadUI(key, d) {
   var el = document.getElementById('read-' + key);
   if (!el) return;
@@ -1296,7 +1282,7 @@ function markRcl(mw) {
 }
 
 function sendTxt(){
-  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送訊息。'); return; } // 防護
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送訊息。'); return; }
   var ta=document.getElementById('msg-ta'),txt=ta.value.trim(); if(!txt||!me)return;ta.value='';ta.style.height='auto';
   var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId}; if(replyTargetId){ m.replyId = replyTargetId; m.replyName = replyTargetName; m.replySnippet = replyTargetSnippet; }
   pushMsg(m); cancelReply();
@@ -1349,7 +1335,7 @@ document.addEventListener('click', function(e) {
 });
 
 document.getElementById('fi2').addEventListener('change',function(e){
-  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送檔案。'); this.value = ''; return; } // 防護
+  if (amIMuted) { alert('🚫 您已被管理員禁言，無法傳送檔案。'); this.value = ''; return; }
   var file=e.target.files[0]; this.value=''; if(!file||!me)return; 
   var isImg = /^image\//i.test(file.type);
   var isVid = /^video\//i.test(file.type);
@@ -1484,6 +1470,7 @@ function deleteCustomGroup() {
   }
 }
 
+// 🚀 向量筆跡引擎 (包含個人專屬圖層)
 function getWbPos(e) {
   var rect = wbCanvas.getBoundingClientRect();
   var clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1494,24 +1481,15 @@ function getWbPos(e) {
 }
 
 function startDrawWb(e) {
-  if (amIMuted) return; // 🚫 防護：禁言者無法畫畫
+  if (amIMuted) return; 
   if(e.touches && e.touches.length > 1) return; 
   e.preventDefault();
   isDrawingWb = true;
   var pos = getWbPos(e);
   
-  if(wbMode === 'pen') {
-    currentPath = [Math.round(pos.x)+','+Math.round(pos.y)];
-    wbCtx.beginPath();
-    wbCtx.moveTo(pos.x, pos.y);
-    wbCtx.lineCap = 'round';
-    wbCtx.lineJoin = 'round';
-    wbCtx.lineWidth = wbSize;
-    wbCtx.strokeStyle = wbColor;
-    wbLastX = pos.x; wbLastY = pos.y;
-  } else {
-    eraseMyStrokes(pos.x, pos.y, 30);
-  }
+  currentPath = [Math.round(pos.x)+','+Math.round(pos.y)];
+  wbLastX = pos.x; wbLastY = pos.y;
+  renderWhiteboard();
 }
 
 function drawWb(e) {
@@ -1519,23 +1497,19 @@ function drawWb(e) {
   e.preventDefault();
   var pos = getWbPos(e);
   
-  if(wbMode === 'pen') {
-    currentPath.push(Math.round(pos.x)+','+Math.round(pos.y));
-    wbCtx.lineTo(pos.x, pos.y);
-    wbCtx.stroke();
-  } else {
-    eraseMyStrokes(pos.x, pos.y, 30);
-  }
+  currentPath.push(Math.round(pos.x)+','+Math.round(pos.y));
+  wbLastX = pos.x; wbLastY = pos.y;
+  renderWhiteboard();
 }
 
 function endDrawWb(e) { 
   if(!isDrawingWb) return;
   isDrawingWb = false; 
-  if(wbMode === 'pen' && currentPath.length > 0) {
+  if(currentPath.length > 0) {
      if(db) {
        db.ref('whiteboard/strokes').push({
           a: me, 
-          c: wbColor,
+          c: wbMode === 'eraser' ? 'eraser' : wbColor,
           s: wbSize,
           p: currentPath.join('|')
        });
@@ -1556,66 +1530,61 @@ wbCanvas.addEventListener('touchcancel', endDrawWb);
 
 function renderWhiteboard() {
   wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
-  for(var key in allStrokes) {
-    var s = allStrokes[key];
-    var pts = s.p.split('|');
-    if(!pts || pts.length === 0 || !pts[0]) continue;
-    
-    wbCtx.beginPath();
-    var start = pts[0].split(',');
-    wbCtx.moveTo(parseFloat(start[0]), parseFloat(start[1]));
-    for(var i=1; i<pts.length; i++) {
-      var pt = pts[i].split(',');
-      wbCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
-    }
-    if(pts.length === 1) {
-      wbCtx.lineTo(parseFloat(start[0]) + 0.1, parseFloat(start[1]));
-    }
-    wbCtx.lineCap = 'round';
-    wbCtx.lineJoin = 'round';
-    wbCtx.lineWidth = s.s || 3;
-    wbCtx.strokeStyle = s.c || '#000';
-    wbCtx.stroke();
-  }
-  
-  if(isDrawingWb && wbMode === 'pen' && currentPath.length > 0) {
-    wbCtx.beginPath();
-    var start = currentPath[0].split(',');
-    wbCtx.moveTo(parseFloat(start[0]), parseFloat(start[1]));
-    for(var i=1; i<currentPath.length; i++) {
-      var pt = currentPath[i].split(',');
-      wbCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
-    }
-    wbCtx.lineCap = 'round';
-    wbCtx.lineJoin = 'round';
-    wbCtx.lineWidth = wbSize;
-    wbCtx.strokeStyle = wbColor;
-    wbCtx.stroke();
-  }
-}
 
-function eraseMyStrokes(ex, ey, radius) {
-  var radiusSq = radius * radius;
+  // 依據作者分類筆跡 (每個作者一張獨立透明投影片)
+  var strokesByAuthor = {};
   for(var key in allStrokes) {
     var s = allStrokes[key];
-    if(s.a === me) { 
+    if(!strokesByAuthor[s.a]) strokesByAuthor[s.a] = [];
+    strokesByAuthor[s.a].push(s);
+  }
+
+  // 如果我正在畫，把當前的筆跡暫時加入我的陣列中
+  if (isDrawingWb && currentPath.length > 0) {
+    if(!strokesByAuthor[me]) strokesByAuthor[me] = [];
+    strokesByAuthor[me].push({
+      a: me, c: wbMode === 'eraser' ? 'eraser' : wbColor, s: wbSize, p: currentPath.join('|')
+    });
+  }
+
+  // 逐一將每個作者的專屬圖層畫出來，再疊加到主畫布上
+  for(var author in strokesByAuthor) {
+    tempCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
+    var authorStrokes = strokesByAuthor[author];
+
+    authorStrokes.forEach(function(s) {
       var pts = s.p.split('|');
-      var hit = false;
-      for(var i=0; i<pts.length; i++) {
-        if(!pts[i]) continue;
+      if(!pts || pts.length === 0 || !pts[0]) return;
+
+      tempCtx.beginPath();
+      var start = pts[0].split(',');
+      tempCtx.moveTo(parseFloat(start[0]), parseFloat(start[1]));
+      for(var i=1; i<pts.length; i++) {
         var pt = pts[i].split(',');
-        var dx = parseFloat(pt[0]) - ex;
-        var dy = parseFloat(pt[1]) - ey;
-        if(dx*dx + dy*dy <= radiusSq) {
-          hit = true; break;
-        }
+        tempCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
       }
-      if(hit && db) {
-        db.ref('whiteboard/strokes/' + key).remove();
-        delete allStrokes[key]; 
-        renderWhiteboard();
+      if(pts.length === 1) {
+        tempCtx.lineTo(parseFloat(start[0]) + 0.1, parseFloat(start[1]));
       }
-    }
+
+      tempCtx.lineCap = 'round';
+      tempCtx.lineJoin = 'round';
+
+      if(s.c === 'eraser') {
+        tempCtx.globalCompositeOperation = 'destination-out';
+        tempCtx.lineWidth = s.s || 30;
+        tempCtx.strokeStyle = 'rgba(0,0,0,1)';
+      } else {
+        tempCtx.globalCompositeOperation = 'source-over';
+        tempCtx.lineWidth = s.s || 3;
+        tempCtx.strokeStyle = s.c || '#3D2C1A';
+      }
+      tempCtx.stroke();
+    });
+
+    // 將這個作者的透明投影片疊加到主畫布上
+    wbCtx.globalCompositeOperation = 'source-over';
+    wbCtx.drawImage(tempCanvas, 0, 0);
   }
 }
 
