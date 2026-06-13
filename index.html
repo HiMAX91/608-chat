@@ -373,6 +373,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
+<!-- 首頁 -->
 <div class="scr" id="s-home">
   <div class="logo-wrap">
     <svg width="86" height="100" viewBox="0 0 90 100" fill="none">
@@ -399,17 +400,20 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 步驟頁 -->
 <div class="scr off" id="s-steps">
   <div class="stp-bar"><button class="bk-btn" id="bk-btn" onclick="goBack()">←</button><div class="dots" id="dots"></div></div>
   <div class="stp-body" id="stp-body"></div>
 </div>
 
+<!-- 底部全域導覽列 -->
 <div id="bottom-nav" class="bottom-nav off">
   <div class="tab-btn active" id="tab-chat" onclick="switchTab('chat')"><span class="icon">💬</span>聊天</div>
   <div class="tab-btn" id="tab-feed" onclick="switchTab('feed')"><span class="icon">🌍</span>動態牆</div>
   <div class="tab-btn" id="tab-board" onclick="switchTab('board')"><span class="icon">🎨</span>白板</div>
 </div>
 
+<!-- 主畫面大廳 (聊天列表) -->
 <div class="scr off" id="s-main">
   <div class="m-hdr">
     <div class="m-hdr-t">聊天</div>
@@ -448,6 +452,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="usr-list-wrap" id="user-list"></div>
 </div>
 
+<!-- 動態牆畫面 (Feed) -->
 <div class="scr off" id="s-feed">
   <div class="m-hdr">
     <div class="m-hdr-t">動態牆</div>
@@ -456,6 +461,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   <div class="feed-list" id="feed-list"></div>
 </div>
 
+<!-- 共用白板畫面 (Board) 向量筆跡引擎版 -->
 <div class="scr off" id="s-board" style="align-items:stretch; padding-bottom:65px;">
   <div class="m-hdr" style="flex-direction:column; align-items:stretch; gap:10px; padding: 12px 18px; z-index: 100; height:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -485,6 +491,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 發布貼文燈箱 -->
 <div class="modal-overlay" id="post-overlay" onclick="closeCreatePost(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新貼文</div><button class="set-close" onclick="document.getElementById('post-overlay').classList.remove('show')">×</button></div>
@@ -501,6 +508,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 動態牆留言燈箱 -->
 <div class="modal-overlay" id="cmt-overlay" onclick="closeComments(event)">
   <div class="set-card liquid-glass-modal" style="height:75vh; max-height:600px; display:flex; flex-direction:column; padding:24px 20px;" onclick="event.stopPropagation()">
     <div class="set-h" style="margin-bottom:16px;">
@@ -515,6 +523,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 管理員後台 -->
 <div class="scr off" id="s-admin" style="z-index: 60; background: var(--cream); flex-direction: column; justify-content: flex-start;">
   <div class="m-hdr">
     <div class="c-hdr-l">
@@ -529,6 +538,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 聊天室 -->
 <div class="scr off" id="s-chat">
   <div class="c-hdr">
     <div class="c-hdr-l"><span class="c-bk" onclick="backToMain()">❮</span><span class="c-hdr-t" id="chat-title">608 群組</span></div>
@@ -552,6 +562,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 設置面板遮罩 -->
 <div class="modal-overlay" id="setting-overlay" onclick="closeSetting(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">個人設置</div><button class="set-close" onclick="document.getElementById('setting-overlay').classList.remove('show')">×</button></div>
@@ -564,6 +575,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 建立自訂群組燈箱 -->
 <div class="modal-overlay" id="cg-overlay" onclick="closeCg(event)">
   <div class="set-card liquid-glass-modal" onclick="event.stopPropagation()">
     <div class="set-h"><div class="set-t">建立新群組</div><button class="set-close" onclick="document.getElementById('cg-overlay').classList.remove('show')">×</button></div>
@@ -575,12 +587,14 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
   </div>
 </div>
 
+<!-- 裁切器燈箱 -->
 <div class="modal-overlay" id="crop-overlay">
   <div class="crop-box-wrap"><img id="crop-img" alt="" draggable="false"><div class="crop-mask"></div></div>
   <div class="crop-tips">雙指縮放或拖動照片調整範圍</div>
   <div class="crop-btns"><button class="c-btn pill sec" style="flex:1;" onclick="closeCrop()">取消</button><button class="c-btn pill pri" style="flex:1;" onclick="saveCrop()">裁切</button></div>
 </div>
 
+<!-- 圖片預覽燈箱 -->
 <div class="modal-overlay" id="lb" onclick="closeLb()"><img id="lb-img" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -610,9 +624,10 @@ var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3, lastPenSize = 3;
 var WB_WIDTH = 1000, WB_HEIGHT = 1500; 
 wbCanvas.width = WB_WIDTH; wbCanvas.height = WB_HEIGHT;
 var wbRef = null;
-var allStrokes = {}; // 存放所有從 Firebase 載入的筆跡
-var currentPath = []; // 暫存自己當前正在畫的筆跡
+var allStrokes = {}; 
+var currentPath = []; 
 
+// 🚀 安全跳脫函數：防止引號/特殊符號破壞 HTML 結構 (HTML Injection 修復核心)
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');}
 
 try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
@@ -726,6 +741,7 @@ function nextStep(){
   if(!v && s.id !== 'rg'){setErr('⚠️ 欄位不能空白');return;}
   
   if(s.id==='rn'){
+    // 防止特殊符號破壞 Firebase 節點鍵值
     if(/[.#$\[\]]/.test(v)) { setErr('❌ 名字不能包含 . # $ [ ] 等特殊符號'); return; }
     rName=v; 
   }
@@ -792,9 +808,9 @@ function openAdminPanel() {
     var users = snap.val(); var html = '';
     for(var key in users) {
       var u = users[key];
-      var avHtml = u.avatar ? '<img src="'+esc(u.avatar)+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">' : '<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>';
+      var avHtml = u.avatar ? `<img src="${esc(u.avatar)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">` : `<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>`;
       var emailText = u.gmail ? esc(u.gmail) : '未設定信箱'; var pwdText = u.rawPwd ? esc(u.rawPwd) : '無紀錄'; 
-      html += '<div class="admin-card">'+avHtml+'<div class="admin-info"><div class="admin-name">'+esc(key)+'</div><div class="admin-detail" style="margin-bottom:6px;">📧 '+emailText+'</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: '+pwdText+'</div></div></div>';
+      html += `<div class="admin-card">${avHtml}<div class="admin-info"><div class="admin-name">${esc(key)}</div><div class="admin-detail" style="margin-bottom:6px;">📧 ${emailText}</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: ${pwdText}</div></div></div>`;
     }
     listContainer.innerHTML = html;
   });
@@ -808,21 +824,24 @@ function loadData() {
   initWhiteboardSync(); 
 }
 
+// 🚀 安全修復：不再把名字塞進 onclick 裡面，改用 data-name 屬性安全打包
 function renderUserListUI() {
   var html = '';
-  html += '<div class="usr-row grp liquid-glass" onclick="openRoom(\'group\',\'608 班級群組\', null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>';
+  html += `<div class="usr-row grp liquid-glass" data-type="group" data-name="608 班級群組" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>`;
   html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>';
+  
   for(var gKey in allGroups) {
     var g = allGroups[gKey];
     if(g.members && g.members[me]) {
-      html += `<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" onclick="openRoom('custom_group', decodeURIComponent('${encodeURIComponent(g.name)}'), '${gKey}')"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;
+      html += `<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" data-type="custom_group" data-name="${esc(g.name)}" data-gid="${gKey}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), this.getAttribute('data-gid'))"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;
     }
   }
+  
   html += '<div class="usr-div" style="margin-top:16px;">私密聊天</div>';
   for(var key in allUsers) {
     if(key === me) continue;
     var u = allUsers[key]; var avHtml = u.avatar ? `<img src="${esc(u.avatar)}">` : `🌼`; var bioText = u.bio || '來聊天吧！';
-    html += `<div class="usr-row liquid-glass" style="margin-bottom:12px;" onclick="openRoom('pm', decodeURIComponent('${encodeURIComponent(key)}'), null)"><div class="mav">${avHtml}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;
+    html += `<div class="usr-row liquid-glass" style="margin-bottom:12px;" data-type="pm" data-name="${esc(key)}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div class="mav">${avHtml}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;
   }
   document.getElementById('user-list').innerHTML = html;
 }
@@ -914,7 +933,7 @@ function renderFeedUI() {
   } else {
     postArray.forEach(function(post) {
       var d = post.data; var id = post.id;
-      var avHtml = d.avatar ? '<img src="'+esc(d.avatar)+'" class="post-av">' : '<div class="post-av" style="display:flex;align-items:center;justify-content:center;font-size:18px;">🌼</div>';
+      var avHtml = d.avatar ? `<img src="${esc(d.avatar)}" class="post-av">` : '<div class="post-av" style="display:flex;align-items:center;justify-content:center;font-size:18px;">🌼</div>';
       var timeStr = fmtD(d.timestamp) + ' ' + fmtT(d.timestamp);
       var textHtml = d.text ? '<div class="post-text">'+esc(d.text)+'</div>' : '';
       
@@ -923,9 +942,9 @@ function renderFeedUI() {
       var mediaHtml = '';
       if(actualMediaData) {
         if(actualMediaType === 'video') {
-          mediaHtml = '<video src="'+esc(actualMediaData)+'" class="post-media" controls></video>';
+          mediaHtml = `<video src="${esc(actualMediaData)}" class="post-media" controls></video>`;
         } else {
-          mediaHtml = '<img src="'+esc(actualMediaData)+'" class="post-media post-img" onclick="openLb(this.src)">';
+          mediaHtml = `<img src="${esc(actualMediaData)}" class="post-media post-img" onclick="openLb(this.src)">`;
         }
       }
       
@@ -985,9 +1004,9 @@ function renderComments() {
   } else {
     cArray.forEach(c => {
       var d = c.data;
-      var av = d.avatar ? '<img src="'+esc(d.avatar)+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">' : '<div style="width:28px;height:28px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:12px;">🌼</div>';
+      var av = d.avatar ? `<img src="${esc(d.avatar)}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">` : '<div style="width:28px;height:28px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:12px;">🌼</div>';
       var delBtn = (d.author === me || me === ADMIN_NAME) ? `<span style="color:#C0392B;font-size:11px;cursor:pointer;margin-left:auto;" onclick="delComment('${c.id}')">刪除</span>` : '';
-      html += '<div style="display:flex; gap:10px; align-items:flex-start;">' + av + '<div style="flex:1; background:var(--bg-input); padding:10px 14px; border-radius:18px; border-top-left-radius:4px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;"><span style="font-size:13px; font-weight:700; color:var(--brown);">'+esc(d.author)+'</span><span style="font-size:10px; color:var(--bl);">'+fmtT(d.timestamp)+'</span>'+delBtn+'</div><div style="font-size:14px; color:var(--brown); word-break:break-word; line-height:1.5;">'+esc(d.text)+'</div></div></div>';
+      html += `<div style="display:flex; gap:10px; align-items:flex-start;">${av}<div style="flex:1; background:var(--bg-input); padding:10px 14px; border-radius:18px; border-top-left-radius:4px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;"><span style="font-size:13px; font-weight:700; color:var(--brown);">${esc(d.author)}</span><span style="font-size:10px; color:var(--bl);">${fmtT(d.timestamp)}</span>${delBtn}</div><div style="font-size:14px; color:var(--brown); word-break:break-word; line-height:1.5;">${esc(d.text)}</div></div></div>`;
     });
   }
   cList.innerHTML = html;
@@ -1012,7 +1031,7 @@ function openCg() {
   var html = '';
   for(var key in allUsers) {
     if(key === me) continue;
-    html += '<label style="display:flex;align-items:center;gap:12px;font-size:16px;color:var(--brown);cursor:pointer;user-select:none; padding:4px 0;"><input type="checkbox" class="cg-cb" value="'+esc(key)+'" style="width:20px;height:20px;accent-color:var(--gold);"> '+esc(key)+'</label>';
+    html += `<label style="display:flex;align-items:center;gap:12px;font-size:16px;color:var(--brown);cursor:pointer;user-select:none; padding:4px 0;"><input type="checkbox" class="cg-cb" value="${esc(key)}" style="width:20px;height:20px;accent-color:var(--gold);"> ${esc(key)}</label>`;
   }
   if(html === '') html = '<div style="font-size:13px;color:var(--bl);">目前沒有其他使用者可以邀請</div>';
   document.getElementById('cg-user-list').innerHTML = html;
@@ -1043,7 +1062,7 @@ function openRoom(type, targetName, groupId) {
   else if (type === 'pm') welcomeText = '只有你和 '+esc(targetName)+' 能看到這裡的訊息';
   else if (type === 'custom_group') welcomeText = '只有被邀請的成員能看到這個小群組';
 
-  document.getElementById('msgs').innerHTML = '<div class="wlc"><span>'+(type==='pm'?'🤫':(type==='custom_group'?'🌿':'🌻'))+'</span>歡迎來到'+(type==='pm'?'私密':'群組')+'聊天室<br><span style="color:#C8A882;font-size:12px;margin-top:4px;display:block;">'+welcomeText+'</span></div>';
+  document.getElementById('msgs').innerHTML = `<div class="wlc"><span>${type==='pm'?'🤫':(type==='custom_group'?'🌿':'🌻')}</span>歡迎來到${type==='pm'?'私密':'群組'}聊天室<br><span style="color:#C8A882;font-size:12px;margin-top:4px;display:block;">${welcomeText}</span></div>`;
   document.getElementById('chat-title').textContent = targetName; 
   
   if (type === 'custom_group') { document.getElementById('cg-del-btn').style.display = 'block'; } 
@@ -1388,7 +1407,6 @@ function startDrawWb(e) {
     wbCtx.strokeStyle = wbColor;
     wbLastX = pos.x; wbLastY = pos.y;
   } else {
-    // 橡皮擦模式：找尋並刪除自己的筆跡
     eraseMyStrokes(pos.x, pos.y, 30);
   }
 }
@@ -1413,7 +1431,7 @@ function endDrawWb(e) {
   if(wbMode === 'pen' && currentPath.length > 0) {
      if(db) {
        db.ref('whiteboard/strokes').push({
-          a: me, // 標記作者
+          a: me, 
           c: wbColor,
           s: wbSize,
           p: currentPath.join('|')
@@ -1433,7 +1451,6 @@ wbCanvas.addEventListener('touchmove', drawWb, {passive: false});
 wbCanvas.addEventListener('touchend', endDrawWb);
 wbCanvas.addEventListener('touchcancel', endDrawWb);
 
-// 渲染所有存在雲端的筆跡
 function renderWhiteboard() {
   wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
   for(var key in allStrokes) {
@@ -1448,7 +1465,6 @@ function renderWhiteboard() {
       var pt = pts[i].split(',');
       wbCtx.lineTo(parseFloat(pt[0]), parseFloat(pt[1]));
     }
-    // 處理只有一個點的情況
     if(pts.length === 1) {
       wbCtx.lineTo(parseFloat(start[0]) + 0.1, parseFloat(start[1]));
     }
@@ -1459,7 +1475,6 @@ function renderWhiteboard() {
     wbCtx.stroke();
   }
   
-  // 將自己正在畫、還沒傳上雲端的筆跡補回去
   if(isDrawingWb && wbMode === 'pen' && currentPath.length > 0) {
     wbCtx.beginPath();
     var start = currentPath[0].split(',');
@@ -1476,12 +1491,11 @@ function renderWhiteboard() {
   }
 }
 
-// 核心黑科技：偵測並擦除「自己」的筆跡
 function eraseMyStrokes(ex, ey, radius) {
   var radiusSq = radius * radius;
   for(var key in allStrokes) {
     var s = allStrokes[key];
-    if(s.a === me) { // 關鍵：只找作者是自己的線條
+    if(s.a === me) { 
       var pts = s.p.split('|');
       var hit = false;
       for(var i=0; i<pts.length; i++) {
@@ -1495,7 +1509,7 @@ function eraseMyStrokes(ex, ey, radius) {
       }
       if(hit && db) {
         db.ref('whiteboard/strokes/' + key).remove();
-        delete allStrokes[key]; // 避免重複呼叫
+        delete allStrokes[key]; 
         renderWhiteboard();
       }
     }
@@ -1544,7 +1558,7 @@ function setDrawMode(mode) {
     lastPenSize = wbSize; 
     eBtn.style.background = 'var(--gold)'; eBtn.style.color = '#fff'; eBtn.style.borderColor = 'var(--gold)';
     pBtn.style.background = 'transparent'; pBtn.style.color = 'var(--bm)'; pBtn.style.borderColor = 'var(--gold-p)';
-    wbSize = 30; // 橡皮擦預設比較大
+    wbSize = 30; 
     slider.value = wbSize;
     wbCanvas.style.cursor = 'cell';
   }
