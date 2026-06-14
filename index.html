@@ -157,6 +157,14 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .usr-arrow{color:var(--gold);font-weight:700;opacity:0.6;font-size:18px;}
 .usr-div{font-size:12px;color:var(--bl);letter-spacing:2px;font-weight:700;margin:12px 0 4px;padding-left:10px;}
 
+/* 未讀紅點樣式 */
+.red-dot {
+  position: absolute; top: -2px; right: -2px;
+  width: 12px; height: 12px; background: #E74C3C;
+  border-radius: 50%; border: 2px solid var(--cream);
+  box-shadow: 0 2px 4px rgba(231,76,60,0.4); z-index: 5;
+}
+
 /* ══ 動態牆 (Feed) ══ */
 .feed-list { flex:1; width:100%; overflow-y:auto; padding:16px 20px; display:flex; flex-direction:column; gap:20px; max-width:600px; align-self:center; }
 .feed-list::-webkit-scrollbar{width:0px}
@@ -606,10 +614,10 @@ var postMediaType = '';
 var currentCommentPostId = null;
 var amIMuted = false; 
 
-// 🚀 向量筆跡引擎變數 (包含離線畫布)
+// 向量筆跡引擎變數
 var wbCanvas = document.getElementById('whiteboard');
 var wbCtx = wbCanvas.getContext('2d');
-var tempCanvas = document.createElement('canvas'); // 隱藏畫布
+var tempCanvas = document.createElement('canvas'); 
 var tempCtx = tempCanvas.getContext('2d');
 var isDrawingWb = false, wbLastX = 0, wbLastY = 0;
 var wbMode = 'pen', wbColor = '#3D2C1A', wbSize = 3, lastPenSize = 3; 
@@ -859,14 +867,19 @@ function checkMyMuteState() {
 }
 
 function renderUserListUI() {
+  var myUnread = (allUsers[me] && allUsers[me].unread) || {};
   var html = '';
-  html += `<div class="usr-row grp liquid-glass" data-type="group" data-name="608 班級群組" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>`;
+  
+  var grpDot = myUnread['group'] ? '<div class="red-dot"></div>' : '';
+  html += `<div class="usr-row grp liquid-glass" data-type="group" data-name="608 班級群組" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div style="position:relative;"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div>${grpDot}</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div>`;
+  
   html += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>';
   
   for(var gKey in allGroups) {
     var g = allGroups[gKey];
     if(g.members && g.members[me]) {
-      html += `<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" data-type="custom_group" data-name="${esc(g.name)}" data-gid="${gKey}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), this.getAttribute('data-gid'))"><div class="mav">🌿</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;
+      var cgDot = myUnread['cg_' + gKey] ? '<div class="red-dot"></div>' : '';
+      html += `<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" data-type="custom_group" data-name="${esc(g.name)}" data-gid="${gKey}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), this.getAttribute('data-gid'))"><div style="position:relative;"><div class="mav">🌿</div>${cgDot}</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;
     }
   }
   
@@ -874,7 +887,8 @@ function renderUserListUI() {
   for(var key in allUsers) {
     if(key === me) continue;
     var u = allUsers[key]; var avHtml = u.avatar ? `<img src="${esc(u.avatar)}">` : `🌼`; var bioText = u.bio || '來聊天吧！';
-    html += `<div class="usr-row liquid-glass" style="margin-bottom:12px;" data-type="pm" data-name="${esc(key)}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div class="mav">${avHtml}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;
+    var pmDot = myUnread['pm_' + key] ? '<div class="red-dot"></div>' : '';
+    html += `<div class="usr-row liquid-glass" style="margin-bottom:12px;" data-type="pm" data-name="${esc(key)}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div style="position:relative;"><div class="mav">${avHtml}</div>${pmDot}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;
   }
   document.getElementById('user-list').innerHTML = html;
 }
@@ -1090,6 +1104,15 @@ function doCreateGroup() {
 
 function getChatId(u1, u2) { return [u1, u2].sort().join('_'); }
 
+function clearUnread() {
+  if(!db || !me) return;
+  var key = '';
+  if (currentRoom === 'group') key = 'group';
+  else if (currentRoom === 'pm') key = 'pm_' + currentTarget;
+  else if (currentRoom === 'custom_group') key = 'cg_' + currentGroupId;
+  if (key) db.ref('users/' + me + '/unread/' + key).remove();
+}
+
 function openRoom(type, targetName, groupId) {
   currentRoom = type; currentTarget = targetName; currentGroupId = groupId; shownKeys = {}; lastDate = null;
   var welcomeText = '';
@@ -1106,7 +1129,10 @@ function openRoom(type, targetName, groupId) {
   var ta = document.getElementById('msg-ta');
   if(ta) { ta.value = ''; ta.style.height = 'auto'; }
   
-  show('s-chat'); startListen(); cancelReply(); toggleGif(false);
+  show('s-chat'); 
+  clearUnread(); 
+  startListen(); 
+  cancelReply(); toggleGif(false);
 }
 
 function backToMain() { if (currentChatRef) { currentChatRef.off(); } show('s-main'); }
@@ -1180,6 +1206,7 @@ function updateReadUI(key, d) {
   var el = document.getElementById('read-' + key);
   if (!el) return;
   var self = (d.name === me) && (!d.deviceId || d.deviceId === myId);
+  
   if (!self || d.recalled || d.type === 'system' || d.name === '__system__') { 
     el.textContent = ''; return; 
   }
@@ -1225,6 +1252,8 @@ function startListen(){
       db.ref(path + '/' + k + '/reads/' + me).set(true);
     }
 
+    clearUnread(); 
+
     d.name==='__system__'?addSys(d.text):addBubble(d,k); 
     updateReadUI(k, d); 
   });
@@ -1239,16 +1268,36 @@ function startListen(){
   });
 }
 
+function triggerUnread() {
+  if(!db) return;
+  if (currentRoom === 'group') {
+    for(var u in allUsers) {
+      if (u !== me) db.ref('users/' + u + '/unread/group').set(true);
+    }
+  } else if (currentRoom === 'pm') {
+    db.ref('users/' + currentTarget + '/unread/pm_' + me).set(true);
+  } else if (currentRoom === 'custom_group') {
+    var g = allGroups[currentGroupId];
+    if (g && g.members) {
+      for (var m in g.members) {
+        if (m !== me) db.ref('users/' + m + '/unread/cg_' + currentGroupId).set(true);
+      }
+    }
+  }
+}
+
 function pushMsg(obj){ 
   if(!db)return;
   var path = getActiveChatPath();
   var nr = db.ref(path).push(); 
   obj.timestamp=firebase.database.ServerValue.TIMESTAMP; nr.set(obj); 
+  triggerUnread(); 
 }
 function sysMsg(t){ 
   if(!db)return;
   var path = getActiveChatPath();
   var nr=db.ref(path).push(); nr.set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});
+  triggerUnread();
 }
 
 function initReply(msgKey, name, snippet) {
@@ -1470,7 +1519,6 @@ function deleteCustomGroup() {
   }
 }
 
-// 🚀 向量筆跡引擎 (包含個人專屬圖層)
 function getWbPos(e) {
   var rect = wbCanvas.getBoundingClientRect();
   var clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1531,7 +1579,6 @@ wbCanvas.addEventListener('touchcancel', endDrawWb);
 function renderWhiteboard() {
   wbCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
 
-  // 依據作者分類筆跡 (每個作者一張獨立透明投影片)
   var strokesByAuthor = {};
   for(var key in allStrokes) {
     var s = allStrokes[key];
@@ -1539,7 +1586,6 @@ function renderWhiteboard() {
     strokesByAuthor[s.a].push(s);
   }
 
-  // 如果我正在畫，把當前的筆跡暫時加入我的陣列中
   if (isDrawingWb && currentPath.length > 0) {
     if(!strokesByAuthor[me]) strokesByAuthor[me] = [];
     strokesByAuthor[me].push({
@@ -1547,7 +1593,6 @@ function renderWhiteboard() {
     });
   }
 
-  // 逐一將每個作者的專屬圖層畫出來，再疊加到主畫布上
   for(var author in strokesByAuthor) {
     tempCtx.clearRect(0, 0, WB_WIDTH, WB_HEIGHT);
     var authorStrokes = strokesByAuthor[author];
@@ -1582,7 +1627,6 @@ function renderWhiteboard() {
       tempCtx.stroke();
     });
 
-    // 將這個作者的透明投影片疊加到主畫布上
     wbCtx.globalCompositeOperation = 'source-over';
     wbCtx.drawImage(tempCanvas, 0, 0);
   }
