@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="蒲公英">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-/* CSS 與你原本的完全一致 */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{--cream:#FDFAF2;--gold:#D4A017;--gold-l:#E8B84B;--gold-p:rgba(212,160,23,0.08);--brown:#3D2C1A;--bm:#7A5C3A;--bl:#C8A882;--sh:rgba(61,44,26,0.1);--bg-card:rgba(255,255,255,0.85);--bg-input:rgba(255,255,255,0.7);--bg-input-f:rgba(255,255,255,0.95);--bg-hdr:rgba(253,250,242,0.85);--bbl-other:#FFFFFF;--bbl-self:#FFF8DC;--glass-border:1px solid rgba(255,255,255,0.6);--glass-blur:blur(16px);--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-smooth:cubic-bezier(0.25,0.8,0.25,1);}
 [data-theme="dark"]{--cream:#1F160E;--gold:#E8B84B;--gold-l:#F5D382;--gold-p:rgba(212,160,23,0.15);--brown:#F5EFEB;--bm:#D1BAA3;--bl:#A38563;--sh:rgba(0,0,0,0.4);--bg-card:rgba(43,31,20,0.85);--bg-input:rgba(61,44,26,0.6);--bg-input-f:rgba(77,56,34,0.8);--bg-hdr:rgba(31,22,14,0.85);--bbl-other:#2D1F14;--bbl-self:#4A3622;--glass-border:1px solid rgba(212,160,23,0.15);}
@@ -95,6 +94,8 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .red-dot{position:absolute;top:-2px;right:-2px;width:12px;height:12px;background:#E74C3C;border-radius:50%;border:2px solid var(--cream);box-shadow:0 2px 4px rgba(231,76,60,0.4);z-index:5;}
 .feed-list{flex:1;width:100%;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:20px;max-width:600px;align-self:center;}
 .feed-list::-webkit-scrollbar{width:0px}
+
+/* 🚀 已修復：貼文防壓縮與內建滑動 */
 .post-card{flex-shrink:0;display:flex;flex-direction:column;border-radius:24px;padding:18px;animation:popInMessage .5s var(--ease-spring) both;background:var(--bg-card);border:1px solid rgba(212,160,23,.15);box-shadow:0 6px 20px var(--sh);overflow:hidden;}
 .post-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
 .post-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,160,23,.2);background:var(--gold-p);}
@@ -104,6 +105,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 .post-text{font-size:15px;line-height:1.6;color:var(--brown);margin-bottom:12px;word-break:break-all;overflow-wrap:anywhere;max-height:200px;overflow-y:auto;padding-right:6px;}
 .post-text::-webkit-scrollbar{width:4px;}
 .post-text::-webkit-scrollbar-thumb{background:rgba(212,160,23,0.2);border-radius:4px;}
+
 .post-media{width:100%;max-height:350px;object-fit:cover;border-radius:16px;margin-bottom:12px;border:1px solid rgba(212,160,23,.1);background:#000;}
 .post-img{cursor:zoom-in;transition:transform .2s;}
 .post-img:active{transform:scale(0.98);}
@@ -221,11 +223,14 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 #lb{z-index:999;background:rgba(0,0,0,.85);cursor:zoom-out;}
 #lb img{max-width:92vw;max-height:92vh;border-radius:20px;transform:scale(0.85);opacity:0;transition:all .4s var(--ease-spring);box-shadow:0 20px 60px rgba(0,0,0,.6);}
 #lb.show img{transform:scale(1);opacity:1;}
+
+/* 🚀 橫向模式防呆遮罩 */
 #landscape-warning{display:none;position:fixed;inset:0;background:var(--bg-card);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);z-index:99999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
 @media screen and (max-width:800px) and (orientation:landscape){
   #landscape-warning{display:flex;}
   body > *:not(#landscape-warning):not(audio){display:none !important;}
 }
+
 @media(max-height:800px),(max-width:900px){
 #s-home{padding:15px;gap:15px;}.big-title{font-size:44px;}.logo-wrap{transform:scale(0.9);}.main-hero{padding:15px 20px 5px;}.main-hero-t{font-size:20px;margin-top:8px;}.usr-list-wrap,.feed-list{gap:14px;padding-bottom:10px;}.c-hdr{padding:12px 18px;}.inp-area{padding:10px 20px 18px;}.msgs{padding:16px 20px;}
 }
@@ -241,6 +246,7 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 <div id="seeds"></div>
 <audio id="bg-music" loop preload="auto"><source src="Summer.mp3" type="audio/mpeg"></audio>
 
+<!-- 🚀 橫向模式提示畫面 -->
 <div id="landscape-warning">
   <div style="font-size: 50px; margin-bottom: 16px; animation: sway 2s infinite;">📱🔄</div>
   <div class="m-hdr-t" style="margin-bottom: 12px;">請將手機轉為直向</div>
@@ -396,7 +402,6 @@ html,body{height:100%;overflow:hidden;background:var(--cream);font-family:'Noto 
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
 <script>
 var FB={apiKey:"AIzaSyDtFTDggUZSZgTx55CxJL8zzJmvk-_knlI",authDomain:"dandelion-chat-fd524.firebaseapp.com",databaseURL:"https://dandelion-chat-fd524-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"dandelion-chat-fd524",storageBucket:"dandelion-chat-fd524.firebasestorage.app",messagingSenderId:"825170651326",appId:"1:825170651326:web:03e3e5b995028e27d7d6ef"};
 var CLASS_CODE="608", ADMIN_NAME="洪祥祐"; 
@@ -409,9 +414,6 @@ var imgX=0, imgY=0, imgScale=1, startX=0, startY=0, startDist=0, isDragging=fals
 var allUsers = {}, allGroups = {}, allPosts = {};
 var postMediaData = null, postMediaType = '', currentCommentPostId = null, amIMuted = false; 
 
-// Firebase 訊息服務初始化
-let messaging = null;
-
 // 白板全域變數
 var wbCanvas = document.getElementById('whiteboard'), wbCtx = wbCanvas.getContext('2d');
 var tempCanvas = document.createElement('canvas'), tempCtx = tempCanvas.getContext('2d');
@@ -422,30 +424,193 @@ tempCanvas.width = WB_WIDTH; tempCanvas.height = WB_HEIGHT;
 var wbRef = null, allStrokes = {}, currentPath = [], renderPending = false; 
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');}
+try{firebase.initializeApp(FB);db=firebase.database();}catch(e){console.warn(e);}
 
-// 初始化 Firebase
-try{
-    firebase.initializeApp(FB);
-    db=firebase.database();
-    if (firebase.messaging.isSupported()) {
-        messaging = firebase.messaging();
-    }
-}catch(e){console.warn(e);}
-
-// 通知請求函式 (綁定到按鈕或自動執行)
-function requestNotificationPermission() {
-    if (!messaging) return;
-    Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-            // 請將這裡的 VAPID Key 換成你的
-            messaging.getToken({ vapidKey: 'YOUR_VAPID_KEY_HERE' }).then((token) => {
-                console.log('FCM Token:', token);
-            }).catch(e => console.warn(e));
-        }
-    });
+function toggleMusic(play) {
+  isMusicEnabled = play; var audio = document.getElementById('bg-music'); if(!audio) return;
+  if(play) { audio.volume=0.5; var p=audio.play(); if(p!==undefined){p.then(()=> {document.getElementById('m-on').classList.add('active');document.getElementById('m-off').classList.remove('active');}).catch(e=>{});} }
+  else { audio.pause(); document.getElementById('m-on').classList.remove('active'); document.getElementById('m-off').classList.add('active'); }
 }
 
-// === 核心邏輯區塊：聊天室與通知 ===
+document.addEventListener('visibilitychange', function() { var audio = document.getElementById('bg-music'); if(!audio) return; if(document.hidden) audio.pause(); else if(isMusicEnabled) audio.play().catch(e=>{}); });
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t); localStorage.setItem('dandelion_theme',t);
+  if(t==='light'){document.getElementById('t-light').classList.add('active');document.getElementById('t-dark').classList.remove('active');} 
+  else {document.getElementById('t-light').classList.remove('active');document.getElementById('t-dark').classList.add('active');}
+}
+
+function openSetting(){document.getElementById('set-bio').value=myBio||'';document.getElementById('set-pwd').value='';if(myAv){document.getElementById('set-av-img').src=myAv;document.getElementById('set-av-img').style.display='block';}document.getElementById('setting-overlay').classList.add('show');}
+function closeSetting(e){if(e.target.id==='setting-overlay')document.getElementById('setting-overlay').classList.remove('show');}
+
+window.addEventListener('DOMContentLoaded', function(){
+  setTheme(localStorage.getItem('dandelion_theme')||'light'); document.getElementById('m-on').classList.add('active');
+  window.addEventListener('touchstart', function autoPlay(){toggleMusic(true);window.removeEventListener('touchstart', autoPlay);},{passive:true});
+  var c=document.getElementById('seeds');
+  for(var i=0;i<16;i++){var s=document.createElement('div');s.className='seed';var z=Math.random()*12+8;s.style.cssText='left:'+(Math.random()*100)+'%;--dx:'+((Math.random()-.5)*120)+'px;animation-duration:'+(Math.random()*12+10)+'s;animation-delay:'+(Math.random()*18)+'s;';s.innerHTML='<svg width="'+z+'" height="'+(z*2)+'" viewBox="0 0 14 28" fill="none"><line x1="7" y1="28" x2="7" y2="12" stroke="#D4A017" opacity=".7"/><line x1="7" y1="12" x2="13" y2="4" stroke="#D4A017" opacity=".5"/><circle cx="7" cy="12" r="2.5" fill="#E8B84B" opacity=".8"/></svg>';c.appendChild(s);}
+  try{var autoName=localStorage.getItem('dandelion_me'),autoId=localStorage.getItem('dandelion_id');if(autoName&&autoId&&db){db.ref('users/'+autoName).once('value',function(snap){try{var d=snap.val();if(d&&d.identity===autoId){myBio=d.bio||'';rAv=d.avatar||'';myPwdRaw=d.rawPwd||'';enterApp(autoName,autoId,rAv);}}catch(err){}});}}catch(e){}
+  initGifPanel();
+});
+
+function handleHomeFlow(targetFlow){toggleMusic(true);startFlow(targetFlow);}
+document.getElementById('btn-reg').addEventListener('click',function(e){e.preventDefault();handleHomeFlow('register');});
+document.getElementById('btn-log').addEventListener('click',function(e){e.preventDefault();handleHomeFlow('login');});
+document.getElementById('btn-open-set').addEventListener('click',function(e){e.preventDefault();openSetting();});
+
+function show(id){['s-home','s-steps','s-chat','s-main','s-admin','s-feed','s-board'].forEach(function(s){var el=document.getElementById(s);if(el)el.classList[s===id?'remove':'add']('off');});var bnav=document.getElementById('bottom-nav');if(id==='s-main'||id==='s-feed'||id==='s-board'){bnav.classList.remove('off');}else{bnav.classList.add('off');}}
+function switchTab(tab){document.getElementById('tab-chat').classList.remove('active');document.getElementById('tab-feed').classList.remove('active');document.getElementById('tab-board').classList.remove('active');document.getElementById('tab-'+tab).classList.add('active');if(tab==='chat')show('s-main');else if(tab==='feed')show('s-feed');else if(tab==='board')show('s-board');}
+
+var REG=[{lbl:'1 / 5',ttl:'選一張大頭貼',hint:'點擊圖示裁切範圍 📷',type:'avatar'},{lbl:'2 / 5',ttl:'你的名字',hint:'請填入真實姓名',type:'text',id:'rn',ph:'輸入姓名',it:'text'},{lbl:'3 / 5',ttl:'Gmail 信箱 (選填)',hint:'沒有信箱可以直接按箭頭跳過喔！',type:'text',id:'rg',ph:'選填，可留空',it:'email'},{lbl:'4 / 5',ttl:'設定個人密碼',hint:'請記牢密碼！',type:'text',id:'rp',ph:'設定個人密碼',it:'password'},{lbl:'5 / 5',ttl:'班級密碼',hint:'輸入班級密碼 🌼',type:'text',id:'rc',ph:'輸入班級密碼',it:'password'}];
+var LOG=[{lbl:'1 / 3',ttl:'你的名字',hint:'輸入註冊時的名字',type:'text',id:'ln',ph:'你的真實姓名',it:'text'},{lbl:'2 / 3',ttl:'個人密碼',hint:'輸入設定的個人密碼',type:'text',id:'lp',ph:'個人密碼',it:'password'},{lbl:'3 / 3',ttl:'班級密碼',hint:'輸入班級密碼',type:'text',id:'lc',ph:'班級密碼',it:'password'}];
+function steps(){return flow==='register'?REG:LOG;}
+function startFlow(f){flow=f;rAv='';rName='';rGmail='';rPwd='';lName='';lPwd='';stepIdx=0;show('s-steps');renderStep(0,false);}
+
+function renderStep(idx,back){
+  stepIdx=idx;var ss=steps(),s=ss[idx];var d=document.getElementById('dots');d.innerHTML='';
+  ss.forEach(function(_,i){var el=document.createElement('div');el.className='dot'+(i===idx?' on':'');d.appendChild(el);});
+  document.getElementById('bk-btn').style.visibility=idx===0?'hidden':'visible';
+  var body='';
+  if(s.type==='avatar'){body='<div class="av-zone"><div class="av-btn" id="avb" onclick="document.getElementById(\'av-file\').click()"><img id="av-img" alt=""><span class="av-cam" id="av-cam">📷</span><span class="av-lbl" id="av-lbl">點我選照片</span></div><input type="file" id="av-file" accept="image/*"></div>';}
+  else{var sv={'rn':rName,'rg':rGmail,'rp':rPwd,'rc':'','ln':lName,'lp':lPwd,'lc':''}[s.id]||'';body='<input class="fi" id="sf" type="'+s.it+'" placeholder="'+s.ph+'" value="'+esc(sv)+'" autocomplete="off">';}
+  body+='<div class="ferr" id="ferr"></div><div class="nr"><button class="nb" id="nb" onclick="nextStep()"><svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg></button></div>';
+  document.getElementById('stp-body').innerHTML='<div class="card'+(back?' rev':'')+'"><div class="c-lbl">'+s.lbl+'</div><div class="c-ttl">'+s.ttl+'</div><div class="c-hint">'+s.hint+'</div>'+body+'</div>';
+  if(s.type==='avatar'){
+    if(rAv){var i=document.getElementById('av-img');i.src=rAv;i.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';}
+    document.getElementById('av-file').addEventListener('change',function(e){var f=e.target.files[0];this.value='';if(!f)return;var r=new FileReader();r.onload=function(ev){initCrop(ev.target.result,function(c){rAv=c;var el=document.getElementById('av-img');el.src=rAv;el.style.display='block';document.getElementById('av-cam').style.display='none';document.getElementById('av-lbl').style.display='none';});};r.readAsDataURL(f);});
+  }else{setTimeout(function(){var f=document.getElementById('sf');if(f){f.focus();f.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();nextStep();}});}},80);}
+}
+
+function setErr(m){var e=document.getElementById('ferr');if(e)e.textContent=m;}
+function goBack(){if(stepIdx===0){show('s-home');return;}renderStep(stepIdx-1,true);}
+function mkId(n,p){var s=n+'|'+p,h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);h=h>>>0;}return'id_'+h.toString(36);}
+
+function nextStep(){
+  var ss=steps(),s=ss[stepIdx];setErr('');
+  if(s.type==='avatar'){stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();return;}
+  var v=(document.getElementById('sf')||{}).value||'';v=v.trim();
+  if(!v && s.id !== 'rg'){setErr('⚠️ 欄位不能空白');return;}
+  if(s.id==='rn'){if(/[.#$\[\]]/.test(v)){setErr('❌ 名字不能包含特殊符號');return;}rName=v;}
+  else if(s.id==='rg'){if(v&&!v.endsWith('@gmail.com')){setErr('❌ 請填寫正確的 Gmail');return;}rGmail=v;} 
+  else if(s.id==='rp')rPwd=v; 
+  else if(s.id==='rc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  else if(s.id==='ln')lName=v; 
+  else if(s.id==='lp')lPwd=v; 
+  else if(s.id==='lc'){if(v!==CLASS_CODE){setErr('❌ 密碼錯誤');return;}}
+  stepIdx+1<ss.length?renderStep(stepIdx+1,false):doAuth();
+}
+
+function doAuth(){
+  var nb=document.getElementById('nb');if(nb){nb.disabled=true;nb.innerHTML='…';}
+  if(flow==='register'){
+    var id=mkId(rName,rPwd);
+    db.ref('users/'+rName).once('value',function(snap){if(snap.val()){renderStep(1,true);setTimeout(function(){setErr('❌ 名字已被使用');},100);return;}db.ref('users/'+rName).set({identity:id,avatar:rAv,gmail:rGmail,bio:'',rawPwd:rPwd});myPwdRaw=rPwd;enterApp(rName,id,rAv,true);});
+  }else{
+    var id2=mkId(lName,lPwd);
+    db.ref('users/'+lName).once('value',function(snap){var d=snap.val();if(!d){setErr('❌ 帳號不存在');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}if(d.identity!==id2){setErr('❌ 密碼錯誤');if(nb){nb.disabled=false;nb.innerHTML='→';}return;}if(d.avatar){rAv=d.avatar;}myBio=d.bio||'';myPwdRaw=d.rawPwd||lPwd;enterApp(lName,id2,d.avatar||'',false);});
+  }
+}
+
+function enterApp(name,id,av,isNew){
+  me=name;myId=id;myAv=av;localStorage.setItem('dandelion_me',name);localStorage.setItem('dandelion_id',id);
+  document.getElementById('hname').textContent=name;document.getElementById('hbio-sub').textContent=myBio||'查看設置...';
+  if(av){var i=document.getElementById('hav-img');i.src=av;i.style.display='block';}
+  if(name===ADMIN_NAME){document.getElementById('admin-btn-wrap').style.display='block';var btnClearWb=document.getElementById('btn-clear-wb');if(btnClearWb)btnClearWb.style.display='block';}else{document.getElementById('admin-btn-wrap').style.display='none';var btnClearWb=document.getElementById('btn-clear-wb');if(btnClearWb)btnClearWb.style.display='none';}
+  if(isNew&&db){db.ref('messages').push().set({name:'__system__',type:'system',text:name+' 加入了蒲公英 🌼',timestamp:firebase.database.ServerValue.TIMESTAMP});}
+  switchTab('chat');loadData();
+}
+
+function openAdminPanel(){
+  if(me!==ADMIN_NAME){alert('你沒有權限！');return;} show('s-admin');
+  var list=document.getElementById('admin-user-list'); list.innerHTML='<div style="text-align:center;padding:20px;">讀取中...</div>';
+  db.ref('users').once('value',function(snap){var users=snap.val();var html='';for(var key in users){var u=users[key];var avHtml=u.avatar?`<img src="${esc(u.avatar)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">`:`<div style="width:44px;height:44px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;">🌼</div>`;var email=u.gmail?esc(u.gmail):'未設定信箱';var pwd=u.rawPwd?esc(u.rawPwd):'無紀錄';var muteBtn='';if(key!==ADMIN_NAME){muteBtn=u.isMuted?`<button class="pill" style="padding:4px 12px;font-size:11px;background:#C0392B;color:#fff;border:none;margin-top:6px;" onclick="toggleMute('${esc(key)}',false)">解除禁言</button>`:`<button class="pill" style="padding:4px 12px;font-size:11px;background:transparent;border:1px solid #C0392B;color:#C0392B;margin-top:6px;" onclick="toggleMute('${esc(key)}',true)">🚫 禁言</button>`;}html+=`<div class="admin-card">${avHtml}<div class="admin-info"><div class="admin-name">${esc(key)}</div><div class="admin-detail" style="margin-bottom:6px;">📧 ${email}</div><div class="admin-detail" style="color:#C0392B;">🔑 密碼: ${pwd}</div><div style="text-align:right;">${muteBtn}</div></div></div>`;}list.innerHTML=html;});
+}
+
+function toggleMute(usr,state){if(me!==ADMIN_NAME)return;if(confirm(`確定對 ${usr} 執行${state?'禁言':'解除禁言'}？`)){db.ref('users/'+usr).update({isMuted:state},function(){openAdminPanel();});}}
+
+function loadData(){if(!db)return;db.ref('users').on('value',function(snap){allUsers=snap.val()||{};renderUserListUI();checkMyMuteState();});db.ref('groups').on('value',function(snap){allGroups=snap.val()||{};renderUserListUI();});db.ref('posts').on('value',function(snap){allPosts=snap.val()||{};renderFeedUI();});initWhiteboardSync();}
+
+function checkMyMuteState(){
+  if(!me||!allUsers[me])return; amIMuted=!!allUsers[me].isMuted;
+  var ta=document.getElementById('msg-ta'),sndBtn=document.getElementById('snd-btn'),gifBtn=document.getElementById('btn-gif');
+  if(amIMuted){if(ta){ta.disabled=true;ta.placeholder='🚫 您目前已被管理員禁言';}if(sndBtn){sndBtn.style.opacity='0.5';sndBtn.style.pointerEvents='none';}if(gifBtn){gifBtn.style.opacity='0.5';gifBtn.style.pointerEvents='none';}}else{if(ta){ta.disabled=false;ta.placeholder='說點什麼吧…';}if(sndBtn){sndBtn.style.opacity='1';sndBtn.style.pointerEvents='auto';}if(gifBtn){gifBtn.style.opacity='1';gifBtn.style.pointerEvents='auto';}}
+}
+
+function renderUserListUI(){
+  var myUnread=(allUsers[me]&&allUsers[me].unread)||{}; var html='';
+  var grpDot=myUnread['group']?'<div class="red-dot"></div>':'';
+  html+=`<div class="usr-row grp liquid-glass" data-type="group" data-name="608 班級群組" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div style="position:relative;"><div class="mav" style="font-size:18px;border:none;background:transparent;">🌻</div>${grpDot}</div><div class="usr-info"><div class="usr-name">608 班級群組</div><div class="usr-sub">大家的聊天室</div></div><div class="usr-arrow">❯</div></div><div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;padding:0 10px;"><div class="usr-div" style="margin:0;padding:0;">我的群組</div><button style="background:none;border:none;color:var(--gold);font-weight:700;cursor:pointer;font-size:13px;letter-spacing:1px;" onclick="openCg()">+ 建立群組</button></div>`;
+  for(var gKey in allGroups){var g=allGroups[gKey];if(g.members&&g.members[me]){var cgDot=myUnread['cg_'+gKey]?'<div class="red-dot"></div>':'';html+=`<div class="usr-row liquid-glass" style="border-color:var(--gold-l); margin-bottom:12px;" data-type="custom_group" data-name="${esc(g.name)}" data-gid="${gKey}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), this.getAttribute('data-gid'))"><div style="position:relative;"><div class="mav">🌿</div>${cgDot}</div><div class="usr-info"><div class="usr-name">${esc(g.name)}</div><div class="usr-sub">專屬群組</div></div><div class="usr-arrow">❯</div></div>`;}}
+  html+='<div class="usr-div" style="margin-top:16px;">私密聊天</div>';
+  for(var key in allUsers){if(key===me)continue;var u=allUsers[key];var avHtml=u.avatar?`<img src="${esc(u.avatar)}">`:`🌼`;var bioText=u.bio||'來聊天吧！';var pmDot=myUnread['pm_'+key]?'<div class="red-dot"></div>':'';html+=`<div class="usr-row liquid-glass" style="margin-bottom:12px;" data-type="pm" data-name="${esc(key)}" onclick="openRoom(this.getAttribute('data-type'), this.getAttribute('data-name'), null)"><div style="position:relative;"><div class="mav">${avHtml}</div>${pmDot}</div><div class="usr-info"><div class="usr-name">${esc(key)}</div><div class="usr-sub">${esc(bioText)}</div></div><div class="usr-arrow">❯</div></div>`;}
+  document.getElementById('user-list').innerHTML=html;
+}
+
+function openCreatePost(){document.getElementById('post-text').value='';document.getElementById('post-img-preview').style.display='none';var vid=document.getElementById('post-vid-preview');vid.pause();vid.src='';vid.style.display='none';postMediaData=null;postMediaType='';document.getElementById('post-overlay').classList.add('show');}
+function closeCreatePost(e){if(!e||e.target.id==='post-overlay')document.getElementById('post-overlay').classList.remove('show');}
+
+document.getElementById('post-file').addEventListener('change',function(e){
+  var file=e.target.files[0];this.value='';if(!file)return;var isVid=/^video\//i.test(file.type),isImg=/^image\//i.test(file.type);
+  if(!isImg&&!isVid){alert('只能上傳照片/影片！');return;}if(isVid&&file.size>8*1024*1024){alert('影片勿超過 8MB！');return;}
+  var reader=new FileReader();reader.onload=function(ev){if(isVid){postMediaType='video';postMediaData=ev.target.result;document.getElementById('post-img-preview').style.display='none';var vid=document.getElementById('post-vid-preview');vid.src=postMediaData;vid.style.display='block';}else if(file.type==='image/gif'){postMediaType='image';postMediaData=ev.target.result;document.getElementById('post-vid-preview').style.display='none';document.getElementById('post-img-preview').src=postMediaData;document.getElementById('post-img-preview').style.display='block';}else{var img=new Image();img.onload=function(){var cv=document.createElement('canvas');var MP=1080;var w=img.width,h=img.height;if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);postMediaType='image';postMediaData=cv.toDataURL('image/jpeg',0.85);document.getElementById('post-vid-preview').style.display='none';document.getElementById('post-img-preview').src=postMediaData;document.getElementById('post-img-preview').style.display='block';};img.src=ev.target.result;}};reader.readAsDataURL(file);
+});
+
+function submitPost(){if(amIMuted){alert('🚫 禁言中');return;}var txt=document.getElementById('post-text').value.trim();if(!txt&&!postMediaData){alert('請輸入文字或選擇照片');return;}var btn=document.getElementById('post-submit-btn');btn.disabled=true;btn.innerHTML='發佈中...';db.ref('posts').push().set({author:me,avatar:myAv,text:txt,mediaType:postMediaType,mediaData:postMediaData||'',timestamp:firebase.database.ServerValue.TIMESTAMP},function(error){btn.disabled=false;btn.innerHTML='發 佈';if(error)alert('失敗');else closeCreatePost();});}
+function toggleLike(postId){if(!db||!me)return;var r=db.ref('posts/'+postId+'/likes/'+me);r.once('value',function(s){if(s.exists())r.remove();else r.set(true);});}
+function deletePost(postId){if(confirm('刪除這篇？'))db.ref('posts/'+postId).remove();}
+
+function renderFeedUI(){
+  var container=document.getElementById('feed-list');var html='';var arr=[];for(var k in allPosts)arr.push({id:k,data:allPosts[k]});arr.sort((a,b)=>(b.data.timestamp||0)-(a.data.timestamp||0));
+  if(arr.length===0){html='<div style="text-align:center;padding:40px 20px;color:var(--bl);font-size:14px;">沒有貼文🌿</div>';}
+  else{arr.forEach(function(p){var d=p.data,id=p.id,avH=d.avatar?`<img src="${esc(d.avatar)}" class="post-av">`:'<div class="post-av" style="display:flex;align-items:center;justify-content:center;">🌼</div>',ts=fmtD(d.timestamp)+' '+fmtT(d.timestamp),txtH=d.text?`<div class="post-text">${esc(d.text)}</div>`:'',md=d.mediaData||d.image||'',mt=d.mediaType||(d.image?'image':''),mdH='';if(md){if(mt==='video')mdH=`<video src="${esc(md)}" class="post-media" controls></video>`;else mdH=`<img src="${esc(md)}" class="post-media post-img" onclick="openLb(this.src)">`;}var lkC=d.likes?Object.keys(d.likes).length:0,isL=d.likes&&d.likes[me],lkCls=isL?'like-btn liked':'like-btn',lkI=isL?'❤️':'🤍',dlH=(d.author===me||me===ADMIN_NAME)?`<button class="del-post-btn" onclick="deletePost('${id}')">刪除</button>`:'<div></div>',cmC=d.comments?Object.keys(d.comments).length:0,cmB=`<button class="like-btn" onclick="openComments('${id}')">💬 ${cmC>0?cmC:'留言'}</button>`;html+=`<div class="post-card"><div class="post-hdr">${avH}<div class="post-info"><div class="post-name">${esc(d.author)}</div><div class="post-time">${ts}</div></div></div>${txtH}${mdH}<div class="post-ftr"><div style="display:flex;gap:10px;"><button class="${lkCls}" onclick="toggleLike('${id}')"><span class="heart">${lkI}</span> ${lkC>0?lkC:'讚'}</button>${cmB}</div>${dlH}</div></div>`;});}
+  container.innerHTML=html;if(currentCommentPostId)renderComments();
+}
+
+function openComments(id){currentCommentPostId=id;document.getElementById('cmt-input').value='';renderComments();document.getElementById('cmt-overlay').classList.add('show');}
+function closeComments(e){if(!e||e.target.id==='cmt-overlay'){document.getElementById('cmt-overlay').classList.remove('show');currentCommentPostId=null;}}
+function renderComments(){
+  if(!currentCommentPostId||!allPosts[currentCommentPostId])return;
+  var cList=document.getElementById('cmt-list'),post=allPosts[currentCommentPostId],coms=post.comments||{},html='',arr=[];
+  for(var k in coms)arr.push({id:k,data:coms[k]});arr.sort((a,b)=>(a.data.timestamp||0)-(b.data.timestamp||0));
+  if(arr.length===0){html='<div style="text-align:center;color:var(--bl);font-size:13px;margin-top:20px;">無留言</div>';}
+  else{arr.forEach(c=>{var d=c.data,av=d.avatar?`<img src="${esc(d.avatar)}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">`:'<div style="width:28px;height:28px;border-radius:50%;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:12px;">🌼</div>',dlB=(d.author===me||me===ADMIN_NAME)?`<span style="color:#C0392B;font-size:11px;cursor:pointer;margin-left:auto;" onclick="delComment('${c.id}')">刪除</span>`:'';html+=`<div style="display:flex;gap:10px;align-items:flex-start;">${av}<div style="flex:1;background:var(--bg-input);padding:10px 14px;border-radius:18px;border-top-left-radius:4px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:13px;font-weight:700;color:var(--brown);">${esc(d.author)}</span><span style="font-size:10px;color:var(--bl);">${fmtT(d.timestamp)}</span>${dlB}</div><div style="font-size:14px;color:var(--brown);word-break:break-word;line-height:1.5;">${esc(d.text)}</div></div></div>`;});}
+  cList.innerHTML=html;setTimeout(()=>{cList.scrollTop=cList.scrollHeight;},50);
+}
+function submitComment(){if(amIMuted){alert('🚫 禁言中');return;}if(!currentCommentPostId)return;var input=document.getElementById('cmt-input'),txt=input.value.trim();if(!txt)return;db.ref('posts/'+currentCommentPostId+'/comments').push().set({author:me,avatar:myAv,text:txt,timestamp:firebase.database.ServerValue.TIMESTAMP});input.value='';}
+function delComment(id){if(!currentCommentPostId)return;if(confirm('刪除留言？'))db.ref('posts/'+currentCommentPostId+'/comments/'+id).remove();}
+
+function openCg(){var html='';for(var key in allUsers){if(key===me)continue;html+=`<label style="display:flex;align-items:center;gap:12px;font-size:16px;color:var(--brown);cursor:pointer;padding:4px 0;"><input type="checkbox" class="cg-cb" value="${esc(key)}" style="width:20px;height:20px;accent-color:var(--gold);"> ${esc(key)}</label>`;}document.getElementById('cg-user-list').innerHTML=html||'<div style="font-size:13px;color:var(--bl);">無其他使用者</div>';document.getElementById('cg-overlay').classList.add('show');}
+function closeCg(e){if(e.target.id==='cg-overlay')document.getElementById('cg-overlay').classList.remove('show');}
+function doCreateGroup(){var name=document.getElementById('cg-name').value.trim();if(!name){alert('請輸入名稱');return;}var cbs=document.querySelectorAll('.cg-cb:checked');if(cbs.length===0){alert('請選擇成員');return;}var members={};members[me]=true;cbs.forEach(cb=>{members[cb.value]=true;});db.ref('groups').push().set({name:name,members:members,createdAt:firebase.database.ServerValue.TIMESTAMP});document.getElementById('cg-overlay').classList.remove('show');}
+
+function getChatId(u1,u2){return [u1,u2].sort().join('_');}
+function clearUnread(){if(!db||!me)return;var key='';if(currentRoom==='group')key='group';else if(currentRoom==='pm')key='pm_'+currentTarget;else if(currentRoom==='custom_group')key='cg_'+currentGroupId;if(key)db.ref('users/'+me+'/unread/'+key).remove();}
+function openRoom(type,targetName,groupId){currentRoom=type;currentTarget=targetName;currentGroupId=groupId;shownKeys={};lastDate=null;document.getElementById('msgs').innerHTML=`<div class="wlc"><span>${type==='pm'?'🤫':'🌻'}</span>歡迎來到聊天室</div>`;document.getElementById('chat-title').textContent=targetName;document.getElementById('cg-del-btn').style.display=type==='custom_group'?'block':'none';var ta=document.getElementById('msg-ta');if(ta){ta.value='';ta.style.height='auto';}show('s-chat');clearUnread();startListen();cancelReply();toggleGif(false);}
+function backToMain(){if(currentChatRef)currentChatRef.off();show('s-main');}
+
+function saveSettings(){var nb=document.getElementById('set-bio').value.trim(),np=document.getElementById('set-pwd').value.trim();myBio=nb;document.getElementById('hbio-sub').textContent=myBio||'查看設置...';var upData={bio:myBio,avatar:myAv};if(np){var newId=mkId(me,np);myId=newId;myPwdRaw=np;localStorage.setItem('dandelion_id',newId);upData.identity=newId;upData.rawPwd=np;}if(db&&me)db.ref('users/'+me).update(upData);document.getElementById('setting-overlay').classList.remove('show');}
+function doLogout(){if(!confirm('登出？'))return;localStorage.clear();location.reload();}
+
+/* Crop functions */
+(function(){var o=document.getElementById('crop-overlay');function st(x,y,d){isDragging=true;startX=x-imgX;startY=y-imgY;startDist=d;}function mv(x,y,d){if(!isDragging)return;imgX=x-startX;imgY=y-startY;if(d>0&&startDist>0){var sc=d/startDist;imgScale=Math.max(0.3,Math.min(4,imgScale*sc));startDist=d;}updateCropTransform();}o.addEventListener('mousedown',e=>{if(e.target.closest('.crop-btns'))return;e.preventDefault();st(e.clientX,e.clientY,0);});window.addEventListener('mousemove',e=>{if(isDragging){e.preventDefault();mv(e.clientX,e.clientY,0);}},{passive:false});window.addEventListener('mouseup',()=>{isDragging=false;});o.addEventListener('touchstart',e=>{if(e.target.closest('.crop-btns'))return;e.preventDefault();if(e.touches.length===1)st(e.touches[0].clientX,e.touches[0].clientY,0);else if(e.touches.length===2){var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);st((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d);}},{passive:false});o.addEventListener('touchmove',e=>{if(e.target.closest('.crop-btns'))return;e.preventDefault();if(!isDragging)return;if(e.touches.length===1)mv(e.touches[0].clientX,e.touches[0].clientY,0);else if(e.touches.length===2){var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);mv((e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2,d);}},{passive:false});o.addEventListener('touchcancel',()=>{isDragging=false;});o.addEventListener('touchend',()=>{isDragging=false;});})();
+document.getElementById('set-av-file').addEventListener('change',function(e){var f=e.target.files[0];this.value='';if(!f)return;var r=new FileReader();r.onload=function(ev){initCrop(ev.target.result,function(cData){myAv=cData;document.getElementById('set-av-img').src=myAv;document.getElementById('set-av-img').style.display='block';document.getElementById('hav-img').src=myAv;document.getElementById('hav-img').style.display='block';});};r.readAsDataURL(f);});
+function initCrop(src,cb){cropSourceSrc=src;cropTargetHandler=cb;var cimg=document.getElementById('crop-img');cimg.src=src;imgX=0;imgY=0;imgScale=1;isDragging=false;cimg.style.transform='translate(0px,0px) scale(1)';cimg.onload=function(){var wrap=300;if(cimg.naturalWidth>cimg.naturalHeight){imgScale=wrap/cimg.naturalHeight;imgX=-(cimg.naturalWidth*imgScale-wrap)/2;}else{imgScale=wrap/cimg.naturalWidth;imgY=-(cimg.naturalHeight*imgScale-wrap)/2;}updateCropTransform();};document.getElementById('crop-overlay').classList.add('show');}
+function updateCropTransform(){document.getElementById('crop-img').style.transform='translate('+imgX+'px, '+imgY+'px) scale('+imgScale+')';}
+function closeCrop(){document.getElementById('crop-overlay').classList.remove('show');}
+function saveCrop(){var cimg=document.getElementById('crop-img'),cv=document.createElement('canvas');cv.width=100;cv.height=100;cv.getContext('2d').drawImage(cimg,(-imgX)/imgScale,(-imgY)/imgScale,300/imgScale,300/imgScale,0,0,100,100);if(cropTargetHandler)cropTargetHandler(cv.toDataURL('image/jpeg',0.82));closeCrop();}
+
+function getActiveChatPath(){if(currentRoom==='group')return 'messages';if(currentRoom==='custom_group')return 'custom_group_messages/'+currentGroupId;return 'private_messages/'+getChatId(me,currentTarget);}
+
+function updateReadUI(key,d){
+  var el=document.getElementById('read-'+key);if(!el)return;
+  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId);
+  if(!self||d.recalled||d.type==='system'||d.name==='__system__'){el.textContent='';return;}
+  var reads=d.reads||{},readCount=0;for(var u in reads){if(u!==d.name)readCount++;}
+  if(readCount===0){el.textContent='';return;}
+  var totalExpected=1;
+  if(currentRoom==='group')totalExpected=Math.max(1,Object.keys(allUsers).length-1);
+  else if(currentRoom==='custom_group'){var g=allGroups[currentGroupId];totalExpected=g?Math.max(1,Object.keys(g.members).length-1):1;}
+  if(readCount>=totalExpected)el.textContent=(currentRoom==='pm')?'已讀':'全部已讀';else el.textContent=readCount+' 人已讀';
+}
 
 function startListen(){
   if(!db)return;if(currentChatRef)currentChatRef.off();var path=getActiveChatPath();currentChatRef=db.ref(path);
@@ -453,32 +618,138 @@ function startListen(){
     var k=snap.key;if(shownKeys[k])return;shownKeys[k]=true;var d=snap.val();if(!d)return;
     if(d.name!=='__system__'&&d.name!==me&&(!d.reads||!d.reads[me]))db.ref(path+'/'+k+'/reads/'+me).set(true);
     clearUnread(); d.name==='__system__'?addSys(d.text):addBubble(d,k);updateReadUI(k,d);
-    
-    // --- 訊息通知觸發器 ---
-    if (document.hidden && Notification.permission === 'granted' && d.name !== me && d.name !== '__system__') {
-        new Notification(d.name + ' 傳來了訊息', {
-            body: d.text || '傳送了圖片/檔案',
-            icon: 'favicon.png'
-        });
-    }
   });
   currentChatRef.on('child_changed',function(snap){var d=snap.val(),k=snap.key;if(!d)return;if(d.recalled){var w=document.querySelector('[data-key="'+k+'"]');if(w)markRcl(w);}updateReadUI(k,d);});
 }
 
-// 其餘功能函式 (這裡省略重複的設定/UI函式以節省篇幅，請保留你原有的 toggleMusic, setTheme, etc...)
-// 確保您原本的那些 addBubble, openRoom, etc. 函式都在此下方
-// ... (保留你原有的其他函式) ...
-
-// === 修正後的 Service Worker 註冊 (需確保 sw.js 存在且內容正確) ===
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered')).catch(err => console.log(err));
+function triggerUnread(){
+  if(!db)return;
+  if(currentRoom==='group'){for(var u in allUsers)if(u!==me)db.ref('users/'+u+'/unread/group').set(true);}
+  else if(currentRoom==='pm')db.ref('users/'+currentTarget+'/unread/pm_'+me).set(true);
+  else if(currentRoom==='custom_group'){var g=allGroups[currentGroupId];if(g&&g.members)for(var m in g.members)if(m!==me)db.ref('users/'+m+'/unread/cg_'+currentGroupId).set(true);}
 }
 
-window.addEventListener('DOMContentLoaded', function(){
-    // 初始化你的 UI 設定
-    // ...
+function pushMsg(obj){if(!db)return;var nr=db.ref(getActiveChatPath()).push();obj.timestamp=firebase.database.ServerValue.TIMESTAMP;nr.set(obj);triggerUnread();}
+function sysMsg(t){if(!db)return;db.ref(getActiveChatPath()).push().set({name:'__system__',type:'system',text:t,timestamp:firebase.database.ServerValue.TIMESTAMP});triggerUnread();}
+
+function initReply(k,n,s){replyTargetId=k;replyTargetName=n;replyTargetSnippet=s;document.getElementById('reply-bar-info').textContent='↩️ 回覆 '+n+'：「'+s+'」';document.getElementById('reply-bar').classList.add('show');document.getElementById('msg-ta').focus();}
+function cancelReply(){replyTargetId=null;document.getElementById('reply-bar').classList.remove('show');}
+function toggleMsgMenu(btn){var mw=btn.closest('.mw');if(mw)mw.classList.toggle('show-menu');}
+function rclMsg(btn){var mw=btn.closest('.mw');if(!mw)return;var k=mw.getAttribute('data-key');if(k&&db&&confirm('收回？'))db.ref(getActiveChatPath()+'/'+k).update({recalled:true});}
+function markRcl(mw){var b=mw.querySelector('.bbl');if(!b)return;b.style.transform='scale(0.9)';setTimeout(()=>{b.className='bbl recalled';b.innerHTML='🌬️ 已收回';b.style.transform='scale(1)';var q=mw.querySelector('.hvr-actions');if(q)q.remove();var ob=mw.querySelector('.msg-opts-btn');if(ob)ob.remove();},200);}
+function sendTxt(){if(amIMuted){alert('🚫 禁言中');return;}var ta=document.getElementById('msg-ta'),txt=ta.value.trim();if(!txt||!me)return;ta.value='';ta.style.height='auto';var m={name:me,type:'text',text:txt,avatar:myAv,deviceId:myId};if(replyTargetId){m.replyId=replyTargetId;m.replyName=replyTargetName;m.replySnippet=replyTargetSnippet;}pushMsg(m);cancelReply();}
+document.getElementById('snd-btn').addEventListener('click',sendTxt);document.getElementById('msg-ta').addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';});
+
+function initGifPanel(){var urls=["https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif","https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif","https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif","https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif"];var gp=document.getElementById('gif-panel');urls.forEach(u=>{var i=document.createElement('img');i.src=u;i.className='g-item';i.onclick=()=>{if(amIMuted){alert('🚫 禁言中');return;}var m={name:me,type:'image',fileData:u,fileName:'gif',avatar:myAv,deviceId:myId};if(replyTargetId){m.replyId=replyTargetId;m.replyName=replyTargetName;m.replySnippet=replyTargetSnippet;}pushMsg(m);cancelReply();toggleGif(false);};gp.appendChild(i);});}
+function toggleGif(f){var gp=document.getElementById('gif-panel');if(f===false){gp.classList.remove('show');return;}gp.classList.toggle('show');}
+document.addEventListener('click',e=>{var gp=document.getElementById('gif-panel');if(gp&&gp.classList.contains('show')&&!e.target.closest('#gif-panel')&&!e.target.closest('#btn-gif'))gp.classList.remove('show');if(!e.target.closest('.mw'))document.querySelectorAll('.mw.show-menu').forEach(mw=>mw.classList.remove('show-menu'));});
+
+document.getElementById('fi2').addEventListener('change',function(e){
+  if(amIMuted){alert('🚫 禁言中');this.value='';return;}
+  var file=e.target.files[0];this.value='';if(!file||!me)return;
+  var isImg=/^image\//i.test(file.type),isVid=/^video\//i.test(file.type);
+  if(file.size>2*1024*1024&&file.type==='image/gif'){alert('動圖勿超過 2MB');return;}if(isVid&&file.size>8*1024*1024){alert('影片勿超過 8MB');return;}if(file.size>900*1024&&!isImg&&!isVid&&file.type!=='image/gif'){alert('檔案過大');return;}
+  var reader=new FileReader();reader.onload=function(ev){var m={name:me,fileName:file.name,avatar:myAv,deviceId:myId};if(replyTargetId){m.replyId=replyTargetId;m.replyName=replyTargetName;m.replySnippet=replyTargetSnippet;}if(isVid){m.type='video';m.fileData=ev.target.result;pushMsg(m);cancelReply();}else if(file.type==='image/gif'){m.type='image';m.fileData=ev.target.result;pushMsg(m);cancelReply();}else if(isImg){var img=new Image();img.onload=function(){var cv=document.createElement('canvas'),MP=960,w=img.width,h=img.height;if(w>MP||h>MP){if(w>h){h=Math.round(h*MP/w);w=MP;}else{w=Math.round(w*MP/h);h=MP;}}cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);m.type='image';m.fileData=cv.toDataURL('image/jpeg',0.85);pushMsg(m);cancelReply();};img.src=ev.target.result;}else{m.type='file';m.fileData=ev.target.result;pushMsg(m);cancelReply();}};reader.readAsDataURL(file);
 });
 
+function jumpToMessage(k){var t=document.querySelector('[data-key="'+k+'"]');if(t){t.scrollIntoView({behavior:'smooth',block:'center'});t.classList.add('highlight-anim');setTimeout(()=>t.classList.remove('highlight-anim'),1200);}}
+function handleMenuAction(e,cb){e.preventDefault();e.stopPropagation();var mw=e.target.closest('.mw');if(mw)mw.classList.remove('show-menu');cb();}
+function openLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').classList.add('show');}
+function closeLb(){document.getElementById('lb').classList.remove('show');}
+
+function addBubble(d,key){
+  var self=(d.name===me)&&(!d.deviceId||d.deviceId===myId),rcld=!!d.recalled,ts=d.timestamp||Date.now(),av=d.avatar||'',date=fmtD(ts);
+  if(date!==lastDate){lastDate=date;var sep=document.createElement('div');sep.className='sysmsg';sep.innerHTML='<span>── '+date+' ──</span>';document.getElementById('msgs').appendChild(sep);}
+  var w=document.createElement('div');w.className='mw '+(self?'self':'other');if(key)w.setAttribute('data-key',key);
+  var avH=av&&av.startsWith('data:')?`<div class="mav"><img src="${esc(av)}"></div>`:'<div class="mav">🌼</div>';
+  var qH='';if(!rcld&&d.replyId)qH=`<div class="quote-box" onclick="jumpToMessage('${d.replyId}')">↳ 回覆 ${esc(d.replyName)}</div>`;
+  var bb='';
+  if(rcld)bb='<div class="bbl recalled">🌬️ 已收回</div>';
+  else if(d.type==='video')bb=`<div class="bbl" style="padding:6px">${qH}<video controls src="${esc(d.fileData)}" class="bbl-media"></video></div>`;
+  else if(d.type==='image')bb=`<div class="bbl" style="padding:6px">${qH}<img src="${esc(d.fileData)}" class="bbl-media bbl-img" onclick="openLb(this.src)"></div>`;
+  else if(d.type==='file')bb=`<div class="bbl" style="padding:6px">${qH}<a class="file-box" href="${esc(d.fileData)}" download="${esc(d.fileName)}"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(d.fileName)}</div></div><div class="file-dl">⬇</div></a></div>`;
+  else bb=`<div class="bbl">${qH}${esc(d.text||'')}</div>`;
+  var snip=d.type==='text'?(d.text||''):(d.type==='image'||d.type==='video'?'📷':'📎');if(snip.length>14)snip=snip.slice(0,14)+'...';
+  var actH='',optH='';
+  if(!rcld&&key){optH='<div class="msg-opts-btn" onclick="toggleMsgMenu(this)">⋮</div>';actH='<div class="hvr-actions"><button class="action-btn rpl-act">回覆</button>'+(self?'<button class="action-btn rcl-act">收回</button>':'')+'</div>';}
+  var rH=self?`<span class="read-status" id="read-${key}"></span>`:'';
+  var row=self?`<div class="mw-row">${actH}${optH}${bb}</div>`:`<div class="mw-nm">${esc(d.name)}</div><div class="mw-row">${avH}${bb}${optH}${actH}</div>`;
+  w.innerHTML=row+`<div class="mw-t">${rH}<span>${fmtT(ts)}</span></div>`;
+  if(!rcld&&key){var rB=w.querySelector('.rpl-act');if(rB){rB.addEventListener('click',e=>handleMenuAction(e,()=>initReply(key,d.name,snip)));rB.addEventListener('touchstart',e=>handleMenuAction(e,()=>initReply(key,d.name,snip)),{passive:false});}var cB=w.querySelector('.rcl-act');if(cB){cB.addEventListener('click',e=>handleMenuAction(e,()=>rclMsg(cB)));cB.addEventListener('touchstart',e=>handleMenuAction(e,()=>rclMsg(cB)),{passive:false});}}
+  document.getElementById('msgs').appendChild(w);requestAnimationFrame(()=>{var m=document.getElementById('msgs');m.scrollTo({top:m.scrollHeight,behavior:'smooth'});});return w;
+}
+function addSys(t){var s=document.createElement('div');s.className='sysmsg';s.innerHTML='<span>'+esc(t)+'</span>';document.getElementById('msgs').appendChild(s);var m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
+function fmtT(ts){var d=new Date(ts);return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function fmtD(ts){var d=new Date(ts);return(d.getMonth()+1)+' 月 '+d.getDate()+' 日';}
+function resetAllChats(){if(me!==ADMIN_NAME)return;if(confirm('警告：確定清空所有資料？')&&prompt('輸入「確認清空」')==='確認清空'){if(db){db.ref('messages').remove();db.ref('private_messages').remove();db.ref('custom_group_messages').remove();db.ref('posts').remove();db.ref('whiteboard/strokes').remove();alert('清空完成');location.reload();}}}
+function deleteCustomGroup(){if(confirm('解散群組？')){if(db&&currentGroupId){db.ref('custom_group_messages/'+currentGroupId).remove();db.ref('groups/'+currentGroupId).remove();alert('已解散！');backToMain();}}}
+
+/* 高效防卡頓渲染白板引擎 */
+function getWbPos(e){var r=wbCanvas.getBoundingClientRect(),cx=e.touches?e.touches[0].clientX:e.clientX,cy=e.touches?e.touches[0].clientY:e.clientY;return{x:(cx-r.left)*(WB_WIDTH/r.width),y:(cy-r.top)*(WB_HEIGHT/r.height)};}
+function requestRender(){if(!renderPending){renderPending=true;requestAnimationFrame(()=>{renderWhiteboard();renderPending=false;});}}
+function startDrawWb(e){if(amIMuted)return;if(e.touches&&e.touches.length>1)return;e.preventDefault();isDrawingWb=true;var p=getWbPos(e);currentPath=[Math.round(p.x)+','+Math.round(p.y)];wbLastX=p.x;wbLastY=p.y;}
+function drawWb(e){
+  if(!isDrawingWb)return;e.preventDefault();var p=getWbPos(e);currentPath.push(Math.round(p.x)+','+Math.round(p.y));
+  if(wbMode==='pen'){
+    wbCtx.beginPath();wbCtx.moveTo(wbLastX,wbLastY);wbCtx.lineTo(p.x,p.y);
+    wbCtx.lineCap='round';wbCtx.lineJoin='round';wbCtx.lineWidth=wbSize;wbCtx.strokeStyle=wbColor;wbCtx.stroke();
+  } else { requestRender(); }
+  wbLastX=p.x;wbLastY=p.y;
+}
+function endDrawWb(e){if(!isDrawingWb)return;isDrawingWb=false;if(currentPath.length>0){if(db)db.ref('whiteboard/strokes').push({a:me,c:wbMode==='eraser'?'eraser':wbColor,s:wbSize,p:currentPath.join('|')});currentPath=[];}}
+wbCanvas.addEventListener('mousedown',startDrawWb);wbCanvas.addEventListener('mousemove',drawWb);wbCanvas.addEventListener('mouseup',endDrawWb);wbCanvas.addEventListener('mouseout',endDrawWb);
+wbCanvas.addEventListener('touchstart',startDrawWb,{passive:false});wbCanvas.addEventListener('touchmove',drawWb,{passive:false});wbCanvas.addEventListener('touchend',endDrawWb);wbCanvas.addEventListener('touchcancel',endDrawWb);
+
+function renderWhiteboard(){
+  wbCtx.clearRect(0,0,WB_WIDTH,WB_HEIGHT);var sba={};for(var k in allStrokes){var s=allStrokes[k];if(!sba[s.a])sba[s.a]=[];sba[s.a].push(s);}
+  if(isDrawingWb&&currentPath.length>0){if(!sba[me])sba[me]=[];sba[me].push({a:me,c:wbMode==='eraser'?'eraser':wbColor,s:wbSize,p:currentPath.join('|')});}
+  for(var a in sba){
+    tempCtx.clearRect(0,0,WB_WIDTH,WB_HEIGHT);
+    sba[a].forEach(s=>{
+      var pts=s.p.split('|');if(!pts||!pts[0])return;
+      tempCtx.beginPath();var st=pts[0].split(',');tempCtx.moveTo(parseFloat(st[0]),parseFloat(st[1]));
+      for(var i=1;i<pts.length;i++){var pt=pts[i].split(',');tempCtx.lineTo(parseFloat(pt[0]),parseFloat(pt[1]));}
+      if(pts.length===1)tempCtx.lineTo(parseFloat(st[0])+0.1,parseFloat(st[1]));
+      tempCtx.lineCap='round';tempCtx.lineJoin='round';
+      if(s.c==='eraser'){tempCtx.globalCompositeOperation='destination-out';tempCtx.lineWidth=s.s||30;tempCtx.strokeStyle='rgba(0,0,0,1)';}
+      else{tempCtx.globalCompositeOperation='source-over';tempCtx.lineWidth=s.s||3;tempCtx.strokeStyle=s.c||'#3D2C1A';}
+      tempCtx.stroke();
+    });
+    wbCtx.globalCompositeOperation='source-over';wbCtx.drawImage(tempCanvas,0,0);
+  }
+}
+function initWhiteboardSync(){if(!db)return;if(wbRef)wbRef.off();wbRef=db.ref('whiteboard/strokes');wbRef.on('value',s=>{allStrokes=s.val()||{};requestRender();});}
+function clearBoard(){if(me!==ADMIN_NAME){alert('僅管理員可用');return;}if(confirm('清空畫布？'))if(db)db.ref('whiteboard/strokes').remove();}
+function updateWbSize(val){wbSize=parseInt(val);if(wbMode==='pen')lastPenSize=wbSize;}
+function setDrawMode(mode){wbMode=mode;var pB=document.getElementById('wb-pen-btn'),eB=document.getElementById('wb-eraser-btn'),sd=document.getElementById('wb-size-slider');if(mode==='pen'){pB.style.background='var(--gold)';pB.style.color='#fff';pB.style.borderColor='var(--gold)';eB.style.background='transparent';eB.style.color='var(--bm)';eB.style.borderColor='var(--gold-p)';wbSize=lastPenSize;sd.value=wbSize;wbCanvas.style.cursor='crosshair';}else{lastPenSize=wbSize;eB.style.background='var(--gold)';eB.style.color='#fff';eB.style.borderColor='var(--gold)';pB.style.background='transparent';pB.style.color='var(--bm)';pB.style.borderColor='var(--gold-p)';wbSize=30;sd.value=wbSize;wbCanvas.style.cursor='cell';}}
+function setWbColor(color,idx){wbColor=color;setDrawMode('pen');for(var i=1;i<=5;i++)document.getElementById('cbtn-'+i).classList.remove('active');document.getElementById('cbtn-'+idx).classList.add('active');}
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('App 引擎綁定成功！');
+      }).catch(function(err) {
+        console.log('App 引擎綁定失敗：', err);
+      });
+    });
+  }
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
+<script>
+  const messaging = firebase.messaging();
+  function requestNotificationPermission() {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('通知權限已授權');
+        getToken(messaging, { vapidKey: '這裡填入你 Firebase Cloud Messaging 的那串金鑰' }).then((currentToken) => {
+          console.log('你的 Token:', currentToken);
+        });
+      }
+    });
+  }
+  // 網頁載入後自動請求一次
+  requestNotificationPermission();
 </script>
 </body>
 </html>
