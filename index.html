@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>蒲公英 608</title><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="蒲公英">
@@ -721,6 +722,17 @@ function clearBoard(){if(me!==ADMIN_NAME){alert('僅管理員可用');return;}if
 function updateWbSize(val){wbSize=parseInt(val);if(wbMode==='pen')lastPenSize=wbSize;}
 function setDrawMode(mode){wbMode=mode;var pB=document.getElementById('wb-pen-btn'),eB=document.getElementById('wb-eraser-btn'),sd=document.getElementById('wb-size-slider');if(mode==='pen'){pB.style.background='var(--gold)';pB.style.color='#fff';pB.style.borderColor='var(--gold)';eB.style.background='transparent';eB.style.color='var(--bm)';eB.style.borderColor='var(--gold-p)';wbSize=lastPenSize;sd.value=wbSize;wbCanvas.style.cursor='crosshair';}else{lastPenSize=wbSize;eB.style.background='var(--gold)';eB.style.color='#fff';eB.style.borderColor='var(--gold)';pB.style.background='transparent';pB.style.color='var(--bm)';pB.style.borderColor='var(--gold-p)';wbSize=30;sd.value=wbSize;wbCanvas.style.cursor='cell';}}
 function setWbColor(color,idx){wbColor=color;setDrawMode('pen');for(var i=1;i<=5;i++)document.getElementById('cbtn-'+i).classList.remove('active');document.getElementById('cbtn-'+idx).classList.add('active');}
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('App 引擎綁定成功！');
+      }).catch(function(err) {
+        console.log('App 引擎綁定失敗：', err);
+      });
+    });
+  }
 </script>
 </body>
 </html>
